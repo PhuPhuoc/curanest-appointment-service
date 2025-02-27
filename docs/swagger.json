@@ -1,0 +1,46 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Auth-service: https://api.curanest.com.vn/auth/swagger/index.html.\nPatient-service: https://api.curanest.com.vn/patient/swagger/index.html.\nNurse-service: https://api.curanest.com.vn/nurse/swagger/index.html.\nAppointment-service: https://api.curanest.com.vn/appointment/swagger/index.html.\nNotification-service (not ready - expected): https://api.curanest.com.vn/notification/swagger/index.html.",
+        "title": "Appointment Service",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/ping": {
+            "get": {
+                "description": "ping server",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ping"
+                ],
+                "summary": "ping server",
+                "responses": {
+                    "200": {
+                        "description": "message success",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

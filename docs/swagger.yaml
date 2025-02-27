@@ -1,0 +1,36 @@
+info:
+  contact: {}
+  description: |-
+    Auth-service: https://api.curanest.com.vn/auth/swagger/index.html.
+    Patient-service: https://api.curanest.com.vn/patient/swagger/index.html.
+    Nurse-service: https://api.curanest.com.vn/nurse/swagger/index.html.
+    Appointment-service: https://api.curanest.com.vn/appointment/swagger/index.html.
+    Notification-service (not ready - expected): https://api.curanest.com.vn/notification/swagger/index.html.
+  title: Appointment Service
+  version: "1.0"
+paths:
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: ping server
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: message success
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      summary: ping server
+      tags:
+      - ping
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
