@@ -19,11 +19,9 @@ type JWTx struct {
 	// expireRefreshInSeconds int
 }
 
-func NewJWTx(secret string, expireTokenInSeconds int) *JWTx {
+func NewJWTx(secret string) *JWTx {
 	return &JWTx{
-		secret:               secret,
-		expireTokenInSeconds: expireTokenInSeconds,
-		// expireRefreshInSeconds: expireRefreshInSeconds,
+		secret: secret,
 	}
 }
 

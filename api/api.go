@@ -5,14 +5,20 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/PhuPhuoc/curanest-appointment-service/config"
-	"github.com/PhuPhuoc/curanest-appointment-service/docs"
-	"github.com/PhuPhuoc/curanest-appointment-service/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+
+	"github.com/PhuPhuoc/curanest-appointment-service/builder"
+	"github.com/PhuPhuoc/curanest-appointment-service/common"
+	"github.com/PhuPhuoc/curanest-appointment-service/config"
+	"github.com/PhuPhuoc/curanest-appointment-service/docs"
+	"github.com/PhuPhuoc/curanest-appointment-service/middleware"
+	categoryhttpservice "github.com/PhuPhuoc/curanest-appointment-service/module/category/infars/httpservice"
+	categorycommands "github.com/PhuPhuoc/curanest-appointment-service/module/category/usecase/commands"
+	categoryqueries "github.com/PhuPhuoc/curanest-appointment-service/module/category/usecase/queries"
 )
 
 type server struct {
@@ -28,8 +34,12 @@ func InitServer(port string, db *sqlx.DB) *server {
 }
 
 const (
-	env_local = "local"
-	env_vps   = "vps"
+	env_local         = "local"
+	env_vps           = "vps"
+	url_acc_local     = "http://localhost:8001"
+	url_acc_prod      = "http://auth_service:8080"
+	url_nursing_local = "http://localhost:8003"
+	url_nursing_prod  = "http://nurse_service:8080"
 )
 
 // @Summary		ping server
@@ -41,15 +51,21 @@ const (
 // @Failure		400	{object}	error			"Bad request error"
 // @Router			/ping [get]
 func (sv *server) RunApp() error {
+	var urlAccServices string
+	var urlNursingServices string
 	envDevlopment := config.AppConfig.EnvDev
 	if envDevlopment == env_local {
 		// gin.SetMode(gin.ReleaseMode)
 		docs.SwaggerInfo.BasePath = "/"
+		urlAccServices = url_acc_local
+		urlNursingServices = url_nursing_local
 	}
 
 	if envDevlopment == env_vps {
 		gin.SetMode(gin.ReleaseMode)
 		docs.SwaggerInfo.BasePath = "/appointment"
+		urlAccServices = url_acc_prod
+		urlNursingServices = url_nursing_prod
 	}
 
 	router := gin.New()
@@ -65,14 +81,24 @@ func (sv *server) RunApp() error {
 	router.Use(cors.New(configcors))
 	router.Use(middleware.SkipSwaggerLog(), gin.Recovery())
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-
-	// tokenProvider := common.NewJWTx(config.AppConfig.Key, 65*60*24*7)
-
 	router.GET("/ping", func(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"message": "curanest-appointment-service - pong"}) })
 
-	// api := router.Group("/api/v1")
-	// {
-	// }
+	authClient := common.NewJWTx(config.AppConfig.Key)
+
+	category_cmd_builder := categorycommands.NewCategoryCmdWithBuilder(
+		builder.NewCategoryBuilder(sv.db).AddUrlPathAccountService(urlAccServices),
+	)
+	category_query_builder := categoryqueries.NewCategoryQueryWithBuilder(
+		builder.NewCategoryBuilder(sv.db).AddUrlPathNursingService(urlNursingServices),
+	)
+
+	api := router.Group("/api/v1")
+	{
+		categoryhttpservice.
+			NewCategoryHTTPService(category_cmd_builder, category_query_builder).
+			AddAuth(authClient).
+			Routes(api)
+	}
 
 	// rpc := router.Group("/external/rpc")
 	// {
