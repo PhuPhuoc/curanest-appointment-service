@@ -25,7 +25,6 @@ func (h *getCategoriesHandler) Handle(ctx context.Context, filter *FilterCategor
 	entities, err := h.queryRepo.GetCategories(ctx, filter)
 	if err != nil {
 		return nil, common.NewInternalServerError().
-			WithMessage("cannot get list categories").
 			WithReason("error at GetCategories-repo").
 			WithInner(err.Error())
 	}

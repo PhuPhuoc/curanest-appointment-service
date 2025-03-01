@@ -70,6 +70,65 @@ paths:
       summary: create new category
       tags:
       - categories
+  /api/v1/categories/{category-id}/staff/{staff-id}:
+    patch:
+      consumes:
+      - application/json
+      description: add staff to category (admin)
+      parameters:
+      - description: category ID (UUID)
+        in: path
+        name: category-id
+        required: true
+        type: string
+      - description: staff ID (UUID)
+        in: path
+        name: staff-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: add staff to category (admin)
+      tags:
+      - categories
+  /api/v1/categories/{category-id}/staff/remove:
+    patch:
+      consumes:
+      - application/json
+      description: remove staff to category (admin)
+      parameters:
+      - description: category ID (UUID)
+        in: path
+        name: category-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: remove staff to category (admin)
+      tags:
+      - categories
   /ping:
     get:
       consumes:

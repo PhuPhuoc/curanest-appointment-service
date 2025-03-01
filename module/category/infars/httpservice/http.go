@@ -40,5 +40,19 @@ func (s *categoryHttpService) Routes(g *gin.RouterGroup) {
 			middleware.RequireAuth(s.auth),
 			s.handleGetCategories(),
 		)
+
+		cate_route.PATCH(
+			"/:category-id/staff/:staff-id",
+			middleware.RequireAuth(s.auth),
+			middleware.RequireRole("admin"),
+			s.handleAddStaffForCategory(),
+		)
+		cate_route.PATCH(
+			"/:category-id/staff/remove",
+			middleware.RequireAuth(s.auth),
+			middleware.RequireRole("admin"),
+			s.handleRemoveStaffForCategory(),
+		)
+
 	}
 }
