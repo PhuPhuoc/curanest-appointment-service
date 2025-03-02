@@ -52,9 +52,6 @@ func (s *categoryHttpService) handleAddStaffForCategory() gin.HandlerFunc {
 			return
 		}
 
-		fmt.Println("cateEntity: ", cateEntity)
-		fmt.Println("cateEntity.staffid: ", cateEntity.StaffId)
-
 		if cateEntity.StaffId != nil && *cateEntity.StaffId == staffUUID {
 			messErr := fmt.Errorf("staff(id: %v) is already a staff of this category", cateUUID)
 			common.ResponseError(ctx, common.NewBadRequestError().WithReason(messErr.Error()))

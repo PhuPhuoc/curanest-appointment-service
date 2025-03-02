@@ -11,7 +11,7 @@ import (
 func (repo *categoryRepo) GetCategories(ctx context.Context, filter *categoryqueries.FilterCategoryDTO) ([]categorydomain.Category, error) {
 	where := ""
 	var args []interface{}
-	if filter.Name != "" {
+	if filter != nil && filter.Name != "" {
 		where = "WHERE name like ?"
 		args = append(args, "%"+filter.Name+"%")
 	}

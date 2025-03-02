@@ -19,6 +19,9 @@ import (
 	categoryhttpservice "github.com/PhuPhuoc/curanest-appointment-service/module/category/infars/httpservice"
 	categorycommands "github.com/PhuPhuoc/curanest-appointment-service/module/category/usecase/commands"
 	categoryqueries "github.com/PhuPhuoc/curanest-appointment-service/module/category/usecase/queries"
+	servicehttpservice "github.com/PhuPhuoc/curanest-appointment-service/module/service/infars/httpservice"
+	servicecommands "github.com/PhuPhuoc/curanest-appointment-service/module/service/usecase/commands"
+	servicequeries "github.com/PhuPhuoc/curanest-appointment-service/module/service/usecase/queries"
 )
 
 type server struct {
@@ -34,10 +37,11 @@ func InitServer(port string, db *sqlx.DB) *server {
 }
 
 const (
-	env_local         = "local"
-	env_vps           = "vps"
-	url_acc_local     = "http://localhost:8001"
-	url_acc_prod      = "http://auth_service:8080"
+	env_local     = "local"
+	env_vps       = "vps"
+	url_acc_local = "http://localhost:8001"
+	url_acc_prod  = "http://auth_service:8080"
+
 	url_nursing_local = "http://localhost:8003"
 	url_nursing_prod  = "http://nurse_service:8080"
 )
@@ -92,10 +96,21 @@ func (sv *server) RunApp() error {
 		builder.NewCategoryBuilder(sv.db).AddUrlPathNursingService(urlNursingServices),
 	)
 
+	service_cmd_builder := servicecommands.NewServiceCmdWithBuilder(
+		builder.NewServiceBuilder(sv.db),
+	)
+	service_query_builder := servicequeries.NewServiceQueryWithBuilder(
+		builder.NewServiceBuilder(sv.db),
+	)
+
 	api := router.Group("/api/v1")
 	{
 		categoryhttpservice.
 			NewCategoryHTTPService(category_cmd_builder, category_query_builder).
+			AddAuth(authClient).
+			Routes(api)
+
+		servicehttpservice.NewServiceHTTPService(service_cmd_builder, service_query_builder).
 			AddAuth(authClient).
 			Routes(api)
 	}

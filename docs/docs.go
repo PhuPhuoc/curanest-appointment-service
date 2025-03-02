@@ -98,6 +98,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/categories/{category-id}/services": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get list service by category-id (admin)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "get list service by category-id (admin)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "category ID (UUID)",
+                        "name": "category-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "services name",
+                        "name": "service-name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/categories/{category-id}/staff/remove": {
             "patch": {
                 "security": [
@@ -189,6 +237,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/services": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "create new service",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "create new service",
+                "parameters": [
+                    {
+                        "description": "service creation data",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/servicecommands.CreateServiceDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/ping": {
             "get": {
                 "description": "ping server",
@@ -226,6 +318,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "servicecommands.CreateServiceDTO": {
+            "type": "object",
+            "properties": {
+                "category-id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "est-duration": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "thumbnail": {
                     "type": "string"
                 }
             }

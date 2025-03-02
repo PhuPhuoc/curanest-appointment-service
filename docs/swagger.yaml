@@ -6,6 +6,19 @@ definitions:
       name:
         type: string
     type: object
+  servicecommands.CreateServiceDTO:
+    properties:
+      category-id:
+        type: string
+      description:
+        type: string
+      est-duration:
+        type: string
+      name:
+        type: string
+      thumbnail:
+        type: string
+    type: object
 info:
   contact: {}
   description: |-
@@ -70,6 +83,37 @@ paths:
       summary: create new category
       tags:
       - categories
+  /api/v1/categories/{category-id}/services:
+    get:
+      consumes:
+      - application/json
+      description: get list service by category-id (admin)
+      parameters:
+      - description: category ID (UUID)
+        in: path
+        name: category-id
+        required: true
+        type: string
+      - description: services name
+        in: query
+        name: service-name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: get list service by category-id (admin)
+      tags:
+      - services
   /api/v1/categories/{category-id}/staff/{staff-id}:
     patch:
       consumes:
@@ -129,6 +173,34 @@ paths:
       summary: remove staff to category (admin)
       tags:
       - categories
+  /api/v1/services:
+    post:
+      consumes:
+      - application/json
+      description: create new service
+      parameters:
+      - description: service creation data
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/servicecommands.CreateServiceDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: create new service
+      tags:
+      - services
   /ping:
     get:
       consumes:

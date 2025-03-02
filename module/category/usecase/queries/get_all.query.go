@@ -44,22 +44,24 @@ func (h *getCategoriesHandler) Handle(ctx context.Context, filter *FilterCategor
 		Ids: list_ids,
 	}
 
-	staffs, err := h.nursingRPC.GetStaffsRPC(ctx, &staffQueryDTO)
-	if err != nil {
-		return nil, err
-	}
-
-	for i := range list_dto {
-		dtoStaffId := list_dto[i].StaffId
-		if dtoStaffId == nil {
-			continue
+	if len(list_dto) > 0 {
+		staffs, err := h.nursingRPC.GetStaffsRPC(ctx, &staffQueryDTO)
+		if err != nil {
+			return nil, err
 		}
-		for j := range staffs {
-			staffId := staffs[j].NurseId
-			fmt.Printf("dto_staff_id: %v ___ staffs_id: %v \n", *dtoStaffId, staffId)
-			if *dtoStaffId == staffId {
-				list_dto[i].StaffInfo = &staffs[j]
-				break
+
+		for i := range list_dto {
+			dtoStaffId := list_dto[i].StaffId
+			if dtoStaffId == nil {
+				continue
+			}
+			for j := range staffs {
+				staffId := staffs[j].NurseId
+				fmt.Printf("dto_staff_id: %v ___ staffs_id: %v \n", *dtoStaffId, staffId)
+				if *dtoStaffId == staffId {
+					list_dto[i].StaffInfo = &staffs[j]
+					break
+				}
 			}
 		}
 	}

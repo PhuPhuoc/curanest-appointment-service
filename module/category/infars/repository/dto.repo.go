@@ -19,8 +19,6 @@ var (
 	}
 
 	UPDATE_FIELD = []string{
-		"id",
-		"staff_id",
 		"name",
 		"description",
 	}
