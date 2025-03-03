@@ -34,7 +34,7 @@ func NewServiceQueryWithBuilder(b Builder) Queries {
 
 type ServiceQueryRepo interface {
 	GetServicesByCategoryAndFilter(ctx context.Context, cateId uuid.UUID, filter FilterGetService) ([]servicedomain.Service, error)
-	GetServicesWithFilter(ctx context.Context, filter FilterGetService) ([]servicedomain.Service, error)
+	// GetServicesWithFilter(ctx context.Context, filter FilterGetService) ([]servicedomain.Service, error)
 }
 
 type CategoryFetcher interface {

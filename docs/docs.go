@@ -281,6 +281,42 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/services/group-by-category": {
+            "get": {
+                "description": "get list service with category (guest)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "get list service with category (guest)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "services name",
+                        "name": "service-name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/ping": {
             "get": {
                 "description": "ping server",

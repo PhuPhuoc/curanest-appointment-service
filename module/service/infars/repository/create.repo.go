@@ -9,7 +9,7 @@ import (
 
 func (repo *serviceRepo) Create(ctx context.Context, entity *servicedomain.Service) error {
 	dto := ToDTO(entity)
-	query := common.GenerateSQLQueries(common.INSERT, TABLE, FIELD, nil)
+	query := common.GenerateSQLQueries(common.INSERT, TABLE, CREATE_FIELD, nil)
 	if _, err := repo.db.NamedExec(query, dto); err != nil {
 		return err
 	}

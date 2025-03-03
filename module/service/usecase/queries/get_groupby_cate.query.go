@@ -1,6 +1,11 @@
 package servicequeries
 
-import "context"
+import (
+	"context"
+	"fmt"
+
+	"github.com/PhuPhuoc/curanest-appointment-service/common"
+)
 
 type getServicesGroupByCategoryHandler struct {
 	queryRepo   ServiceQueryRepo
@@ -14,6 +19,42 @@ func NewGetServicesGroupByCategoryHandler(queryRepo ServiceQueryRepo, cateFetche
 	}
 }
 
-func (h *getServicesGroupByCategoryHandler) Handle(ctx context.Context, filter FilterGetService) ([]ServiceDTO, error) {
-	return nil, nil
+func (h *getServicesGroupByCategoryHandler) Handle(ctx context.Context, filter FilterGetService) ([]ListServiceWithCategory, error) {
+	list_cate, err := h.cateFetcher.GetCategories(ctx, nil)
+	if err != nil {
+		return nil, common.NewInternalServerError().
+			WithReason("cannot get list category").
+			WithInner(err.Error())
+	}
+
+	fmt.Println("list_cate len: ", len(list_cate))
+
+	dtos := make([]ListServiceWithCategory, len(list_cate))
+	for i := range list_cate {
+		dtos[i].CategoryInfo = *ToCategoryDTO(&list_cate[i])
+	}
+	fmt.Println("dtos len: ", len(dtos))
+
+	for i := range dtos {
+		cateId := dtos[i].CategoryInfo.Id
+		list_service, err := h.queryRepo.GetServicesByCategoryAndFilter(
+			ctx,
+			cateId,
+			filter,
+		)
+		if err != nil {
+			return nil, common.NewInternalServerError().
+				WithReason("cannot get list service of categogy - (id: " + cateId.String()).
+				WithInner(err.Error())
+		}
+
+		servicedtos := make([]ServiceDTO, len(list_service))
+		for i := range list_service {
+			servicedtos[i] = *ToServiceDTO(&list_service[i])
+		}
+
+		dtos[i].ListServices = servicedtos
+	}
+
+	return dtos, nil
 }

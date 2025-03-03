@@ -44,5 +44,9 @@ func (s *serviceHttpService) Routes(g *gin.RouterGroup) {
 			middleware.RequireRole("admin"),
 			s.handleCreateService(),
 		)
+		service_route.GET(
+			"/group-by-category",
+			s.handleGetServiceGroupByCategory(),
+		)
 	}
 }

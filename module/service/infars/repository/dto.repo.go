@@ -11,13 +11,23 @@ import (
 var (
 	TABLE = `services`
 
-	FIELD = []string{
+	CREATE_FIELD = []string{
 		"id",
 		"category_id",
 		"name",
 		"description",
 		"thumbnail",
 		"est_duration",
+	}
+
+	GET_FIELD = []string{
+		"id",
+		"category_id",
+		"name",
+		"description",
+		"thumbnail",
+		"est_duration",
+		"status",
 		"created_at",
 	}
 

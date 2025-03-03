@@ -3,6 +3,7 @@ package servicequeries
 import (
 	"github.com/google/uuid"
 
+	categorydomain "github.com/PhuPhuoc/curanest-appointment-service/module/category/domain"
 	servicedomain "github.com/PhuPhuoc/curanest-appointment-service/module/service/domain"
 )
 
@@ -30,4 +31,23 @@ func ToServiceDTO(entity *servicedomain.Service) *ServiceDTO {
 		entity.GetEstDuration(),
 		entity.GetStatus().String(),
 	}
+}
+
+type CategoryDTO struct {
+	Id          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+}
+
+func ToCategoryDTO(entity *categorydomain.Category) *CategoryDTO {
+	return &CategoryDTO{
+		entity.GetID(),
+		entity.GetName(),
+		entity.GetDescription(),
+	}
+}
+
+type ListServiceWithCategory struct {
+	CategoryInfo CategoryDTO  `json:"category-info"`
+	ListServices []ServiceDTO `json:"list-services"`
 }
