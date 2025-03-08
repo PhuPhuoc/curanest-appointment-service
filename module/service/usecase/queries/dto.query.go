@@ -16,7 +16,6 @@ type ServiceDTO struct {
 	CategoryId  uuid.UUID `json:"category-id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
-	Thumbnail   string    `json:"thumbnail"`
 	EstDuration string    `json:"est-duration"`
 	Status      string    `json:"status"`
 }
@@ -27,7 +26,6 @@ func ToServiceDTO(entity *servicedomain.Service) *ServiceDTO {
 		entity.GetCatetgoryID(),
 		entity.GetName(),
 		entity.GetDescription(),
-		entity.GetThumbnail(),
 		entity.GetEstDuration(),
 		entity.GetStatus().String(),
 	}

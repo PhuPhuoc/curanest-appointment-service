@@ -5,6 +5,7 @@ CREATE TABLE `categories` (
     `staff_id` varchar(36) DEFAULT NULL,
     `name` varchar(100) NOT NULL,
     `description` longtext,
+    `thumbnail` varchar(100) NOT NULL,
     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
     `deleted_at` datetime,
     PRIMARY KEY (`id`),

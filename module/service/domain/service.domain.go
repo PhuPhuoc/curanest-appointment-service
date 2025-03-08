@@ -12,7 +12,6 @@ type Service struct {
 	categoryId   uuid.UUID
 	name         string
 	description  string
-	thumbnail    string
 	est_duration string
 	status       Status
 	createdAt    *time.Time
@@ -34,10 +33,6 @@ func (a *Service) GetDescription() string {
 	return a.description
 }
 
-func (a *Service) GetThumbnail() string {
-	return a.thumbnail
-}
-
 func (a *Service) GetEstDuration() string {
 	return a.est_duration
 }
@@ -50,13 +45,12 @@ func (a *Service) GetCreatedAt() time.Time {
 	return *a.createdAt
 }
 
-func NewService(id, categoryId uuid.UUID, name, description, thumbnail, est_duration string, status Status, createdAt *time.Time) (*Service, error) {
+func NewService(id, categoryId uuid.UUID, name, description, est_duration string, status Status, createdAt *time.Time) (*Service, error) {
 	return &Service{
 		id:           id,
 		categoryId:   categoryId,
 		name:         name,
 		description:  description,
-		thumbnail:    thumbnail,
 		est_duration: est_duration,
 		status:       status,
 		createdAt:    createdAt,

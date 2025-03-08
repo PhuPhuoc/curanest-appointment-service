@@ -16,7 +16,6 @@ var (
 		"category_id",
 		"name",
 		"description",
-		"thumbnail",
 		"est_duration",
 	}
 
@@ -25,7 +24,6 @@ var (
 		"category_id",
 		"name",
 		"description",
-		"thumbnail",
 		"est_duration",
 		"status",
 		"created_at",
@@ -35,7 +33,6 @@ var (
 		"category_id",
 		"name",
 		"description",
-		"thumbnail",
 		"est_duration",
 	}
 )
@@ -45,7 +42,6 @@ type ServiceDTO struct {
 	CategoryId  uuid.UUID  `db:"category_id"`
 	Name        string     `db:"name"`
 	Description string     `db:"description"`
-	Thumbnail   string     `db:"thumbnail"`
 	EstDuration string     `db:"est_duration"`
 	Status      string     `db:"status"`
 	CreatedAt   *time.Time `db:"created_at"`
@@ -57,7 +53,6 @@ func (dto *ServiceDTO) ToEntity() (*servicedomain.Service, error) {
 		dto.CategoryId,
 		dto.Name,
 		dto.Description,
-		dto.Thumbnail,
 		dto.EstDuration,
 		servicedomain.Enum(dto.Status),
 		dto.CreatedAt,
@@ -70,7 +65,6 @@ func ToDTO(data *servicedomain.Service) *ServiceDTO {
 		CategoryId:  data.GetCatetgoryID(),
 		Name:        data.GetName(),
 		Description: data.GetDescription(),
-		Thumbnail:   data.GetThumbnail(),
 		EstDuration: data.GetEstDuration(),
 		Status:      data.GetStatus().String(),
 	}

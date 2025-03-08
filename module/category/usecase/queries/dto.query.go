@@ -15,6 +15,7 @@ type CategoryDTO struct {
 	StaffId     *uuid.UUID `json:"-"`
 	Name        string     `json:"name"`
 	Description string     `json:"description"`
+	Thumbnail   string     `json:"thumbnail"`
 	StaffInfo   *StaffDTO  `json:"staff-info"`
 }
 
@@ -24,6 +25,7 @@ func toDTO(data *categorydomain.Category) *CategoryDTO {
 		StaffId:     data.GetStaffId(),
 		Name:        data.GetName(),
 		Description: data.GetDescription(),
+		Thumbnail:   data.GetThumbnail(),
 	}
 	return dto
 }

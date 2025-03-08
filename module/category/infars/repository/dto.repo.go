@@ -16,11 +16,13 @@ var (
 		"staff_id",
 		"name",
 		"description",
+		"thumbnail",
 	}
 
 	UPDATE_FIELD = []string{
 		"name",
 		"description",
+		"thumbnail",
 	}
 )
 
@@ -29,6 +31,7 @@ type CategoryDTO struct {
 	StaffId     *uuid.UUID `db:"staff_id"`
 	Name        string     `db:"name"`
 	Description string     `db:"description"`
+	Thumbnail   string     `db:"thumbnail"`
 	CreatedAt   *time.Time `db:"created_at"`
 }
 
@@ -38,6 +41,7 @@ func (dto *CategoryDTO) ToEntity() (*categorydomain.Category, error) {
 		dto.StaffId,
 		dto.Name,
 		dto.Description,
+		dto.Thumbnail,
 		dto.CreatedAt,
 	)
 }
@@ -49,5 +53,6 @@ func ToDTO(data *categorydomain.Category) *CategoryDTO {
 		StaffId:     staffId,
 		Name:        data.GetName(),
 		Description: data.GetDescription(),
+		Thumbnail:   data.GetThumbnail(),
 	}
 }

@@ -355,6 +355,9 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "thumbnail": {
+                    "type": "string"
                 }
             }
         },
@@ -371,9 +374,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "thumbnail": {
                     "type": "string"
                 }
             }

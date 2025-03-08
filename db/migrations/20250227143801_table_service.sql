@@ -5,7 +5,6 @@ CREATE TABLE `services` (
     `category_id` varchar(36) NOT NULL,
     `name` varchar(50) NOT NULL,
     `description` longtext,
-    `thumbnail` varchar(100) NOT NULL,
     `est_duration` varchar(100) NOT NULL,
     `status` enum('available','unavailable') DEFAULT 'available',
     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,

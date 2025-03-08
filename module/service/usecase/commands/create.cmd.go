@@ -25,7 +25,6 @@ func (h *createServiceHandler) Handle(ctx context.Context, dto *CreateServiceDTO
 		dto.CategoryId,
 		dto.Name,
 		dto.Description,
-		dto.Thumbnail,
 		dto.EstDuration,
 		servicedomain.StatusAvailable,
 		nil,

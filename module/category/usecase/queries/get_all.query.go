@@ -30,13 +30,14 @@ func (h *getCategoriesHandler) Handle(ctx context.Context, filter *FilterCategor
 	}
 
 	list_dto := make([]CategoryDTO, len(entities))
-	list_ids := make([]uuid.UUID, len(entities))
+	// list_ids := make([]uuid.UUID, len(entities))
+	list_ids := []uuid.UUID{}
 
 	for i := range entities {
 		dto := toDTO(&entities[i])
 		list_dto[i] = *dto
-		if dto.StaffId != nil {
-			list_ids[i] = *dto.StaffId
+		if dto.StaffId != nil && *dto.StaffId != uuid.Nil {
+			list_ids = append(list_ids, *dto.StaffId)
 		}
 	}
 
@@ -44,7 +45,7 @@ func (h *getCategoriesHandler) Handle(ctx context.Context, filter *FilterCategor
 		Ids: list_ids,
 	}
 
-	if len(list_dto) > 0 {
+	if len(list_dto) > 0 && len(list_ids) > 0 {
 		staffs, err := h.nursingRPC.GetStaffsRPC(ctx, &staffQueryDTO)
 		if err != nil {
 			return nil, err

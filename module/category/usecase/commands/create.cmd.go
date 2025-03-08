@@ -24,6 +24,7 @@ func (h *createCategoryHandler) Handle(ctx context.Context, dto *CreateCategoryD
 		nil,
 		dto.Name,
 		dto.Description,
+		dto.Thumbnail,
 		nil,
 	)
 	if err := h.cmdRepo.Create(ctx, entity); err != nil {
