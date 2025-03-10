@@ -2,7 +2,6 @@ package servicequeries
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
 )
@@ -27,13 +26,10 @@ func (h *getServicesGroupByCategoryHandler) Handle(ctx context.Context, filter F
 			WithInner(err.Error())
 	}
 
-	fmt.Println("list_cate len: ", len(list_cate))
-
 	dtos := make([]ListServiceWithCategory, len(list_cate))
 	for i := range list_cate {
 		dtos[i].CategoryInfo = *ToCategoryDTO(&list_cate[i])
 	}
-	fmt.Println("dtos len: ", len(dtos))
 
 	for i := range dtos {
 		cateId := dtos[i].CategoryInfo.Id

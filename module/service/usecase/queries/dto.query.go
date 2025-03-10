@@ -35,6 +35,7 @@ type CategoryDTO struct {
 	Id          uuid.UUID `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
+	Thumbnail   string    `json:"thumbnail"`
 }
 
 func ToCategoryDTO(entity *categorydomain.Category) *CategoryDTO {
@@ -42,6 +43,7 @@ func ToCategoryDTO(entity *categorydomain.Category) *CategoryDTO {
 		entity.GetID(),
 		entity.GetName(),
 		entity.GetDescription(),
+		entity.GetThumbnail(),
 	}
 }
 

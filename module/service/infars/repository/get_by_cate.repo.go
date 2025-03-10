@@ -2,7 +2,6 @@ package servicerepository
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/uuid"
 
@@ -26,9 +25,6 @@ func (repo *serviceRepo) GetServicesByCategoryAndFilter(ctx context.Context, cat
 	if err := repo.db.SelectContext(ctx, &dtos, queryWhere, args...); err != nil {
 		return nil, err
 	}
-
-	fmt.Println("query: ", queryWhere)
-	fmt.Println("dto: ", dtos)
 
 	entities := make([]servicedomain.Service, len(dtos))
 	for i := range dtos {
