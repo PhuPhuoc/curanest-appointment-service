@@ -4,4 +4,4 @@ docker-compose.yml
 
 *.exe
 
-*.sql
+appointment_service_migration_script.sql
