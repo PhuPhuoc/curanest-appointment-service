@@ -1,4 +1,4 @@
-package svcplandomain
+package svcpackagedomain
 
 import (
 	"github.com/google/uuid"
@@ -6,7 +6,7 @@ import (
 
 type ServiceTask struct {
 	id               uuid.UUID
-	servicePlanId    uuid.UUID
+	svcPackageId     uuid.UUID
 	isMustHave       bool
 	order            int
 	name             string
@@ -26,7 +26,7 @@ func (a *ServiceTask) GetID() uuid.UUID {
 }
 
 func (a *ServiceTask) GetServicePlanID() uuid.UUID {
-	return a.servicePlanId
+	return a.svcPackageId
 }
 
 func (a *ServiceTask) GetIsMustHave() bool {
@@ -78,7 +78,7 @@ func (a *ServiceTask) GetStatus() SvcTaskStatus {
 }
 
 func NewServiceTask(
-	id, servicePlanId uuid.UUID,
+	id, svcPackageId uuid.UUID,
 	isMustHave bool,
 	order int,
 	name, description, staffAdvice string,
@@ -91,7 +91,7 @@ func NewServiceTask(
 ) (*ServiceTask, error) {
 	return &ServiceTask{
 		id:               id,
-		servicePlanId:    servicePlanId,
+		svcPackageId:     svcPackageId,
 		isMustHave:       isMustHave,
 		order:            order,
 		name:             name,

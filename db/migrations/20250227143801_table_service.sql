@@ -11,13 +11,11 @@ CREATE TABLE `services` (
     `deleted_at` datetime,
     PRIMARY KEY (`id`),
     KEY `idx_category_id` (`category_id`),
-    CONSTRAINT `fk_services_categories` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE
+    CONSTRAINT `services_categoryid_fk` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE
 );
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-ALTER TABLE `services` DROP FOREIGN KEY `fk_services_categories`;
-DROP INDEX `idx_category_id` ON `services`;
 DROP TABLE `services`;
 -- +goose StatementEnd

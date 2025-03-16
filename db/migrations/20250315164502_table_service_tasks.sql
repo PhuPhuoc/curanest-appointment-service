@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE `service_tasks` (
     `id` varchar(36) NOT NULL,
-    `service_plan_id` varchar(36) NOT NULL,
+    `service_package_id` varchar(36) NOT NULL,
     `is_must_have` bool NOT NULL,
     `order` smallint NOT NULL,
     `name` varchar(255) NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE `service_tasks` (
     `price_of_step` int NOT NULL,
     `status` enum('available','unavailable') DEFAULT 'available',
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_serviceplan_servicetask` FOREIGN KEY (`service_plan_id`) REFERENCES `service_plans` (`id`) ON UPDATE CASCADE
+    CONSTRAINT `servicetasks_servicepackageid_fk` FOREIGN KEY (`service_package_id`) REFERENCES `service_packages` (`id`) ON UPDATE CASCADE
 );
 -- +goose StatementEnd
 

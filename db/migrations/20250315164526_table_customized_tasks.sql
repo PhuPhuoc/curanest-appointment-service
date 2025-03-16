@@ -1,8 +1,8 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE `service_tasks_custom` (
+CREATE TABLE `customized_tasks` (
     `id` varchar(36) NOT NULL,
-    `service_plan_custom_id` varchar(36) NOT NULL,
+    `customized_package_id` varchar(36) NOT NULL,
     `order` smallint NOT NULL,
     `name` varchar(255) NOT NULL,
     `client_note` longtext,
@@ -13,13 +13,13 @@ CREATE TABLE `service_tasks_custom` (
     `total_unit` int NOT NULL,
     `est_date` date NOT NULL,
     `act_date` date NOT NULL,
-    `status` enum('available','unavailable') DEFAULT 'available',
+    `status` enum('not_done','done') DEFAULT 'not_done',
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_serviceplancustom_servicetaskcustom` FOREIGN KEY (`service_plan_custom_id`) REFERENCES `service_plans_custom` (`id`) ON UPDATE CASCADE
+    CONSTRAINT `customizedtasks_cutomizedpackageid_fk` FOREIGN KEY (`customized_package_id`) REFERENCES `customized_packages` (`id`) ON UPDATE CASCADE
 );
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE `service_tasks_custom`;
+DROP TABLE `customized_tasks`;
 -- +goose StatementEnd
