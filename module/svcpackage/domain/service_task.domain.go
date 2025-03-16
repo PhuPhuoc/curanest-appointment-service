@@ -1,6 +1,8 @@
 package svcpackagedomain
 
 import (
+	"strings"
+
 	"github.com/google/uuid"
 )
 
@@ -114,17 +116,26 @@ type (
 
 const (
 	SvcTaskStatusAvailable SvcTaskStatus = iota
-	SvctaskStatusunavailable
+	SvcTaskStatusUnavailable
 )
 
 func (r SvcTaskStatus) String() string {
 	switch r {
 	case SvcTaskStatusAvailable:
 		return "available"
-	case SvctaskStatusunavailable:
+	case SvcTaskStatusUnavailable:
 		return "unavailable"
 	default:
 		return "unknown"
+	}
+}
+
+func EnumSvcTaskStatus(s string) SvcTaskStatus {
+	switch strings.TrimSpace(strings.ToLower(s)) {
+	case "available":
+		return SvcTaskStatusAvailable
+	default:
+		return SvcTaskStatusUnavailable
 	}
 }
 
@@ -141,5 +152,14 @@ func (r SvcTaskUnit) String() string {
 		return "time"
 	default:
 		return "unknown"
+	}
+}
+
+func EnumSvcTaskUnit(s string) SvcTaskUnit {
+	switch strings.TrimSpace(strings.ToLower(s)) {
+	case "Quantity":
+		return SvcTaskUnitQuantity
+	default:
+		return SvcTaskUnitTime
 	}
 }
