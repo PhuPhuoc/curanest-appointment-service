@@ -41,7 +41,7 @@ func (h *createSvcTaskHandler) Handle(ctx context.Context, svcPackageId uuid.UUI
 
 	if err := h.cmdRepo.CreateTask(ctx, entity); err != nil {
 		return common.NewInternalServerError().
-			WithReason("cannot create service-package").
+			WithReason("cannot create service-task").
 			WithInner(err.Error())
 	}
 	return nil

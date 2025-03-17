@@ -4,6 +4,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+
+	svcpackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/domain"
 )
 
 var (
@@ -24,14 +26,14 @@ var (
 		"id",
 		"service_package_id",
 		"is_must_have",
-		"order",
+		"task_order",
 		"name",
 		"description",
 		"staff_advice",
 		"est_duration",
 		"cost",
-		"addtional_cost",
-		"addtional_cost_desc",
+		"additional_cost",
+		"additional_cost_desc",
 		"unit",
 		"price_of_step",
 		"status",
@@ -52,14 +54,14 @@ var (
 		"id",
 		"service_package_id",
 		"is_must_have",
-		"order",
+		"task_order",
 		"name",
 		"description",
 		"staff_advice",
 		"est_duration",
 		"cost",
-		"addtional_cost",
-		"addtional_cost_desc",
+		"additional_cost",
+		"additional_cost_desc",
 		"unit",
 		"price_of_step",
 		"status",
@@ -75,14 +77,14 @@ var (
 	}
 	UPDATE_FIELD_TASK = []string{
 		"is_must_have",
-		"order",
+		"task_order",
 		"name",
 		"description",
 		"staff_advice",
 		"est_duration",
 		"cost",
-		"addtional_cost",
-		"addtional_cost_desc",
+		"additional_cost",
+		"additional_cost_desc",
 		"unit",
 		"price_of_step",
 		"status",
@@ -99,4 +101,86 @@ type SvcPackageDTO struct {
 	TimeInterval int        `db:"time_interval"`
 	Status       string     `db:"status"`
 	CreatedAt    *time.Time `db:"created_at"`
+}
+
+func (dto *SvcPackageDTO) ToSvcPackageEntity() (*svcpackagedomain.ServicePackage, error) {
+	return svcpackagedomain.NewServicePackage(
+		dto.Id,
+		dto.ServiceId,
+		dto.Name,
+		dto.Description,
+		dto.ComboDays,
+		dto.Discount,
+		dto.TimeInterval,
+		svcpackagedomain.EnumSvcPackageStatus(dto.Status),
+		dto.CreatedAt,
+	)
+}
+
+func ToSvcPackageDTO(data *svcpackagedomain.ServicePackage) *SvcPackageDTO {
+	return &SvcPackageDTO{
+		Id:           data.GetID(),
+		ServiceId:    data.GetServiceID(),
+		Name:         data.GetName(),
+		Description:  data.GetDescription(),
+		ComboDays:    data.GetComboDays(),
+		Discount:     data.GetDiscount(),
+		TimeInterval: data.GetTimeInterVal(),
+		Status:       data.GetStatus().String(),
+	}
+}
+
+type SvcTaskDTO struct {
+	Id                 uuid.UUID `db:"id"`
+	SvcPackageId       uuid.UUID `db:"service_package_id"`
+	IsMustHave         bool      `db:"is_must_have"`
+	TaskOrder          int       `db:"task_order"`
+	Name               string    `db:"name"`
+	Description        string    `db:"description"`
+	StaffAdvice        string    `db:"staff_advice"`
+	EstDuration        int       `db:"est_duration"`
+	Cost               float64   `db:"cost"`
+	AdditionalCost     float64   `db:"additional_cost"`
+	AdditionalCostDesc string    `db:"additional_cost_desc"`
+	Unit               string    `db:"unit"`
+	PriceOfStep        int       `db:"price_of_step"`
+	Status             string    `db:"status"`
+}
+
+func (dto *SvcTaskDTO) ToSvcTaskEntity() (*svcpackagedomain.ServiceTask, error) {
+	return svcpackagedomain.NewServiceTask(
+		dto.Id,
+		dto.SvcPackageId,
+		dto.IsMustHave,
+		dto.TaskOrder,
+		dto.Name,
+		dto.Description,
+		dto.StaffAdvice,
+		dto.EstDuration,
+		dto.Cost,
+		dto.AdditionalCost,
+		dto.AdditionalCostDesc,
+		svcpackagedomain.EnumSvcTaskUnit(dto.Unit),
+		dto.PriceOfStep,
+		svcpackagedomain.EnumSvcTaskStatus(dto.Status),
+	)
+}
+
+func ToSvcTaskDTO(data *svcpackagedomain.ServiceTask) *SvcTaskDTO {
+	return &SvcTaskDTO{
+		Id:                 data.GetID(),
+		SvcPackageId:       data.GetSvcPackageID(),
+		IsMustHave:         data.GetIsMustHave(),
+		TaskOrder:          data.GetTaskOrder(),
+		Name:               data.GetName(),
+		Description:        data.GetDescription(),
+		StaffAdvice:        data.GetStaffAdvice(),
+		EstDuration:        data.GetEstDuration(),
+		Cost:               data.GetCost(),
+		AdditionalCost:     data.GetAdditionCost(),
+		AdditionalCostDesc: data.GetAdditionCostDesc(),
+		Unit:               data.GetUnit().String(),
+		PriceOfStep:        data.GetPriceOfStep(),
+		Status:             data.GetStatus().String(),
+	}
 }

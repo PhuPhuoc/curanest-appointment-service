@@ -317,6 +317,101 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/svcpackage": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "create new service package (staff)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "service packages"
+                ],
+                "summary": "create new service package (staff)",
+                "parameters": [
+                    {
+                        "description": "service package creation data",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/svcpackagecommands.CreateServicePackageDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/api/v1/svcpackage/{svcpackage-id}/svctask": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "create new service task (staff)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "service packages"
+                ],
+                "summary": "create new service task (staff)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "category ID (UUID)",
+                        "name": "svcpackage-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "service task creation data",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/svcpackagecommands.CreateServiceTaskDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/ping": {
             "get": {
                 "description": "ping server",
@@ -375,6 +470,82 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "svcpackagecommands.CreateServicePackageDTO": {
+            "type": "object",
+            "required": [
+                "description",
+                "name",
+                "service-id"
+            ],
+            "properties": {
+                "combo-days": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "service-id": {
+                    "type": "string"
+                },
+                "time-interval": {
+                    "type": "integer"
+                }
+            }
+        },
+        "svcpackagecommands.CreateServiceTaskDTO": {
+            "type": "object",
+            "required": [
+                "additional-cost",
+                "additional-cost-desc",
+                "cost",
+                "price-of-step"
+            ],
+            "properties": {
+                "additional-cost": {
+                    "type": "number"
+                },
+                "additional-cost-desc": {
+                    "type": "string"
+                },
+                "cost": {
+                    "type": "number"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "est-duration": {
+                    "type": "integer"
+                },
+                "is-must-have": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "order": {
+                    "type": "integer"
+                },
+                "price-of-step": {
+                    "type": "integer"
+                },
+                "staff-advice": {
+                    "type": "string"
+                },
+                "unit": {
+                    "type": "string",
+                    "enum": [
+                        "quantity",
+                        "time"
+                    ]
                 }
             }
         }

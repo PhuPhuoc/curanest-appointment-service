@@ -8,16 +8,17 @@ import (
 	svcpackagecommands "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/usecase/commands"
 )
 
-// @Summary		create new service package (staff)
-// @Description	create new service package (staff)
-// @Tags			service packages
-// @Accept			json
-// @Produce		json
-// @Param			create	form		body					svcpackagecommands.CreateServiceTaskDTO	true	"service task creation data"
-// @Success		200		{object}	map[string]interface{}	"data"
-// @Failure		400		{object}	error					"Bad request error"
-// @Router			/api/v1/svcpackage/{svcpackage-id}/svctask [post]
-// @Security		ApiKeyAuth
+//	@Summary		create new service task (staff)
+//	@Description	create new service task (staff)
+//	@Tags			service packages
+//	@Accept			json
+//	@Produce		json
+//	@Param			svcpackage-id	path		string					true									"category ID (UUID)"
+//	@Param			create			form		body					svcpackagecommands.CreateServiceTaskDTO	true	"service task creation data"
+//	@Success		200				{object}	map[string]interface{}	"data"
+//	@Failure		400				{object}	error					"Bad request error"
+//	@Router			/api/v1/svcpackage/{svcpackage-id}/svctask [post]
+//	@Security		ApiKeyAuth
 func (s *svcPackageHttpService) handleCreateServiceTask() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		svcPackageId := ctx.Param("svcpackage-id")

@@ -4,7 +4,7 @@ CREATE TABLE `service_tasks` (
     `id` varchar(36) NOT NULL,
     `service_package_id` varchar(36) NOT NULL,
     `is_must_have` bool NOT NULL,
-    `order` smallint NOT NULL,
+    `task_order` smallint NOT NULL,
     `name` varchar(255) NOT NULL,
     `description` longtext,
     `staff_advice` longtext,

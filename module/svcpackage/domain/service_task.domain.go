@@ -7,27 +7,27 @@ import (
 )
 
 type ServiceTask struct {
-	id               uuid.UUID
-	svcPackageId     uuid.UUID
-	isMustHave       bool
-	order            int
-	name             string
-	description      string
-	staffAdvice      string
-	estDuration      int
-	cost             float64
-	additionCost     float64
-	additionCostDesc string
-	unit             SvcTaskUnit
-	priceOfStep      int
-	status           SvcTaskStatus
+	id                 uuid.UUID
+	svcPackageId       uuid.UUID
+	isMustHave         bool
+	taskOrder          int
+	name               string
+	description        string
+	staffAdvice        string
+	estDuration        int
+	cost               float64
+	additionalCost     float64
+	additionalCostDesc string
+	unit               SvcTaskUnit
+	priceOfStep        int
+	status             SvcTaskStatus
 }
 
 func (a *ServiceTask) GetID() uuid.UUID {
 	return a.id
 }
 
-func (a *ServiceTask) GetServicePlanID() uuid.UUID {
+func (a *ServiceTask) GetSvcPackageID() uuid.UUID {
 	return a.svcPackageId
 }
 
@@ -35,8 +35,8 @@ func (a *ServiceTask) GetIsMustHave() bool {
 	return a.isMustHave
 }
 
-func (a *ServiceTask) GetOrder() int {
-	return a.order
+func (a *ServiceTask) GetTaskOrder() int {
+	return a.taskOrder
 }
 
 func (a *ServiceTask) GetName() string {
@@ -60,11 +60,11 @@ func (a *ServiceTask) GetCost() float64 {
 }
 
 func (a *ServiceTask) GetAdditionCost() float64 {
-	return a.additionCost
+	return a.additionalCost
 }
 
 func (a *ServiceTask) GetAdditionCostDesc() string {
-	return a.additionCostDesc
+	return a.additionalCostDesc
 }
 
 func (a *ServiceTask) GetUnit() SvcTaskUnit {
@@ -82,7 +82,7 @@ func (a *ServiceTask) GetStatus() SvcTaskStatus {
 func NewServiceTask(
 	id, svcPackageId uuid.UUID,
 	isMustHave bool,
-	order int,
+	taskOrder int,
 	name, description, staffAdvice string,
 	estDuration int,
 	cost, additionCost float64,
@@ -92,20 +92,20 @@ func NewServiceTask(
 	status SvcTaskStatus,
 ) (*ServiceTask, error) {
 	return &ServiceTask{
-		id:               id,
-		svcPackageId:     svcPackageId,
-		isMustHave:       isMustHave,
-		order:            order,
-		name:             name,
-		description:      description,
-		staffAdvice:      staffAdvice,
-		estDuration:      estDuration,
-		cost:             cost,
-		additionCost:     additionCost,
-		additionCostDesc: additionCostDesc,
-		unit:             unit,
-		priceOfStep:      priceOfStep,
-		status:           status,
+		id:                 id,
+		svcPackageId:       svcPackageId,
+		isMustHave:         isMustHave,
+		taskOrder:          taskOrder,
+		name:               name,
+		description:        description,
+		staffAdvice:        staffAdvice,
+		estDuration:        estDuration,
+		cost:               cost,
+		additionalCost:     additionCost,
+		additionalCostDesc: additionCostDesc,
+		unit:               unit,
+		priceOfStep:        priceOfStep,
+		status:             status,
 	}, nil
 }
 
@@ -157,7 +157,7 @@ func (r SvcTaskUnit) String() string {
 
 func EnumSvcTaskUnit(s string) SvcTaskUnit {
 	switch strings.TrimSpace(strings.ToLower(s)) {
-	case "Quantity":
+	case "quantity":
 		return SvcTaskUnitQuantity
 	default:
 		return SvcTaskUnitTime

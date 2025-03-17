@@ -22,6 +22,9 @@ import (
 	servicehttpservice "github.com/PhuPhuoc/curanest-appointment-service/module/service/infars/httpservice"
 	servicecommands "github.com/PhuPhuoc/curanest-appointment-service/module/service/usecase/commands"
 	servicequeries "github.com/PhuPhuoc/curanest-appointment-service/module/service/usecase/queries"
+	svcpackagehttpservice "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/infars/httpservice"
+	svcpackagecommands "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/usecase/commands"
+	svcpackagequeries "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/usecase/queries"
 )
 
 type server struct {
@@ -103,16 +106,29 @@ func (sv *server) RunApp() error {
 		builder.NewServiceBuilder(sv.db),
 	)
 
+	svcpackage_cmd_builder := svcpackagecommands.NewSvcPackageCmdWithBuilder(
+		builder.NewSvcPackageBuilder(sv.db),
+	)
+	svcpackage_query_builder := svcpackagequeries.NewSvcPackageQueryWithBuilder(
+		builder.NewSvcPackageBuilder(sv.db),
+	)
+
 	api := router.Group("/api/v1")
 	{
-		categoryhttpservice.
-			NewCategoryHTTPService(category_cmd_builder, category_query_builder).
-			AddAuth(authClient).
-			Routes(api)
+		categoryhttpservice.NewCategoryHTTPService(
+			category_cmd_builder,
+			category_query_builder,
+		).AddAuth(authClient).Routes(api)
 
-		servicehttpservice.NewServiceHTTPService(service_cmd_builder, service_query_builder).
-			AddAuth(authClient).
-			Routes(api)
+		servicehttpservice.NewServiceHTTPService(
+			service_cmd_builder,
+			service_query_builder,
+		).AddAuth(authClient).Routes(api)
+
+		svcpackagehttpservice.NewSvcPackageHTTPService(
+			svcpackage_cmd_builder,
+			svcpackage_query_builder,
+		).AddAuth(authClient).Routes(api)
 	}
 
 	// rpc := router.Group("/external/rpc")

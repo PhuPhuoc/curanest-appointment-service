@@ -3,7 +3,7 @@
 CREATE TABLE `customized_tasks` (
     `id` varchar(36) NOT NULL,
     `customized_package_id` varchar(36) NOT NULL,
-    `order` smallint NOT NULL,
+    `task_order` smallint NOT NULL,
     `name` varchar(255) NOT NULL,
     `client_note` longtext,
     `staff_advice` longtext,

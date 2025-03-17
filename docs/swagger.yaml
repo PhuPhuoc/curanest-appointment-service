@@ -19,6 +19,58 @@ definitions:
       name:
         type: string
     type: object
+  svcpackagecommands.CreateServicePackageDTO:
+    properties:
+      combo-days:
+        type: integer
+      description:
+        type: string
+      discount:
+        type: integer
+      name:
+        type: string
+      service-id:
+        type: string
+      time-interval:
+        type: integer
+    required:
+    - description
+    - name
+    - service-id
+    type: object
+  svcpackagecommands.CreateServiceTaskDTO:
+    properties:
+      additional-cost:
+        type: number
+      additional-cost-desc:
+        type: string
+      cost:
+        type: number
+      description:
+        type: string
+      est-duration:
+        type: integer
+      is-must-have:
+        type: boolean
+      name:
+        type: string
+      order:
+        type: integer
+      price-of-step:
+        type: integer
+      staff-advice:
+        type: string
+      unit:
+        enum:
+        - quantity
+        - time
+        type: string
+    required:
+    - additional-cost
+    - additional-cost-desc
+    - cost
+    - price-of-step
+    type: object
 info:
   contact: {}
   description: |-
@@ -225,6 +277,67 @@ paths:
       summary: get list service with category (guest)
       tags:
       - services
+  /api/v1/svcpackage:
+    post:
+      consumes:
+      - application/json
+      description: create new service package (staff)
+      parameters:
+      - description: service package creation data
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/svcpackagecommands.CreateServicePackageDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: create new service package (staff)
+      tags:
+      - service packages
+  /api/v1/svcpackage/{svcpackage-id}/svctask:
+    post:
+      consumes:
+      - application/json
+      description: create new service task (staff)
+      parameters:
+      - description: category ID (UUID)
+        in: path
+        name: svcpackage-id
+        required: true
+        type: string
+      - description: service task creation data
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/svcpackagecommands.CreateServiceTaskDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: create new service task (staff)
+      tags:
+      - service packages
   /ping:
     get:
       consumes:

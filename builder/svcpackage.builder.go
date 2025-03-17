@@ -16,10 +16,10 @@ func NewSvcPackageBuilder(db *sqlx.DB) builderOfSvcPackage {
 	return builderOfSvcPackage{db: db}
 }
 
-func (s builderOfService) BuildSvcPackageCmdRepo() svcpackagecommands.SvcPackageCommandRepo {
+func (s builderOfSvcPackage) BuildSvcPackageCmdRepo() svcpackagecommands.SvcPackageCommandRepo {
 	return svcpackagerepository.NewSvcPackageRepo(s.db)
 }
 
-func (s builderOfService) BuildSvcPackageQueryRepo() svcpackagequeries.SvcPackageQueryRepo {
+func (s builderOfSvcPackage) BuildSvcPackageQueryRepo() svcpackagequeries.SvcPackageQueryRepo {
 	return svcpackagerepository.NewSvcPackageRepo(s.db)
 }

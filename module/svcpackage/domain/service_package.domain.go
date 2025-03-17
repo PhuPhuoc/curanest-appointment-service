@@ -1,6 +1,7 @@
 package svcpackagedomain
 
 import (
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -89,5 +90,14 @@ func (r SvcPackageStatus) String() string {
 		return "unavailable"
 	default:
 		return "unknown"
+	}
+}
+
+func EnumSvcPackageStatus(s string) SvcPackageStatus {
+	switch strings.TrimSpace(strings.ToLower(s)) {
+	case "available":
+		return SvcPackageStatusAvailable
+	default:
+		return SvcPackageStatusUnavailable
 	}
 }
