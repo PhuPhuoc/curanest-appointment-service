@@ -34,16 +34,16 @@ func (s *serviceHttpService) Routes(g *gin.RouterGroup) {
 			middleware.RequireRole("admin"),
 			s.handleGetServiceByCategory(),
 		)
-	}
-
-	service_route := g.Group("/services")
-	{
-		service_route.POST(
-			"",
+		category_service_route.POST(
+			"/services",
 			middleware.RequireAuth(s.auth),
 			middleware.RequireRole("admin"),
 			s.handleCreateService(),
 		)
+	}
+
+	service_route := g.Group("/services")
+	{
 		service_route.GET(
 			"/group-by-category",
 			s.handleGetServiceGroupByCategory(),

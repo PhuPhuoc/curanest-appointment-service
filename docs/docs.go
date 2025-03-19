@@ -144,6 +144,55 @@ const docTemplate = `{
                         "schema": {}
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "create new service",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "create new service",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "category ID (UUID)",
+                        "name": "category-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "service creation data",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/servicecommands.CreateServiceDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
             }
         },
         "/api/v1/categories/{category-id}/staff/remove": {
@@ -237,50 +286,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/services": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "create new service",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "services"
-                ],
-                "summary": "create new service",
-                "parameters": [
-                    {
-                        "description": "service creation data",
-                        "name": "form",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/servicecommands.CreateServiceDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "data",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request error",
-                        "schema": {}
-                    }
-                }
-            }
-        },
         "/api/v1/services/group-by-category": {
             "get": {
                 "description": "get list service with category (guest)",
@@ -300,6 +305,43 @@ const docTemplate = `{
                         "description": "services name",
                         "name": "service-name",
                         "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/api/v1/services/{service-id}/svcpackage": {
+            "get": {
+                "description": "get list service-package by service-id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "service packages"
+                ],
+                "summary": "get list service-package by service-id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "service ID (UUID)",
+                        "name": "service-id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -362,6 +404,41 @@ const docTemplate = `{
             }
         },
         "/api/v1/svcpackage/{svcpackage-id}/svctask": {
+            "get": {
+                "description": "get list service-tasks by svcpackage-id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "service packages"
+                ],
+                "summary": "get list service-tasks by svcpackage-id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "service package ID (UUID)",
+                        "name": "svcpackage-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -459,9 +536,6 @@ const docTemplate = `{
         "servicecommands.CreateServiceDTO": {
             "type": "object",
             "properties": {
-                "category-id": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
                 },

@@ -3,6 +3,8 @@ package servicecommands
 import (
 	"context"
 
+	"github.com/google/uuid"
+
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	servicedomain "github.com/PhuPhuoc/curanest-appointment-service/module/service/domain"
 )
@@ -17,12 +19,12 @@ func NewCreateServiceHandler(cmdRepo ServiceCommandRepo) *createServiceHandler {
 	}
 }
 
-func (h *createServiceHandler) Handle(ctx context.Context, dto *CreateServiceDTO) error {
+func (h *createServiceHandler) Handle(ctx context.Context, cateId uuid.UUID, dto *CreateServiceDTO) error {
 	serviceId := common.GenUUID()
 
 	entity, _ := servicedomain.NewService(
 		serviceId,
-		dto.CategoryId,
+		cateId,
 		dto.Name,
 		dto.Description,
 		dto.EstDuration,

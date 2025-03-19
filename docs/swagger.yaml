@@ -10,8 +10,6 @@ definitions:
     type: object
   servicecommands.CreateServiceDTO:
     properties:
-      category-id:
-        type: string
       description:
         type: string
       est-duration:
@@ -166,6 +164,38 @@ paths:
       summary: get list service by category-id (admin)
       tags:
       - services
+    post:
+      consumes:
+      - application/json
+      description: create new service
+      parameters:
+      - description: category ID (UUID)
+        in: path
+        name: category-id
+        required: true
+        type: string
+      - description: service creation data
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/servicecommands.CreateServiceDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: create new service
+      tags:
+      - services
   /api/v1/categories/{category-id}/staff/{staff-id}:
     patch:
       consumes:
@@ -225,18 +255,17 @@ paths:
       summary: remove staff to category (admin)
       tags:
       - categories
-  /api/v1/services:
-    post:
+  /api/v1/services/{service-id}/svcpackage:
+    get:
       consumes:
       - application/json
-      description: create new service
+      description: get list service-package by service-id
       parameters:
-      - description: service creation data
-        in: body
-        name: form
+      - description: service ID (UUID)
+        in: path
+        name: service-id
         required: true
-        schema:
-          $ref: '#/definitions/servicecommands.CreateServiceDTO'
+        type: string
       produces:
       - application/json
       responses:
@@ -248,11 +277,9 @@ paths:
         "400":
           description: Bad request error
           schema: {}
-      security:
-      - ApiKeyAuth: []
-      summary: create new service
+      summary: get list service-package by service-id
       tags:
-      - services
+      - service packages
   /api/v1/services/group-by-category:
     get:
       consumes:
@@ -306,6 +333,30 @@ paths:
       tags:
       - service packages
   /api/v1/svcpackage/{svcpackage-id}/svctask:
+    get:
+      consumes:
+      - application/json
+      description: get list service-tasks by svcpackage-id
+      parameters:
+      - description: service package ID (UUID)
+        in: path
+        name: svcpackage-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      summary: get list service-tasks by svcpackage-id
+      tags:
+      - service packages
     post:
       consumes:
       - application/json
