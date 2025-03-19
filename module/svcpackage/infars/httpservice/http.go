@@ -28,6 +28,18 @@ func (s *svcPackageHttpService) AddAuth(auth middleware.AuthClient) *svcPackageH
 func (s *svcPackageHttpService) Routes(g *gin.RouterGroup) {
 	service_svcpackage_route := g.Group("/services/:service-id")
 	{
+		service_svcpackage_route.POST(
+			"/svcpackage",
+			// middleware.RequireAuth(s.auth),
+			// middleware.RequireRole("staff"),
+			s.handleCreateServicePackage(),
+		)
+		service_svcpackage_route.PUT(
+			"/svcpackage/:svcpackage-id",
+			// middleware.RequireAuth(s.auth),
+			// middleware.RequireRole("staff"),
+			s.handleUpdateServicePackage(),
+		)
 		service_svcpackage_route.GET(
 			"/svcpackage",
 			s.handleGetServicPackage(),
@@ -36,18 +48,18 @@ func (s *svcPackageHttpService) Routes(g *gin.RouterGroup) {
 
 	svcpackage_route := g.Group("/svcpackage")
 	{
-		svcpackage_route.POST(
-			"",
-			// middleware.RequireAuth(s.auth),
-			// middleware.RequireRole("staff"),
-			s.handleCreateServicePackage(),
-		)
 
 		svcpackage_route.POST(
 			"/:svcpackage-id/svctask",
 			// middleware.RequireAuth(s.auth),
 			// middleware.RequireRole("staff"),
 			s.handleCreateServiceTask(),
+		)
+		svcpackage_route.PUT(
+			"/:svcpackage-id/svctask/:svctask-id",
+			// middleware.RequireAuth(s.auth),
+			// middleware.RequireRole("staff"),
+			s.handleUpdateServiceTask(),
 		)
 		svcpackage_route.GET(
 			"/:svcpackage-id/svctask",

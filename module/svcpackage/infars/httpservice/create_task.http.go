@@ -13,8 +13,8 @@ import (
 //	@Tags			service packages
 //	@Accept			json
 //	@Produce		json
-//	@Param			svcpackage-id	path		string					true									"category ID (UUID)"
-//	@Param			create			form		body					svcpackagecommands.CreateServiceTaskDTO	true	"service task creation data"
+//	@Param			svcpackage-id	path		string					true								"category ID (UUID)"
+//	@Param			create			form		body					svcpackagecommands.ServiceTaskDTO	true	"service task creation data"
 //	@Success		200				{object}	map[string]interface{}	"data"
 //	@Failure		400				{object}	error					"Bad request error"
 //	@Router			/api/v1/svcpackage/{svcpackage-id}/svctask [post]
@@ -31,7 +31,7 @@ func (s *svcPackageHttpService) handleCreateServiceTask() gin.HandlerFunc {
 			common.ResponseError(ctx, common.NewBadRequestError().WithReason("svcpackage-id invalid (not a uuid)"))
 			return
 		}
-		var dto svcpackagecommands.CreateServiceTaskDTO
+		var dto svcpackagecommands.ServiceTaskDTO
 		if err := ctx.BindJSON(&dto); err != nil {
 			common.ResponseError(ctx, common.NewBadRequestError().WithReason("invalid request body").WithInner(err.Error()))
 			return

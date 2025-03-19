@@ -3,6 +3,8 @@ package svcpackagecommands
 import (
 	"context"
 
+	"github.com/google/uuid"
+
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	svcpackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/domain"
 )
@@ -17,12 +19,12 @@ func NewCreateSvcPackageHandler(cmdRepo SvcPackageCommandRepo) *createSvcPackage
 	}
 }
 
-func (h *createSvcPackageHandler) Handle(ctx context.Context, dto *CreateServicePackageDTO) error {
+func (h *createSvcPackageHandler) Handle(ctx context.Context, serviceId uuid.UUID, dto *ServicePackageDTO) error {
 	svcId := common.GenUUID()
 
 	entity, _ := svcpackagedomain.NewServicePackage(
 		svcId,
-		dto.ServiceId,
+		serviceId,
 		dto.Name,
 		dto.Description,
 		dto.ComboDays,

@@ -17,7 +17,7 @@ definitions:
       name:
         type: string
     type: object
-  svcpackagecommands.CreateServicePackageDTO:
+  svcpackagecommands.ServicePackageDTO:
     properties:
       combo-days:
         type: integer
@@ -27,16 +27,13 @@ definitions:
         type: integer
       name:
         type: string
-      service-id:
-        type: string
       time-interval:
         type: integer
     required:
     - description
     - name
-    - service-id
     type: object
-  svcpackagecommands.CreateServiceTaskDTO:
+  svcpackagecommands.ServiceTaskDTO:
     properties:
       additional-cost:
         type: number
@@ -57,6 +54,65 @@ definitions:
       price-of-step:
         type: integer
       staff-advice:
+        type: string
+      unit:
+        enum:
+        - quantity
+        - time
+        type: string
+    required:
+    - additional-cost
+    - additional-cost-desc
+    - cost
+    - price-of-step
+    type: object
+  svcpackagecommands.UpdateServicePackageDTO:
+    properties:
+      combo-days:
+        type: integer
+      description:
+        type: string
+      discount:
+        type: integer
+      name:
+        type: string
+      status:
+        enum:
+        - available
+        - unavailable
+        type: string
+      time-interval:
+        type: integer
+    required:
+    - description
+    - name
+    type: object
+  svcpackagecommands.UpdateServiceTaskDTO:
+    properties:
+      additional-cost:
+        type: number
+      additional-cost-desc:
+        type: string
+      cost:
+        type: number
+      description:
+        type: string
+      est-duration:
+        type: integer
+      is-must-have:
+        type: boolean
+      name:
+        type: string
+      order:
+        type: integer
+      price-of-step:
+        type: integer
+      staff-advice:
+        type: string
+      status:
+        enum:
+        - available
+        - unavailable
         type: string
       unit:
         enum:
@@ -280,6 +336,76 @@ paths:
       summary: get list service-package by service-id
       tags:
       - service packages
+    post:
+      consumes:
+      - application/json
+      description: create new service package (staff)
+      parameters:
+      - description: service ID (UUID)
+        in: path
+        name: service-id
+        required: true
+        type: string
+      - description: service package creation data
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/svcpackagecommands.ServicePackageDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: create new service package (staff)
+      tags:
+      - service packages
+  /api/v1/services/{service-id}/svcpackage/{svcpackage-id}:
+    put:
+      consumes:
+      - application/json
+      description: update service package (staff)
+      parameters:
+      - description: service ID (UUID)
+        in: path
+        name: service-id
+        required: true
+        type: string
+      - description: service-package ID (UUID)
+        in: path
+        name: svcpackage-id
+        required: true
+        type: string
+      - description: service package update information
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/svcpackagecommands.UpdateServicePackageDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: update service package (staff)
+      tags:
+      - service packages
   /api/v1/services/group-by-category:
     get:
       consumes:
@@ -304,34 +430,6 @@ paths:
       summary: get list service with category (guest)
       tags:
       - services
-  /api/v1/svcpackage:
-    post:
-      consumes:
-      - application/json
-      description: create new service package (staff)
-      parameters:
-      - description: service package creation data
-        in: body
-        name: form
-        required: true
-        schema:
-          $ref: '#/definitions/svcpackagecommands.CreateServicePackageDTO'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: data
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad request error
-          schema: {}
-      security:
-      - ApiKeyAuth: []
-      summary: create new service package (staff)
-      tags:
-      - service packages
   /api/v1/svcpackage/{svcpackage-id}/svctask:
     get:
       consumes:
@@ -372,7 +470,7 @@ paths:
         name: form
         required: true
         schema:
-          $ref: '#/definitions/svcpackagecommands.CreateServiceTaskDTO'
+          $ref: '#/definitions/svcpackagecommands.ServiceTaskDTO'
       produces:
       - application/json
       responses:
@@ -387,6 +485,44 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: create new service task (staff)
+      tags:
+      - service packages
+  /api/v1/svcpackage/{svcpackage-id}/svctask/{svctask-id}:
+    put:
+      consumes:
+      - application/json
+      description: update service task (staff)
+      parameters:
+      - description: category ID (UUID)
+        in: path
+        name: svcpackage-id
+        required: true
+        type: string
+      - description: service-task ID (UUID)
+        in: path
+        name: svctask-id
+        required: true
+        type: string
+      - description: service task update information
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/svcpackagecommands.UpdateServiceTaskDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: update service task (staff)
       tags:
       - service packages
   /ping:

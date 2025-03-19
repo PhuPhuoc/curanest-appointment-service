@@ -3,28 +3,24 @@ package svcpackagecommands
 import (
 	"context"
 
-	"github.com/google/uuid"
-
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	svcpackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/domain"
 )
 
-type createSvcTaskHandler struct {
+type updateSvcTaskHandler struct {
 	cmdRepo SvcPackageCommandRepo
 }
 
-func NewCreateSvcTaskHandler(cmdRepo SvcPackageCommandRepo) *createSvcTaskHandler {
-	return &createSvcTaskHandler{
+func NewUpdateSvcTaskHandler(cmdRepo SvcPackageCommandRepo) *updateSvcTaskHandler {
+	return &updateSvcTaskHandler{
 		cmdRepo: cmdRepo,
 	}
 }
 
-func (h *createSvcTaskHandler) Handle(ctx context.Context, svcPackageId uuid.UUID, dto *ServiceTaskDTO) error {
-	taskId := common.GenUUID()
-
+func (h *updateSvcTaskHandler) Handle(ctx context.Context, dto *UpdateServiceTaskDTO) error {
 	entity, _ := svcpackagedomain.NewServiceTask(
-		taskId,
-		svcPackageId,
+		dto.SvcTaskId,
+		dto.SvcPackageId,
 		dto.IsMustHave,
 		dto.Order,
 		dto.Name,
@@ -36,12 +32,12 @@ func (h *createSvcTaskHandler) Handle(ctx context.Context, svcPackageId uuid.UUI
 		dto.AdditionalCostDesc,
 		svcpackagedomain.EnumSvcTaskUnit(dto.Unit),
 		dto.PriceOfStep,
-		svcpackagedomain.SvcTaskStatusAvailable,
+		svcpackagedomain.EnumSvcTaskStatus(dto.Status),
 	)
 
-	if err := h.cmdRepo.CreateTask(ctx, entity); err != nil {
+	if err := h.cmdRepo.UpdateTask(ctx, entity); err != nil {
 		return common.NewInternalServerError().
-			WithReason("cannot create service-task").
+			WithReason("cannot update service-task").
 			WithInner(err.Error())
 	}
 	return nil

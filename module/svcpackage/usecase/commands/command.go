@@ -8,7 +8,10 @@ import (
 
 type Commands struct {
 	CreatePackage *createSvcPackageHandler
-	CreateTask    *createSvcTaskHandler
+	UpdatePackage *updateSvcPackageHandler
+
+	CreateTask *createSvcTaskHandler
+	UpdateTask *updateSvcTaskHandler
 }
 
 type Builder interface {
@@ -20,7 +23,13 @@ func NewSvcPackageCmdWithBuilder(b Builder) Commands {
 		CreatePackage: NewCreateSvcPackageHandler(
 			b.BuildSvcPackageCmdRepo(),
 		),
+		UpdatePackage: NewUpdateSvcPackageHandler(
+			b.BuildSvcPackageCmdRepo(),
+		),
 		CreateTask: NewCreateSvcTaskHandler(
+			b.BuildSvcPackageCmdRepo(),
+		),
+		UpdateTask: NewUpdateSvcTaskHandler(
 			b.BuildSvcPackageCmdRepo(),
 		),
 	}
