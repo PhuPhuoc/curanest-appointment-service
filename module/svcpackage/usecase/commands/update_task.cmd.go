@@ -22,7 +22,7 @@ func (h *updateSvcTaskHandler) Handle(ctx context.Context, dto *UpdateServiceTas
 		dto.SvcTaskId,
 		dto.SvcPackageId,
 		dto.IsMustHave,
-		dto.Order,
+		0,
 		dto.Name,
 		dto.Description,
 		dto.StaffAdvice,

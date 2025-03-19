@@ -23,7 +23,7 @@ type UpdateServicePackageDTO struct {
 
 type ServiceTaskDTO struct {
 	IsMustHave         bool    `json:"is-must-have"`
-	Order              int     `json:"order"`
+	TaskOrder          int     `json:"task-order"`
 	Name               string  `json:"name"`
 	Description        string  `json:"description"`
 	StaffAdvice        string  `json:"staff-advice"`
@@ -39,7 +39,6 @@ type UpdateServiceTaskDTO struct {
 	SvcTaskId          uuid.UUID `json:"-"`
 	SvcPackageId       uuid.UUID `json:"-"`
 	IsMustHave         bool      `json:"is-must-have"`
-	Order              int       `json:"order"`
 	Name               string    `json:"name"`
 	Description        string    `json:"description"`
 	StaffAdvice        string    `json:"staff-advice"`

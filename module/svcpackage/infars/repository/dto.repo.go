@@ -77,7 +77,6 @@ var (
 	}
 	UPDATE_FIELD_TASK = []string{
 		"is_must_have",
-		"task_order",
 		"name",
 		"description",
 		"staff_advice",

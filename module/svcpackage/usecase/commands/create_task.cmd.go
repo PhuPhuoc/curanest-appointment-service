@@ -26,7 +26,7 @@ func (h *createSvcTaskHandler) Handle(ctx context.Context, svcPackageId uuid.UUI
 		taskId,
 		svcPackageId,
 		dto.IsMustHave,
-		dto.Order,
+		dto.TaskOrder,
 		dto.Name,
 		dto.Description,
 		dto.StaffAdvice,

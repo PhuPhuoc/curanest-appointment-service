@@ -12,8 +12,7 @@ CREATE TABLE `service_packages` (
     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
     `deleted_at` datetime,
     PRIMARY KEY (`id`),
-    CONSTRAINT `servicepackages_serviceid_fk` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON UPDATE CASCADE,
-    UNIQUE KEY `unique_service_id` (`service_id`)
+    CONSTRAINT `servicepackages_serviceid_fk` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON UPDATE CASCADE
 );
 -- +goose StatementEnd
 
