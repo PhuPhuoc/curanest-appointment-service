@@ -65,5 +65,9 @@ func (s *svcPackageHttpService) Routes(g *gin.RouterGroup) {
 			"/:svcpackage-id/svctask",
 			s.handleGetServicTasks(),
 		)
+		svcpackage_route.PATCH(
+			"/svctask",
+			s.handleUpdateTaskOrder(),
+		)
 	}
 }

@@ -466,6 +466,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/svcpackage/svctask": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "update service task order(staff)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "service packages"
+                ],
+                "summary": "update service task order (staff)",
+                "parameters": [
+                    {
+                        "description": "service task update information",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/svcpackagecommands.UpdateTaskOrderDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/svcpackage/{svcpackage-id}/svctask": {
             "get": {
                 "description": "get list service-tasks by svcpackage-id",
@@ -722,14 +766,14 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "order": {
-                    "type": "integer"
-                },
                 "price-of-step": {
                     "type": "integer"
                 },
                 "staff-advice": {
                     "type": "string"
+                },
+                "task-order": {
+                    "type": "integer"
                 },
                 "unit": {
                     "type": "string",
@@ -737,6 +781,53 @@ const docTemplate = `{
                         "quantity",
                         "time"
                     ]
+                }
+            }
+        },
+        "svcpackagecommands.ServiceTaskQueryDTO": {
+            "type": "object",
+            "properties": {
+                "additional-cost": {
+                    "type": "number"
+                },
+                "additional-cost-desc": {
+                    "type": "string"
+                },
+                "cost": {
+                    "type": "number"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "est-duration": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is-must-have": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price-of-step": {
+                    "type": "integer"
+                },
+                "staff-advice": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "svcpackage-id": {
+                    "type": "string"
+                },
+                "task-order": {
+                    "type": "integer"
+                },
+                "unit": {
+                    "type": "string"
                 }
             }
         },
@@ -801,9 +892,6 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "order": {
-                    "type": "integer"
-                },
                 "price-of-step": {
                     "type": "integer"
                 },
@@ -823,6 +911,17 @@ const docTemplate = `{
                         "quantity",
                         "time"
                     ]
+                }
+            }
+        },
+        "svcpackagecommands.UpdateTaskOrderDTO": {
+            "type": "object",
+            "properties": {
+                "svctasks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/svcpackagecommands.ServiceTaskQueryDTO"
+                    }
                 }
             }
         }

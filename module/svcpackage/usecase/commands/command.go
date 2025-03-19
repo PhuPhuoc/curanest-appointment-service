@@ -10,8 +10,9 @@ type Commands struct {
 	CreatePackage *createSvcPackageHandler
 	UpdatePackage *updateSvcPackageHandler
 
-	CreateTask *createSvcTaskHandler
-	UpdateTask *updateSvcTaskHandler
+	CreateTask      *createSvcTaskHandler
+	UpdateTask      *updateSvcTaskHandler
+	UpdateTaskOrder *updateTaskOrderHandler
 }
 
 type Builder interface {
@@ -32,6 +33,9 @@ func NewSvcPackageCmdWithBuilder(b Builder) Commands {
 		UpdateTask: NewUpdateSvcTaskHandler(
 			b.BuildSvcPackageCmdRepo(),
 		),
+		UpdateTaskOrder: NewUpdateTaskOrderHandler(
+			b.BuildSvcPackageCmdRepo(),
+		),
 	}
 }
 
@@ -40,4 +44,5 @@ type SvcPackageCommandRepo interface {
 	UpdatePackage(ctx context.Context, entity *svcpackagedomain.ServicePackage) error
 	CreateTask(ctx context.Context, entity *svcpackagedomain.ServiceTask) error
 	UpdateTask(ctx context.Context, entity *svcpackagedomain.ServiceTask) error
+	UpdateTaskOrder(ctx context.Context, entity []svcpackagedomain.ServiceTask) error
 }

@@ -49,12 +49,12 @@ definitions:
         type: boolean
       name:
         type: string
-      order:
-        type: integer
       price-of-step:
         type: integer
       staff-advice:
         type: string
+      task-order:
+        type: integer
       unit:
         enum:
         - quantity
@@ -65,6 +65,37 @@ definitions:
     - additional-cost-desc
     - cost
     - price-of-step
+    type: object
+  svcpackagecommands.ServiceTaskQueryDTO:
+    properties:
+      additional-cost:
+        type: number
+      additional-cost-desc:
+        type: string
+      cost:
+        type: number
+      description:
+        type: string
+      est-duration:
+        type: integer
+      id:
+        type: string
+      is-must-have:
+        type: boolean
+      name:
+        type: string
+      price-of-step:
+        type: integer
+      staff-advice:
+        type: string
+      status:
+        type: string
+      svcpackage-id:
+        type: string
+      task-order:
+        type: integer
+      unit:
+        type: string
     type: object
   svcpackagecommands.UpdateServicePackageDTO:
     properties:
@@ -103,8 +134,6 @@ definitions:
         type: boolean
       name:
         type: string
-      order:
-        type: integer
       price-of-step:
         type: integer
       staff-advice:
@@ -124,6 +153,13 @@ definitions:
     - additional-cost-desc
     - cost
     - price-of-step
+    type: object
+  svcpackagecommands.UpdateTaskOrderDTO:
+    properties:
+      svctasks:
+        items:
+          $ref: '#/definitions/svcpackagecommands.ServiceTaskQueryDTO'
+        type: array
     type: object
 info:
   contact: {}
@@ -523,6 +559,34 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: update service task (staff)
+      tags:
+      - service packages
+  /api/v1/svcpackage/svctask:
+    patch:
+      consumes:
+      - application/json
+      description: update service task order(staff)
+      parameters:
+      - description: service task update information
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/svcpackagecommands.UpdateTaskOrderDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: update service task order (staff)
       tags:
       - service packages
   /ping:

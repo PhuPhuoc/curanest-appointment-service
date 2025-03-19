@@ -50,3 +50,24 @@ type UpdateServiceTaskDTO struct {
 	PriceOfStep        int       `json:"price-of-step" binding:"required"`
 	Status             string    `json:"status" binding:"oneof=available unavailable"`
 }
+
+type UpdateTaskOrderDTO struct {
+	SvcTasks []ServiceTaskQueryDTO `json:"svctasks"`
+}
+
+type ServiceTaskQueryDTO struct {
+	Id                 uuid.UUID `json:"id"`
+	SvcPackageId       uuid.UUID `json:"svcpackage-id"`
+	IsMustHave         bool      `json:"is-must-have"`
+	TaskOrder          int       `json:"task-order"`
+	Name               string    `json:"name"`
+	Description        string    `json:"description"`
+	StaffAdvice        string    `json:"staff-advice"`
+	EstDuration        int       `json:"est-duration"`
+	Cost               float64   `json:"cost"`
+	AdditionalCost     float64   `json:"additional-cost"`
+	AdditionalCostDesc string    `json:"additional-cost-desc"`
+	Unit               string    `json:"unit"`
+	PriceOfStep        int       `json:"price-of-step"`
+	Status             string    `json:"status"`
+}
