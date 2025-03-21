@@ -24,7 +24,7 @@ func (h *updateTaskOrderHandler) Handle(ctx context.Context, dtos *UpdateTaskOrd
 			dtos.SvcTasks[i].Id,
 			dtos.SvcTasks[i].SvcPackageId,
 			dtos.SvcTasks[i].IsMustHave,
-			0,
+			dtos.SvcTasks[i].TaskOrder,
 			dtos.SvcTasks[i].Name,
 			dtos.SvcTasks[i].Description,
 			dtos.SvcTasks[i].StaffAdvice,
