@@ -19,6 +19,9 @@ import (
 	categoryhttpservice "github.com/PhuPhuoc/curanest-appointment-service/module/category/infars/httpservice"
 	categorycommands "github.com/PhuPhuoc/curanest-appointment-service/module/category/usecase/commands"
 	categoryqueries "github.com/PhuPhuoc/curanest-appointment-service/module/category/usecase/queries"
+	cuspackagehttpservice "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/infars/httpservice"
+	cuspackagecommands "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/usecase/commands"
+	cuspackagequeries "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/usecase/queries"
 	servicehttpservice "github.com/PhuPhuoc/curanest-appointment-service/module/service/infars/httpservice"
 	servicecommands "github.com/PhuPhuoc/curanest-appointment-service/module/service/usecase/commands"
 	servicequeries "github.com/PhuPhuoc/curanest-appointment-service/module/service/usecase/queries"
@@ -113,6 +116,13 @@ func (sv *server) RunApp() error {
 		builder.NewSvcPackageBuilder(sv.db),
 	)
 
+	cuspackage_cmd_builder := cuspackagecommands.NewCusPackageCmdWithBuilder(
+		builder.NewCusPackageBuilder(sv.db),
+	)
+	cuspackage_query_builder := cuspackagequeries.NewCusPackageQueryWithBuilder(
+		builder.NewCusPackageBuilder(sv.db),
+	)
+
 	api := router.Group("/api/v1")
 	{
 		categoryhttpservice.NewCategoryHTTPService(
@@ -128,6 +138,11 @@ func (sv *server) RunApp() error {
 		svcpackagehttpservice.NewSvcPackageHTTPService(
 			svcpackage_cmd_builder,
 			svcpackage_query_builder,
+		).AddAuth(authClient).Routes(api)
+
+		cuspackagehttpservice.NewSvcPackageHTTPService(
+			cuspackage_cmd_builder,
+			cuspackage_query_builder,
 		).AddAuth(authClient).Routes(api)
 	}
 

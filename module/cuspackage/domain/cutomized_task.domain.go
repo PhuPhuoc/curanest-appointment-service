@@ -1,6 +1,7 @@
 package cuspackagedomain
 
 import (
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -8,8 +9,9 @@ import (
 
 type CustomizedTask struct {
 	id           uuid.UUID
+	svcTaskid    uuid.UUID
 	cusPackageId uuid.UUID
-	order        int
+	taskOrder    int
 	name         string
 	clientNote   string
 	staffAdvice  string
@@ -26,12 +28,16 @@ func (a *CustomizedTask) GetID() uuid.UUID {
 	return a.id
 }
 
+func (a *CustomizedTask) GetSvcTaskID() uuid.UUID {
+	return a.svcTaskid
+}
+
 func (a *CustomizedTask) GetServicePlanCustomID() uuid.UUID {
 	return a.cusPackageId
 }
 
-func (a *CustomizedTask) GetOrder() int {
-	return a.order
+func (a *CustomizedTask) GetTaskOrder() int {
+	return a.taskOrder
 }
 
 func (a *CustomizedTask) GetName() string {
@@ -75,9 +81,9 @@ func (a *CustomizedTask) GetStatus() CusTaskStatus {
 }
 
 func NewCustomizedTask(
-	id, cusPackageId uuid.UUID,
+	id, svcTaskId, cusPackageId uuid.UUID,
 	isMustHave bool,
-	order int,
+	taskOrder int,
 	name, clientNote, staffAdvice string,
 	estDuration int,
 	totalCost float64,
@@ -88,8 +94,9 @@ func NewCustomizedTask(
 ) (*CustomizedTask, error) {
 	return &CustomizedTask{
 		id:           id,
+		svcTaskid:    svcTaskId,
 		cusPackageId: cusPackageId,
-		order:        order,
+		taskOrder:    taskOrder,
 		name:         name,
 		clientNote:   clientNote,
 		staffAdvice:  staffAdvice,
@@ -124,6 +131,15 @@ func (r CusTaskStatus) String() string {
 	}
 }
 
+func EnumCusTaskStatus(s string) CusTaskStatus {
+	switch strings.TrimSpace(strings.ToLower(s)) {
+	case "done":
+		return CusTaskStatusDone
+	default:
+		return CusTaskStatusNotDone
+	}
+}
+
 const (
 	CusTaskUnitQuantity CusTaskUnit = iota
 	CusTaskUnitTime
@@ -137,5 +153,14 @@ func (r CusTaskUnit) String() string {
 		return "time"
 	default:
 		return "unknown"
+	}
+}
+
+func EnumCusTaskUnit(s string) CusTaskUnit {
+	switch strings.TrimSpace(strings.ToLower(s)) {
+	case "quantity":
+		return CusTaskUnitQuantity
+	default:
+		return CusTaskUnitTime
 	}
 }
