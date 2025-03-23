@@ -29,10 +29,10 @@ type ServiceTaskDTO struct {
 	StaffAdvice        string  `json:"staff-advice"`
 	EstDuration        int     `json:"est-duration"`
 	Cost               float64 `json:"cost" binding:"required"`
-	AdditionalCost     float64 `json:"additional-cost" binding:"required"`
-	AdditionalCostDesc string  `json:"additional-cost-desc" binding:"required"`
+	AdditionalCost     float64 `json:"additional-cost"`
+	AdditionalCostDesc string  `json:"additional-cost-desc"`
 	Unit               string  `json:"unit" binding:"oneof=quantity time"`
-	PriceOfStep        int     `json:"price-of-step" binding:"required"`
+	PriceOfStep        int     `json:"price-of-step"`
 }
 
 type UpdateServiceTaskDTO struct {

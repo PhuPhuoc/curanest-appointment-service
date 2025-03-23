@@ -1,19 +1,22 @@
 package cuspackagedomain
 
 import (
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 type CustomizedPackage struct {
-	id           uuid.UUID
-	svcPackageId uuid.UUID
-	patientId    *uuid.UUID
-	name         string
-	beginDate    time.Time
-	status       CusPackageStatus
-	createdAt    *time.Time
+	id            uuid.UUID
+	svcPackageId  uuid.UUID
+	patientId     *uuid.UUID
+	name          string
+	totalFee      float64
+	paidAmount    float64
+	uppaidAmount  float64
+	paymentStatus PaymentStatus
+	createdAt     *time.Time
 }
 
 func (a *CustomizedPackage) GetID() uuid.UUID {
@@ -32,43 +35,67 @@ func (a *CustomizedPackage) GetName() string {
 	return a.name
 }
 
-func (a *CustomizedPackage) GetBeginDate() time.Time {
-	return a.beginDate
+func (a *CustomizedPackage) GetTotalFee() float64 {
+	return a.totalFee
 }
 
-func (a *CustomizedPackage) GetStatus() CusPackageStatus {
-	return a.status
+func (a *CustomizedPackage) GetPaidAmount() float64 {
+	return a.paidAmount
+}
+
+func (a *CustomizedPackage) GetUnpaidAmount() float64 {
+	return a.uppaidAmount
+}
+
+func (a *CustomizedPackage) GetPaymentStatus() PaymentStatus {
+	return a.paymentStatus
 }
 
 func (a *CustomizedPackage) GetCreatedAt() time.Time {
 	return *a.createdAt
 }
 
-func NewCustomizedPackage(id, svcPackageId uuid.UUID, patientId *uuid.UUID, name string, beginDate time.Time, status CusPackageStatus, createdAt *time.Time) (*CustomizedPackage, error) {
+func NewCustomizedPackage(id, svcPackageId uuid.UUID, patientId *uuid.UUID, name string, totalFee, paidAmount, unpaidAmount float64, paymentStatus PaymentStatus, createdAt *time.Time) (*CustomizedPackage, error) {
 	return &CustomizedPackage{
-		id:           id,
-		svcPackageId: svcPackageId,
-		patientId:    patientId,
-		name:         name,
-		beginDate:    beginDate,
-		status:       status,
-		createdAt:    createdAt,
+		id:            id,
+		svcPackageId:  svcPackageId,
+		patientId:     patientId,
+		name:          name,
+		totalFee:      totalFee,
+		paidAmount:    paidAmount,
+		uppaidAmount:  unpaidAmount,
+		paymentStatus: paymentStatus,
+		createdAt:     createdAt,
 	}, nil
 }
 
-type CusPackageStatus int
+type PaymentStatus int
 
 const (
-	CusPackageStatusAvailable CusPackageStatus = iota
-	CusPackageStatusUnavailable
+	PaymentStatusUnpaid PaymentStatus = iota
+	PaymentStatusPartiallyPaid
+	PaymentStatusPaid
 )
 
-func (r CusPackageStatus) String() string {
+func EnumPaymentStatus(s string) PaymentStatus {
+	switch strings.TrimSpace(strings.ToLower(s)) {
+	case "paid":
+		return PaymentStatusPaid
+	case "partially_paid":
+		return PaymentStatusPartiallyPaid
+	default:
+		return PaymentStatusUnpaid
+	}
+}
+
+func (r PaymentStatus) String() string {
 	switch r {
-	case CusPackageStatusAvailable:
-		return "available"
-	case CusPackageStatusUnavailable:
-		return "unavailable"
+	case PaymentStatusUnpaid:
+		return "unpaid"
+	case PaymentStatusPartiallyPaid:
+		return "partially_paid"
+	case PaymentStatusPaid:
+		return "paid"
 	default:
 		return "unknown"
 	}

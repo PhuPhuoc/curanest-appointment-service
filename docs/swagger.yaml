@@ -61,10 +61,7 @@ definitions:
         - time
         type: string
     required:
-    - additional-cost
-    - additional-cost-desc
     - cost
-    - price-of-step
     type: object
   svcpackagecommands.ServiceTaskQueryDTO:
     properties:

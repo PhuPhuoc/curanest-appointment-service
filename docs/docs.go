@@ -739,10 +739,7 @@ const docTemplate = `{
         "svcpackagecommands.ServiceTaskDTO": {
             "type": "object",
             "required": [
-                "additional-cost",
-                "additional-cost-desc",
-                "cost",
-                "price-of-step"
+                "cost"
             ],
             "properties": {
                 "additional-cost": {
