@@ -463,6 +463,32 @@ paths:
       summary: get list service with category (guest)
       tags:
       - services
+  /api/v1/staff/services:
+    get:
+      consumes:
+      - application/json
+      description: get list service of staff (staff)
+      parameters:
+      - description: services name
+        in: query
+        name: service-name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: get list service of staff (staff)
+      tags:
+      - services
   /api/v1/svcpackage/{svcpackage-id}/svctask:
     get:
       consumes:

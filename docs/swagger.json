@@ -458,6 +458,47 @@
                 }
             }
         },
+        "/api/v1/staff/services": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get list service of staff (staff)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "get list service of staff (staff)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "services name",
+                        "name": "service-name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/svcpackage/svctask": {
             "patch": {
                 "security": [

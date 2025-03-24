@@ -13,6 +13,8 @@ import (
 type Queries struct {
 	GetByCategory      *getServicesByCategoryHandler
 	GetGroupByCategory *getServicesGroupByCategoryHandler
+
+	GetStaffServices *getStaffServiceHandler
 }
 
 type Builder interface {
@@ -29,6 +31,10 @@ func NewServiceQueryWithBuilder(b Builder) Queries {
 			b.BuildServiceQueryRepo(),
 			b.BuildCategoryFetcher(),
 		),
+		GetStaffServices: NewGetStaffServicesHandler(
+			b.BuildServiceQueryRepo(),
+			b.BuildCategoryFetcher(),
+		),
 	}
 }
 
@@ -39,4 +45,5 @@ type ServiceQueryRepo interface {
 
 type CategoryFetcher interface {
 	GetCategories(ctx context.Context, filter *categoryqueries.FilterCategoryDTO) ([]categorydomain.Category, error)
+	GetCategoryOfStaff(ctx context.Context, staffId uuid.UUID) (*categorydomain.Category, error)
 }

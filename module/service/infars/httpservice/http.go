@@ -42,11 +42,25 @@ func (s *serviceHttpService) Routes(g *gin.RouterGroup) {
 		)
 	}
 
+	staff_service_route := g.Group("/staff/services")
+	{
+		staff_service_route.GET(
+			"",
+			middleware.RequireAuth(s.auth),
+			middleware.RequireRole("staff"),
+			s.handleGetServiceOfStaff(),
+		)
+	}
+
 	service_route := g.Group("/services")
 	{
 		service_route.GET(
 			"/group-by-category",
 			s.handleGetServiceGroupByCategory(),
+		)
+		service_route.GET(
+			"/staff",
+			s.handleGetServiceOfStaff(),
 		)
 	}
 }
