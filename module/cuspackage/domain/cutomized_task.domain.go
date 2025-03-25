@@ -20,7 +20,7 @@ type CustomizedTask struct {
 	unit         CusTaskUnit
 	totalUnit    int
 	estDate      time.Time
-	actDate      time.Time
+	actDate      *time.Time
 	status       CusTaskStatus
 }
 
@@ -72,7 +72,7 @@ func (a *CustomizedTask) GetEstDate() time.Time {
 	return a.estDate
 }
 
-func (a *CustomizedTask) GetActDate() time.Time {
+func (a *CustomizedTask) GetActDate() *time.Time {
 	return a.actDate
 }
 
@@ -82,14 +82,13 @@ func (a *CustomizedTask) GetStatus() CusTaskStatus {
 
 func NewCustomizedTask(
 	id, svcTaskId, cusPackageId uuid.UUID,
-	isMustHave bool,
 	taskOrder int,
 	name, clientNote, staffAdvice string,
 	estDuration int,
 	totalCost float64,
 	unit CusTaskUnit,
 	totalUnit int,
-	estDate, actDate time.Time,
+	estDate time.Time, actDate *time.Time,
 	status CusTaskStatus,
 ) (*CustomizedTask, error) {
 	return &CustomizedTask{

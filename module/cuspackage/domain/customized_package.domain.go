@@ -10,7 +10,7 @@ import (
 type CustomizedPackage struct {
 	id            uuid.UUID
 	svcPackageId  uuid.UUID
-	patientId     *uuid.UUID
+	patientId     uuid.UUID
 	name          string
 	totalFee      float64
 	paidAmount    float64
@@ -27,7 +27,7 @@ func (a *CustomizedPackage) GetServiceID() uuid.UUID {
 	return a.svcPackageId
 }
 
-func (a *CustomizedPackage) GetPatientID() *uuid.UUID {
+func (a *CustomizedPackage) GetPatientID() uuid.UUID {
 	return a.patientId
 }
 
@@ -55,7 +55,13 @@ func (a *CustomizedPackage) GetCreatedAt() time.Time {
 	return *a.createdAt
 }
 
-func NewCustomizedPackage(id, svcPackageId uuid.UUID, patientId *uuid.UUID, name string, totalFee, paidAmount, unpaidAmount float64, paymentStatus PaymentStatus, createdAt *time.Time) (*CustomizedPackage, error) {
+func NewCustomizedPackage(
+	id, svcPackageId, patientId uuid.UUID,
+	name string,
+	totalFee, paidAmount, unpaidAmount float64,
+	paymentStatus PaymentStatus,
+	createdAt *time.Time,
+) (*CustomizedPackage, error) {
 	return &CustomizedPackage{
 		id:            id,
 		svcPackageId:  svcPackageId,

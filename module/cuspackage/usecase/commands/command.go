@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
+	cuspackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/domain"
 	svcpackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/domain"
 )
 
@@ -19,13 +20,13 @@ func NewCusPackageCmdWithBuilder(b Builder) Commands {
 }
 
 type CusPackageCommandRepo interface {
-	// CreateCustomizedPackage(ctx context.Context, entity *cuspackagedomain.CustomizedPackage) error
-	// CreateCustomizedTask(ctx context.Context, entity *cuspackagedomain.CustomizedTask) error
+	CreateCustomizedPackage(ctx context.Context, entity *cuspackagedomain.CustomizedPackage) error
+	CreateCustomizedTasks(ctx context.Context, entities []cuspackagedomain.CustomizedTask) error
 }
 
 type SvcPackageFetcher interface {
 	GetServicePackageById(ctx context.Context, svcPackageId uuid.UUID) (*svcpackagedomain.ServicePackage, error)
-	GetServiceTaskById(ctx context.Context, svcTaskId uuid.UUID) (*svcpackagedomain.ServiceTask, error)
+	GetServiceTasksByPackageId(ctx context.Context, svcPackageId uuid.UUID) ([]svcpackagedomain.ServiceTask, error)
 }
 
 type AppoinmentFetcher interface {
