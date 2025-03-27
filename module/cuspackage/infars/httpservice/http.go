@@ -27,7 +27,13 @@ func (s *cusPackageHttpService) AddAuth(auth middleware.AuthClient) *cusPackageH
 }
 
 func (s *cusPackageHttpService) Routes(g *gin.RouterGroup) {
-	// cuspackage_route := g.Group("/cuspackage")
-	// {
-	// }
+	cuspackage_route := g.Group("/cuspackage")
+	{
+		cuspackage_route.POST(
+			"",
+			// middleware.RequireAuth(s.auth),
+			// middleware.RequireRole("relatives"),
+			s.handleCreateCustomizedPackageAndTask(),
+		)
+	}
 }

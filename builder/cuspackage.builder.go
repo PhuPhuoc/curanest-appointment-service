@@ -6,6 +6,7 @@ import (
 	cuspackagerepository "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/infars/repository"
 	cuspackagecommands "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/usecase/commands"
 	cuspackagequeries "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/usecase/queries"
+	svcpackagerepository "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/infars/repository"
 )
 
 type builderOfCusPackage struct {
@@ -22,4 +23,8 @@ func (s builderOfCusPackage) BuildCusPackageCmdRepo() cuspackagecommands.CusPack
 
 func (s builderOfCusPackage) BuildCusPackageQueryRepo() cuspackagequeries.CusPackageQueryRepo {
 	return cuspackagerepository.NewCusPackageRepo(s.db)
+}
+
+func (s builderOfCusPackage) BuildSvcPackageFetcher() cuspackagecommands.SvcPackageFetcher {
+	return svcpackagerepository.NewSvcPackageRepo(s.db)
 }

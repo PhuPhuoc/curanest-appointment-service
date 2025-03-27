@@ -9,14 +9,22 @@ import (
 	svcpackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/domain"
 )
 
-type Commands struct{}
+type Commands struct {
+	CreateCusPackageAndCusTask *createCusPackageAndTaskHandler
+}
 
 type Builder interface {
 	BuildCusPackageCmdRepo() CusPackageCommandRepo
+	BuildSvcPackageFetcher() SvcPackageFetcher
 }
 
 func NewCusPackageCmdWithBuilder(b Builder) Commands {
-	return Commands{}
+	return Commands{
+		CreateCusPackageAndCusTask: NewCreateCusPackageAndTaskHandler(
+			b.BuildCusPackageCmdRepo(),
+			b.BuildSvcPackageFetcher(),
+		),
+	}
 }
 
 type CusPackageCommandRepo interface {

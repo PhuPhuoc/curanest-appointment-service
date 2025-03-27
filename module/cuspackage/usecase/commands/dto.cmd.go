@@ -6,6 +6,12 @@ import (
 	"github.com/google/uuid"
 )
 
+type ReqCreatePackageTaskDTO struct {
+	Dates       []time.Time                `json:"dates"`
+	PackageInfo CreateCustomizedPackageDTO `json:"package-info"`
+	TaskInfos   []CreateCustomizedTaskDTO  `json:"task-infos"`
+}
+
 type CreateCustomizedPackageDTO struct {
 	SvcPackageId uuid.UUID `json:"svcpackage-id" binding:"required"`
 	PatientId    uuid.UUID `json:"patient-id" binding:"required"`
@@ -19,5 +25,5 @@ type CreateCustomizedTaskDTO struct {
 	EstDuration  int       `json:"est-duration"`
 	TotalCost    float64   `json:"total-cost"`
 	TotalUnit    int       `json:"total-unit"`
-	EstDate      time.Time `json:"est-date"`
+	// EstDate      time.Time `json:"est-date"`
 }

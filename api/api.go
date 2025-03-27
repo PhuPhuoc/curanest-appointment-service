@@ -82,7 +82,7 @@ func (sv *server) RunApp() error {
 
 	configcors := cors.DefaultConfig()
 	configcors.AllowAllOrigins = true
-	configcors.AllowMethods = []string{"POST", "GET", "PUT", "OPTIONS"}
+	configcors.AllowMethods = []string{"POST", "GET", "PUT", "DELETE", "PATCH", "OPTIONS"}
 	configcors.AllowHeaders = []string{"Origin", "Content-Type", "Authorization", "Accept", "User-Agent", "Cache-Control", "Pragma"}
 	configcors.ExposeHeaders = []string{"Content-Length"}
 	configcors.AllowCredentials = true

@@ -278,6 +278,50 @@
                 }
             }
         },
+        "/api/v1/cuspackage": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "create customized service package and task (client)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customized packages"
+                ],
+                "summary": "create customized service package and task (client)",
+                "parameters": [
+                    {
+                        "description": "customized package and task creation data",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/cuspackagecommands.ReqCreatePackageTaskDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/services/group-by-category": {
             "get": {
                 "description": "get list service with category (guest)",
@@ -728,6 +772,72 @@
                 },
                 "thumbnail": {
                     "type": "string"
+                }
+            }
+        },
+        "cuspackagecommands.CreateCustomizedPackageDTO": {
+            "type": "object",
+            "required": [
+                "patient-id",
+                "svcpackage-id",
+                "total-fee"
+            ],
+            "properties": {
+                "patient-id": {
+                    "type": "string"
+                },
+                "svcpackage-id": {
+                    "type": "string"
+                },
+                "total-fee": {
+                    "type": "number"
+                }
+            }
+        },
+        "cuspackagecommands.CreateCustomizedTaskDTO": {
+            "type": "object",
+            "required": [
+                "cuspackage-id",
+                "svctask-id"
+            ],
+            "properties": {
+                "client-note": {
+                    "type": "string"
+                },
+                "cuspackage-id": {
+                    "type": "string"
+                },
+                "est-duration": {
+                    "type": "integer"
+                },
+                "svctask-id": {
+                    "type": "string"
+                },
+                "total-cost": {
+                    "type": "number"
+                },
+                "total-unit": {
+                    "type": "integer"
+                }
+            }
+        },
+        "cuspackagecommands.ReqCreatePackageTaskDTO": {
+            "type": "object",
+            "properties": {
+                "dates": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "package-info": {
+                    "$ref": "#/definitions/cuspackagecommands.CreateCustomizedPackageDTO"
+                },
+                "task-infos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/cuspackagecommands.CreateCustomizedTaskDTO"
+                    }
                 }
             }
         },

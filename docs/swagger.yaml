@@ -8,6 +8,50 @@ definitions:
       thumbnail:
         type: string
     type: object
+  cuspackagecommands.CreateCustomizedPackageDTO:
+    properties:
+      patient-id:
+        type: string
+      svcpackage-id:
+        type: string
+      total-fee:
+        type: number
+    required:
+    - patient-id
+    - svcpackage-id
+    - total-fee
+    type: object
+  cuspackagecommands.CreateCustomizedTaskDTO:
+    properties:
+      client-note:
+        type: string
+      cuspackage-id:
+        type: string
+      est-duration:
+        type: integer
+      svctask-id:
+        type: string
+      total-cost:
+        type: number
+      total-unit:
+        type: integer
+    required:
+    - cuspackage-id
+    - svctask-id
+    type: object
+  cuspackagecommands.ReqCreatePackageTaskDTO:
+    properties:
+      dates:
+        items:
+          type: string
+        type: array
+      package-info:
+        $ref: '#/definitions/cuspackagecommands.CreateCustomizedPackageDTO'
+      task-infos:
+        items:
+          $ref: '#/definitions/cuspackagecommands.CreateCustomizedTaskDTO'
+        type: array
+    type: object
   servicecommands.CreateServiceDTO:
     properties:
       description:
@@ -344,6 +388,34 @@ paths:
       summary: remove staff to category (admin)
       tags:
       - categories
+  /api/v1/cuspackage:
+    post:
+      consumes:
+      - application/json
+      description: create customized service package and task (client)
+      parameters:
+      - description: customized package and task creation data
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/cuspackagecommands.ReqCreatePackageTaskDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: create customized service package and task (client)
+      tags:
+      - customized packages
   /api/v1/services/{service-id}/svcpackage:
     get:
       consumes:
