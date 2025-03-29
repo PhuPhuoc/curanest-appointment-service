@@ -805,14 +805,10 @@ const docTemplate = `{
         "cuspackagecommands.CreateCustomizedTaskDTO": {
             "type": "object",
             "required": [
-                "cuspackage-id",
                 "svctask-id"
             ],
             "properties": {
                 "client-note": {
-                    "type": "string"
-                },
-                "cuspackage-id": {
                     "type": "string"
                 },
                 "est-duration": {
@@ -837,6 +833,9 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                },
+                "nurse-id": {
+                    "type": "string"
                 },
                 "package-info": {
                     "$ref": "#/definitions/cuspackagecommands.CreateCustomizedPackageDTO"

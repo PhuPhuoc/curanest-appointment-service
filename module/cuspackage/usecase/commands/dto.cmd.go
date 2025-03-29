@@ -7,6 +7,7 @@ import (
 )
 
 type ReqCreatePackageTaskDTO struct {
+	NurseId     *uuid.UUID                 `json:"nurse-id"`
 	Dates       []time.Time                `json:"dates"`
 	PackageInfo CreateCustomizedPackageDTO `json:"package-info"`
 	TaskInfos   []CreateCustomizedTaskDTO  `json:"task-infos"`
@@ -19,11 +20,9 @@ type CreateCustomizedPackageDTO struct {
 }
 
 type CreateCustomizedTaskDTO struct {
-	SvcTaskId    uuid.UUID `json:"svctask-id" binding:"required"`
-	CusPackageId uuid.UUID `json:"cuspackage-id" binding:"required"`
-	ClientNote   string    `json:"client-note"`
-	EstDuration  int       `json:"est-duration"`
-	TotalCost    float64   `json:"total-cost"`
-	TotalUnit    int       `json:"total-unit"`
-	// EstDate      time.Time `json:"est-date"`
+	SvcTaskId   uuid.UUID `json:"svctask-id" binding:"required"`
+	ClientNote  string    `json:"client-note"`
+	TotalCost   float64   `json:"total-cost"`
+	TotalUnit   int       `json:"total-unit"`
+	EstDuration int       `json:"est-duration"`
 }

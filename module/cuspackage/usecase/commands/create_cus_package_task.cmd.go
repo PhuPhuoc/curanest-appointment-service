@@ -45,17 +45,7 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		return err
 	}
 
-	// get list service task of service package above -> to verify customized task before create them
-	serviceTasks, err := h.fetchServiceTasks(ctx, customizedPackage.SvcPackageId)
-	if err != nil {
-		return err
-	}
-
-	cusTaskEnties, err := validateCustomizedTasks(serviceTasks, customizedTasks, dates)
-	if err != nil {
-		return err
-	}
-
+	// create dto for creating entity later
 	cusPackageId := common.GenUUID()
 	cusPackageEntity, _ := cuspackagedomain.NewCustomizedPackage(
 		cusPackageId,
@@ -68,6 +58,17 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		cuspackagedomain.PaymentStatusUnpaid,
 		nil,
 	)
+
+	// get list service task of service package above -> to verify customized task before create them
+	serviceTasks, err := h.fetchServiceTasks(ctx, servicePackage.GetID())
+	if err != nil {
+		return err
+	}
+
+	cusTaskEnties, err := validateCustomizedTasks(cusPackageId, serviceTasks, customizedTasks, dates)
+	if err != nil {
+		return err
+	}
 
 	if err := h.SavePackageAndTasks(ctx, cusPackageEntity, cusTaskEnties); err != nil {
 		return err
@@ -141,7 +142,7 @@ func (h *createCusPackageAndTaskHandler) fetchServiceTasks(ctx context.Context, 
 	return svcTasks, nil
 }
 
-func validateCustomizedTasks(svcTask []svcpackagedomain.ServiceTask, cusTask []CreateCustomizedTaskDTO, dates []time.Time) ([]cuspackagedomain.CustomizedTask, error) {
+func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.ServiceTask, cusTask []CreateCustomizedTaskDTO, dates []time.Time) ([]cuspackagedomain.CustomizedTask, error) {
 	// create custask map to compare with service task and verify all field before create customized task
 	cusTaskMap := make(map[uuid.UUID]CreateCustomizedTaskDTO)
 	for _, item := range cusTask {
@@ -164,7 +165,7 @@ func validateCustomizedTasks(svcTask []svcpackagedomain.ServiceTask, cusTask []C
 	// the for loop to check the elements in the svctask array to see if there is any extra task that does not belong to the service
 	for _, item := range cusTask {
 		if _, existed := svcTaskMap[item.SvcTaskId]; !existed {
-			mess := "task (with id: " + item.CusPackageId.String() + " ) is not included in this service"
+			mess := "task (with id: " + item.SvcTaskId.String() + " ) is not included in this service"
 			return []cuspackagedomain.CustomizedTask{}, common.NewBadRequestError().WithReason(mess)
 		}
 	}
@@ -177,17 +178,11 @@ func validateCustomizedTasks(svcTask []svcpackagedomain.ServiceTask, cusTask []C
 	cusTaskEnties := make([]cuspackagedomain.CustomizedTask, len(cusTask))
 	for _, estDate := range dates {
 		for i, item := range cusTask {
-
-			svctask, existed := svcTaskMap[item.SvcTaskId]
-			if !existed {
-				mess := "service-task (with id: " + item.CusPackageId.String() + " not found"
-				return []cuspackagedomain.CustomizedTask{}, common.NewBadRequestError().WithReason(mess)
-			}
-
+			svctask := svcTaskMap[item.SvcTaskId]
 			custask, _ := cuspackagedomain.NewCustomizedTask(
 				common.GenUUID(),
 				item.SvcTaskId,
-				item.CusPackageId,
+				cusPackageId,
 				svctask.GetTaskOrder(),
 				svctask.GetName(),
 				item.ClientNote,

@@ -23,7 +23,7 @@ func (a *CustomizedPackage) GetID() uuid.UUID {
 	return a.id
 }
 
-func (a *CustomizedPackage) GetServiceID() uuid.UUID {
+func (a *CustomizedPackage) GetServicePackageID() uuid.UUID {
 	return a.svcPackageId
 }
 

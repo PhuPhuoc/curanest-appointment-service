@@ -40,9 +40,15 @@ func GenerateSQLQueries(method SQLMethod, table string, fields []string, where *
 		return fmt.Sprintf("SELECT %s FROM %s WHERE %s", fieldList, table, *where)
 	case FIND_WITH_CREATED_AT:
 		selectList := fieldList + ", created_at"
+		if where == nil {
+			return fmt.Sprintf("SELECT %s FROM %s", selectList, table)
+		}
 		return fmt.Sprintf("SELECT %s FROM %s WHERE %s", selectList, table, *where)
 	case SELECT_WITHOUT_COUNT:
-		return fmt.Sprintf("SELECT %s FROM %s ", fieldList, table)
+		if where == nil {
+			return fmt.Sprintf("SELECT %s FROM %s", fieldList, table)
+		}
+		return fmt.Sprintf("SELECT %s FROM %s WHERE %s", fieldList, table, *where)
 	case SOFT_DELETE:
 		return fmt.Sprintf("UPDATE %s SET deleted_at = NOW() WHERE %s", table, *where)
 	case HARD_DELETE:

@@ -32,7 +32,7 @@ func (a *CustomizedTask) GetSvcTaskID() uuid.UUID {
 	return a.svcTaskid
 }
 
-func (a *CustomizedTask) GetServicePlanCustomID() uuid.UUID {
+func (a *CustomizedTask) GetCusPackageID() uuid.UUID {
 	return a.cusPackageId
 }
 

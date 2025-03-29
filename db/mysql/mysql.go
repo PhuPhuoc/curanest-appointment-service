@@ -15,7 +15,7 @@ func ConnectDB() *sqlx.DB {
 	dbUser := config.AppConfig.DBUser
 	dbPassword := config.AppConfig.DBPassword
 	dbName := config.AppConfig.DBName
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=True&parseTime=True&loc=Local", dbUser, dbPassword, dbHost, dbPort, dbName)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?multiStatements=True&parseTime=True&loc=UTC", dbUser, dbPassword, dbHost, dbPort, dbName)
 	log.Println(dsn)
 	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {

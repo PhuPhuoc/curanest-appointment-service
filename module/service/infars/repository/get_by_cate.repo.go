@@ -2,6 +2,7 @@ package servicerepository
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/google/uuid"
 
@@ -12,17 +13,17 @@ import (
 
 func (repo *serviceRepo) GetServicesByCategoryAndFilter(ctx context.Context, cateId uuid.UUID, filter servicequeries.FilterGetService) ([]servicedomain.Service, error) {
 	var args []interface{}
-	where := "WHERE category_id=? "
+	where := "category_id=? "
 	args = append(args, cateId.String())
 	if filter.ServiceName != "" {
 		where = where + "And name like ?"
 		args = append(args, "%"+filter.ServiceName+"%")
 	}
 	query := common.GenerateSQLQueries(common.SELECT_WITHOUT_COUNT, TABLE, GET_FIELD, &where)
-	queryWhere := query + where
 
+	fmt.Println("query: ", query)
 	var dtos []ServiceDTO
-	if err := repo.db.SelectContext(ctx, &dtos, queryWhere, args...); err != nil {
+	if err := repo.db.SelectContext(ctx, &dtos, query, args...); err != nil {
 		return nil, err
 	}
 
