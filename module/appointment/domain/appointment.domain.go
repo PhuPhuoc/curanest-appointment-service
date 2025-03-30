@@ -1,0 +1,105 @@
+package appointmentdomain
+
+import (
+	"strings"
+	"time"
+
+	"github.com/google/uuid"
+)
+
+type Appointment struct {
+	id           uuid.UUID
+	serviceId    uuid.UUID
+	cusPackageId uuid.UUID
+	nursingId    uuid.UUID
+	patientId    uuid.UUID
+	Status       string
+	estDate      time.Time
+	actDate      *time.Time
+	createdAt    *time.Time
+}
+
+func (a *Appointment) GetID() uuid.UUID {
+	return a.id
+}
+
+func (a *Appointment) GetServiceID() uuid.UUID {
+	return a.serviceId
+}
+
+func (a *Appointment) GetCusPackageID() uuid.UUID {
+	return a.cusPackageId
+}
+
+func (a *Appointment) GetNursingID() uuid.UUID {
+	return a.nursingId
+}
+
+func (a *Appointment) GetPatientID() uuid.UUID {
+	return a.patientId
+}
+
+func (a *Appointment) GetStatus() string {
+	return a.Status
+}
+
+func (a *Appointment) GetEstDate() time.Time {
+	return a.estDate
+}
+
+func (a *Appointment) GetActDate() *time.Time {
+	return a.actDate
+}
+
+func (a *Appointment) GetCreatedAt() *time.Time {
+	return a.createdAt
+}
+
+func NewAppointment(
+	id, serviceId, cusPackageId, nursingId, patientId uuid.UUID,
+	status string,
+	estDate time.Time,
+	actDate *time.Time,
+	createdAt *time.Time,
+) (*Appointment, error) {
+	return &Appointment{
+		id:           id,
+		serviceId:    serviceId,
+		cusPackageId: cusPackageId,
+		nursingId:    nursingId,
+		patientId:    patientId,
+		Status:       status,
+		estDate:      estDate,
+		actDate:      actDate,
+		createdAt:    createdAt,
+	}, nil
+}
+
+type AppointmentStatus int
+
+const (
+	AppStatusSuccess AppointmentStatus = iota
+	AppStatusWaiting
+)
+
+func EnumAppointmentStatus(s string) AppointmentStatus {
+	switch strings.TrimSpace(strings.ToLower(s)) {
+	case "success":
+		return AppStatusSuccess
+	// case "partially_paid":
+	// 	return PaymentStatusPartiallyPaid
+	default:
+		return AppStatusWaiting
+	}
+}
+
+func (r AppointmentStatus) String() string {
+	switch r {
+	case AppStatusSuccess:
+		return "success"
+	case AppStatusWaiting:
+		return "waiting"
+	default:
+		return "unknown"
+	}
+}

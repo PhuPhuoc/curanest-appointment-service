@@ -10,11 +10,11 @@ import (
 
 func (repo *svcPackageRepo) GetSvcPackges(ctx context.Context, serviceId uuid.UUID) ([]svcpackagedomain.ServicePackage, error) {
 	var args []interface{}
-	where := "WHERE service_id=? "
-	order := "ORDER BY created_at desc"
+	where := "service_id=?"
+	order := " ORDER BY created_at desc"
 	args = append(args, serviceId.String())
 	selectQuery := common.GenerateSQLQueries(common.SELECT_WITHOUT_COUNT, TABLE_PACKAGE, GET_FIELD_PACKAGE, &where)
-	query := selectQuery + where + order
+	query := selectQuery + order
 
 	var dtos []SvcPackageDTO
 	if err := repo.db.SelectContext(ctx, &dtos, query, args...); err != nil {

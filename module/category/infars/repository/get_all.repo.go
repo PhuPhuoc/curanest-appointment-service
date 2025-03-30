@@ -9,17 +9,16 @@ import (
 )
 
 func (repo *categoryRepo) GetCategories(ctx context.Context, filter *categoryqueries.FilterCategoryDTO) ([]categorydomain.Category, error) {
-	where := ""
+	var where string
 	var args []interface{}
 	if filter != nil && filter.Name != "" {
-		where = "WHERE name like ?"
+		where = "name like ?"
 		args = append(args, "%"+filter.Name+"%")
 	}
 	query := common.GenerateSQLQueries(common.SELECT_WITHOUT_COUNT, TABLE, FIELD, &where)
-	queryWhere := query + where
 
 	var dtos []CategoryDTO
-	if err := repo.db.SelectContext(ctx, &dtos, queryWhere, args...); err != nil {
+	if err := repo.db.SelectContext(ctx, &dtos, query, args...); err != nil {
 		return nil, err
 	}
 

@@ -37,7 +37,7 @@ type SvcPackageFetcher interface {
 	GetServiceTasksByPackageId(ctx context.Context, svcPackageId uuid.UUID) ([]svcpackagedomain.ServiceTask, error)
 }
 
-type AppoinmentFetcher interface {
+type AppointmentFetcher interface {
 	CreateAppointment(ctx context.Context) error
 }
 

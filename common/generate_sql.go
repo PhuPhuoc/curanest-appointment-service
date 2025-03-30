@@ -40,12 +40,12 @@ func GenerateSQLQueries(method SQLMethod, table string, fields []string, where *
 		return fmt.Sprintf("SELECT %s FROM %s WHERE %s", fieldList, table, *where)
 	case FIND_WITH_CREATED_AT:
 		selectList := fieldList + ", created_at"
-		if where == nil {
+		if where == nil || *where == "" {
 			return fmt.Sprintf("SELECT %s FROM %s", selectList, table)
 		}
 		return fmt.Sprintf("SELECT %s FROM %s WHERE %s", selectList, table, *where)
 	case SELECT_WITHOUT_COUNT:
-		if where == nil {
+		if where == nil || *where == "" {
 			return fmt.Sprintf("SELECT %s FROM %s", fieldList, table)
 		}
 		return fmt.Sprintf("SELECT %s FROM %s WHERE %s", fieldList, table, *where)

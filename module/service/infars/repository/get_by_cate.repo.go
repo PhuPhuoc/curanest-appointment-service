@@ -2,7 +2,6 @@ package servicerepository
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/uuid"
 
@@ -21,7 +20,6 @@ func (repo *serviceRepo) GetServicesByCategoryAndFilter(ctx context.Context, cat
 	}
 	query := common.GenerateSQLQueries(common.SELECT_WITHOUT_COUNT, TABLE, GET_FIELD, &where)
 
-	fmt.Println("query: ", query)
 	var dtos []ServiceDTO
 	if err := repo.db.SelectContext(ctx, &dtos, query, args...); err != nil {
 		return nil, err
