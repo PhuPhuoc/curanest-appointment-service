@@ -787,8 +787,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "patient-id",
-                "svcpackage-id",
-                "total-fee"
+                "svcpackage-id"
             ],
             "properties": {
                 "patient-id": {
@@ -796,9 +795,6 @@ const docTemplate = `{
                 },
                 "svcpackage-id": {
                     "type": "string"
-                },
-                "total-fee": {
-                    "type": "number"
                 }
             }
         },
@@ -834,11 +830,14 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
-                "nurse-id": {
+                "nursing-id": {
                     "type": "string"
                 },
                 "package-info": {
                     "$ref": "#/definitions/cuspackagecommands.CreateCustomizedPackageDTO"
+                },
+                "patient-id": {
+                    "type": "string"
                 },
                 "task-infos": {
                     "type": "array",

@@ -5,7 +5,10 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/PhuPhuoc/curanest-appointment-service/common"
+	appointmentdomain "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/domain"
 	cuspackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/domain"
+	invoicedomain "github.com/PhuPhuoc/curanest-appointment-service/module/invoice/domain"
 	svcpackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/domain"
 )
 
@@ -14,8 +17,11 @@ type Commands struct {
 }
 
 type Builder interface {
+	BuildTransactionManager() common.TransactionManager
 	BuildCusPackageCmdRepo() CusPackageCommandRepo
 	BuildSvcPackageFetcher() SvcPackageFetcher
+	BuildAppointmentFetcher() AppointmentFetcher
+	BuildInvoiceFetcher() InvoiceFetcher
 }
 
 func NewCusPackageCmdWithBuilder(b Builder) Commands {
@@ -23,6 +29,9 @@ func NewCusPackageCmdWithBuilder(b Builder) Commands {
 		CreateCusPackageAndCusTask: NewCreateCusPackageAndTaskHandler(
 			b.BuildCusPackageCmdRepo(),
 			b.BuildSvcPackageFetcher(),
+			b.BuildAppointmentFetcher(),
+			b.BuildInvoiceFetcher(),
+			b.BuildTransactionManager(),
 		),
 	}
 }
@@ -38,13 +47,9 @@ type SvcPackageFetcher interface {
 }
 
 type AppointmentFetcher interface {
-	CreateAppointment(ctx context.Context) error
+	CreateAppointments(ctx context.Context, entities []appointmentdomain.Appointment) error
 }
 
 type InvoiceFetcher interface {
-	CreateInvoice(ctx context.Context) error
-}
-
-type MedicalRecordFetcher interface {
-	CreateMedicalRecord(ctx context.Context) error
+	CreateInvoice(ctx context.Context, entity *invoicedomain.Invoice) error
 }

@@ -10,8 +10,14 @@ import (
 func (repo *cusPackageRepo) CreateCustomizedPackage(ctx context.Context, entity *cuspackagedomain.CustomizedPackage) error {
 	dto := ToCusPackageDTO(entity)
 	query := common.GenerateSQLQueries(common.INSERT, TABLE_CUSPACKAGE, CREATE_CUSPACKAGE, nil)
-	if _, err := repo.db.NamedExec(query, dto); err != nil {
+
+	// Get transaction from context if exist
+	if tx := common.GetTxFromContext(ctx); tx != nil {
+		_, err := tx.NamedExec(query, dto)
 		return err
 	}
-	return nil
+
+	// If no transaction, use db directly
+	_, err := repo.db.NamedExec(query, dto)
+	return err
 }

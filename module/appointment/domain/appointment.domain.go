@@ -11,9 +11,9 @@ type Appointment struct {
 	id           uuid.UUID
 	serviceId    uuid.UUID
 	cusPackageId uuid.UUID
-	nursingId    uuid.UUID
+	nursingId    *uuid.UUID
 	patientId    uuid.UUID
-	Status       string
+	Status       AppointmentStatus
 	estDate      time.Time
 	actDate      *time.Time
 	createdAt    *time.Time
@@ -31,7 +31,7 @@ func (a *Appointment) GetCusPackageID() uuid.UUID {
 	return a.cusPackageId
 }
 
-func (a *Appointment) GetNursingID() uuid.UUID {
+func (a *Appointment) GetNursingID() *uuid.UUID {
 	return a.nursingId
 }
 
@@ -39,7 +39,7 @@ func (a *Appointment) GetPatientID() uuid.UUID {
 	return a.patientId
 }
 
-func (a *Appointment) GetStatus() string {
+func (a *Appointment) GetStatus() AppointmentStatus {
 	return a.Status
 }
 
@@ -56,8 +56,9 @@ func (a *Appointment) GetCreatedAt() *time.Time {
 }
 
 func NewAppointment(
-	id, serviceId, cusPackageId, nursingId, patientId uuid.UUID,
-	status string,
+	id, serviceId, cusPackageId, patientId uuid.UUID,
+	nursingId *uuid.UUID,
+	status AppointmentStatus,
 	estDate time.Time,
 	actDate *time.Time,
 	createdAt *time.Time,
@@ -78,16 +79,23 @@ func NewAppointment(
 type AppointmentStatus int
 
 const (
-	AppStatusSuccess AppointmentStatus = iota
-	AppStatusWaiting
+	AppStatusWaiting AppointmentStatus = iota
+	AppStatusSuccess
+	AppStatusConfirmed
+	AppStatusRefused
+	AppStatusChanged
 )
 
 func EnumAppointmentStatus(s string) AppointmentStatus {
 	switch strings.TrimSpace(strings.ToLower(s)) {
 	case "success":
 		return AppStatusSuccess
-	// case "partially_paid":
-	// 	return PaymentStatusPartiallyPaid
+	case "confirmed":
+		return AppStatusConfirmed
+	case "refused":
+		return AppStatusRefused
+	case "changed":
+		return AppStatusChanged
 	default:
 		return AppStatusWaiting
 	}
@@ -95,10 +103,16 @@ func EnumAppointmentStatus(s string) AppointmentStatus {
 
 func (r AppointmentStatus) String() string {
 	switch r {
-	case AppStatusSuccess:
-		return "success"
 	case AppStatusWaiting:
 		return "waiting"
+	case AppStatusSuccess:
+		return "success"
+	case AppStatusConfirmed:
+		return "confirmed"
+	case AppStatusRefused:
+		return "refused"
+	case AppStatusChanged:
+		return "changed"
 	default:
 		return "unknown"
 	}

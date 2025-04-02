@@ -1,6 +1,8 @@
 package cuspackagerepository
 
-import "github.com/jmoiron/sqlx"
+import (
+	"github.com/jmoiron/sqlx"
+)
 
 type cusPackageRepo struct {
 	db *sqlx.DB

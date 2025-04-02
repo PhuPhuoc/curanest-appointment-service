@@ -14,12 +14,9 @@ definitions:
         type: string
       svcpackage-id:
         type: string
-      total-fee:
-        type: number
     required:
     - patient-id
     - svcpackage-id
-    - total-fee
     type: object
   cuspackagecommands.CreateCustomizedTaskDTO:
     properties:
@@ -42,10 +39,12 @@ definitions:
         items:
           type: string
         type: array
-      nurse-id:
+      nursing-id:
         type: string
       package-info:
         $ref: '#/definitions/cuspackagecommands.CreateCustomizedPackageDTO'
+      patient-id:
+        type: string
       task-infos:
         items:
           $ref: '#/definitions/cuspackagecommands.CreateCustomizedTaskDTO'

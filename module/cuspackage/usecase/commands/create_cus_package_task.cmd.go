@@ -8,29 +8,58 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
+	appointmentdomain "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/domain"
 	cuspackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/domain"
+	invoicedomain "github.com/PhuPhuoc/curanest-appointment-service/module/invoice/domain"
 	svcpackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/domain"
 )
 
 type createCusPackageAndTaskHandler struct {
-	cmdRepo           CusPackageCommandRepo
-	svcPackageFetcher SvcPackageFetcher
+	cmdRepo            CusPackageCommandRepo
+	svcPackageFetcher  SvcPackageFetcher
+	appointmentFetcher AppointmentFetcher
+	invoiceFetcher     InvoiceFetcher
+	txManager          common.TransactionManager
 }
 
-func NewCreateCusPackageAndTaskHandler(cmdRepo CusPackageCommandRepo, svcPackageFetcher SvcPackageFetcher) *createCusPackageAndTaskHandler {
+func NewCreateCusPackageAndTaskHandler(
+	cmdRepo CusPackageCommandRepo,
+	svcPackageFetcher SvcPackageFetcher,
+	appointmentFetcher AppointmentFetcher,
+	invoiceFetcher InvoiceFetcher,
+	txManager common.TransactionManager,
+) *createCusPackageAndTaskHandler {
 	return &createCusPackageAndTaskHandler{
-		cmdRepo:           cmdRepo,
-		svcPackageFetcher: svcPackageFetcher,
+		cmdRepo:            cmdRepo,
+		svcPackageFetcher:  svcPackageFetcher,
+		appointmentFetcher: appointmentFetcher,
+		invoiceFetcher:     invoiceFetcher,
+		txManager:          txManager,
 	}
 }
 
 func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCreatePackageTaskDTO) error {
+	ctx, err := h.txManager.Begin(ctx)
+	if err != nil {
+		return common.NewInternalServerError().
+			WithReason("cannot start transaction").
+			WithInner(err.Error())
+	}
+	defer func() {
+		if p := recover(); p != nil {
+			h.txManager.Rollback(ctx)
+			panic(p)
+		} else if err != nil {
+			h.txManager.Rollback(ctx)
+		}
+	}()
+
 	dates := req.Dates
 	customizedPackage := req.PackageInfo
 	customizedTasks := req.TaskInfos
 
 	// verify tasks len
-	if err := verifyLenOfTask(customizedTasks); err != nil {
+	if err = verifyLenOfTask(customizedTasks); err != nil {
 		return err
 	}
 
@@ -39,25 +68,13 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 	if err != nil {
 		return err
 	}
+	// generate uuid of customized-package to create customized-task
+	cusPackageId := common.GenUUID()
 
 	// verify the valid of dates
-	if err := verifyDates(servicePackage.GetComboDays(), servicePackage.GetTimeInterVal(), dates); err != nil {
+	if err = verifyDates(servicePackage.GetComboDays(), servicePackage.GetTimeInterVal(), dates); err != nil {
 		return err
 	}
-
-	// create dto for creating entity later
-	cusPackageId := common.GenUUID()
-	cusPackageEntity, _ := cuspackagedomain.NewCustomizedPackage(
-		cusPackageId,
-		servicePackage.GetID(),
-		customizedPackage.PatientId,
-		servicePackage.GetName(),
-		customizedPackage.TotalFee,
-		0,
-		customizedPackage.TotalFee,
-		cuspackagedomain.PaymentStatusUnpaid,
-		nil,
-	)
 
 	// get list service task of service package above -> to verify customized task before create them
 	serviceTasks, err := h.fetchServiceTasks(ctx, servicePackage.GetID())
@@ -65,19 +82,49 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		return err
 	}
 
-	cusTaskEnties, err := validateCustomizedTasks(cusPackageId, serviceTasks, customizedTasks, dates)
+	cusTaskEnties, totalFee, err := validateCustomizedTasks(cusPackageId, serviceTasks, customizedTasks, dates)
 	if err != nil {
 		return err
 	}
 
-	if err := h.SavePackageAndTasks(ctx, cusPackageEntity, cusTaskEnties); err != nil {
+	// create complete dto for creating entity
+	cusPackageEntity, _ := cuspackagedomain.NewCustomizedPackage(
+		cusPackageId,
+		servicePackage.GetID(),
+		customizedPackage.PatientId,
+		servicePackage.GetName(),
+		totalFee,
+		0,
+		totalFee,
+		cuspackagedomain.PaymentStatusUnpaid,
+		nil,
+	)
+
+	if err = h.savePackageAndTasks(ctx, cusPackageEntity, cusTaskEnties); err != nil {
 		return err
+	}
+
+	// create appointment
+	if err = h.saveAppointment(ctx, dates, req.NursingId, req.PatientId, cusPackageEntity); err != nil {
+		return err
+	}
+
+	// create invoice
+	if err = h.saveInvoice(ctx, cusPackageEntity.GetID(), cusPackageEntity.GetTotalFee()); err != nil {
+		return err
+	}
+
+	// Commit transaction if all services created successfully
+	if err = h.txManager.Commit(ctx); err != nil {
+		return common.NewInternalServerError().
+			WithReason("cannot commit transaction").
+			WithInner(err.Error())
 	}
 
 	return nil
 }
 
-func (h *createCusPackageAndTaskHandler) SavePackageAndTasks(ctx context.Context, packageEntity *cuspackagedomain.CustomizedPackage, taskEnties []cuspackagedomain.CustomizedTask) error {
+func (h *createCusPackageAndTaskHandler) savePackageAndTasks(ctx context.Context, packageEntity *cuspackagedomain.CustomizedPackage, taskEnties []cuspackagedomain.CustomizedTask) error {
 	// create customized package after verify
 	if err := h.cmdRepo.CreateCustomizedPackage(ctx, packageEntity); err != nil {
 		return common.NewInternalServerError().
@@ -88,6 +135,52 @@ func (h *createCusPackageAndTaskHandler) SavePackageAndTasks(ctx context.Context
 	if err := h.cmdRepo.CreateCustomizedTasks(ctx, taskEnties); err != nil {
 		return common.NewInternalServerError().
 			WithReason("cannot create customized-tasks").
+			WithInner(err.Error())
+	}
+
+	return nil
+}
+
+func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, dates []time.Time, nursingId *uuid.UUID, patientId uuid.UUID, cusPackageEntity *cuspackagedomain.CustomizedPackage) error {
+	appointmentEnties := make([]appointmentdomain.Appointment, len(dates))
+	for i, date := range dates {
+		appointmentId := common.GenUUID()
+		appointmentEntity, _ := appointmentdomain.NewAppointment(
+			appointmentId,
+			cusPackageEntity.GetServicePackageID(),
+			cusPackageEntity.GetID(),
+			patientId,
+			nursingId,
+			appointmentdomain.AppStatusWaiting,
+			date,
+			nil,
+			nil,
+		)
+		appointmentEnties[i] = *appointmentEntity
+	}
+
+	if err := h.appointmentFetcher.CreateAppointments(ctx, appointmentEnties); err != nil {
+		return common.NewInternalServerError().
+			WithReason("cannot create appointments").
+			WithInner(err.Error())
+	}
+	return nil
+}
+
+func (h *createCusPackageAndTaskHandler) saveInvoice(ctx context.Context, cusPackageId uuid.UUID, totalFee float64) error {
+	invoiceId := common.GenUUID()
+	entity, _ := invoicedomain.NewInvoice(
+		invoiceId,
+		cusPackageId,
+		totalFee,
+		invoicedomain.PaymentStatusUnpaid,
+		invoicedomain.PaymentTypeWallet,
+		"",
+		nil,
+	)
+	if err := h.invoiceFetcher.CreateInvoice(ctx, entity); err != nil {
+		return common.NewInternalServerError().
+			WithReason("cannot create invoice for this service").
 			WithInner(err.Error())
 	}
 
@@ -142,7 +235,7 @@ func (h *createCusPackageAndTaskHandler) fetchServiceTasks(ctx context.Context, 
 	return svcTasks, nil
 }
 
-func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.ServiceTask, cusTask []CreateCustomizedTaskDTO, dates []time.Time) ([]cuspackagedomain.CustomizedTask, error) {
+func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.ServiceTask, cusTask []CreateCustomizedTaskDTO, dates []time.Time) ([]cuspackagedomain.CustomizedTask, float64, error) {
 	// create custask map to compare with service task and verify all field before create customized task
 	cusTaskMap := make(map[uuid.UUID]CreateCustomizedTaskDTO)
 	for _, item := range cusTask {
@@ -157,7 +250,7 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 		if _, existed := cusTaskMap[item.GetID()]; !existed {
 			if item.GetIsMustHave() {
 				mess := "task (with id: " + item.GetID().String() + " ) must be included in this service"
-				return []cuspackagedomain.CustomizedTask{}, common.NewBadRequestError().WithReason(mess)
+				return []cuspackagedomain.CustomizedTask{}, 0, common.NewBadRequestError().WithReason(mess)
 			}
 		}
 	}
@@ -166,7 +259,7 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 	for _, item := range cusTask {
 		if _, existed := svcTaskMap[item.SvcTaskId]; !existed {
 			mess := "task (with id: " + item.SvcTaskId.String() + " ) is not included in this service"
-			return []cuspackagedomain.CustomizedTask{}, common.NewBadRequestError().WithReason(mess)
+			return []cuspackagedomain.CustomizedTask{}, 0, common.NewBadRequestError().WithReason(mess)
 		}
 	}
 
@@ -174,6 +267,8 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 	// *** verify customized package is valid and handle package combo
 	// ***
 
+	// total fee of the service
+	var total float64
 	// after verify custask from request body -> change dto to entity(domain)
 	cusTaskEnties := make([]cuspackagedomain.CustomizedTask, len(cusTask))
 	for _, estDate := range dates {
@@ -196,8 +291,9 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 				cuspackagedomain.CusTaskStatusNotDone,
 			)
 			cusTaskEnties[i] = *custask
+			total += item.TotalCost
 		}
 	}
 
-	return cusTaskEnties, nil
+	return cusTaskEnties, total, nil
 }
