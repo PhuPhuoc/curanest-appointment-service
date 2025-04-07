@@ -8,16 +8,6 @@ definitions:
       thumbnail:
         type: string
     type: object
-  cuspackagecommands.CreateCustomizedPackageDTO:
-    properties:
-      patient-id:
-        type: string
-      svcpackage-id:
-        type: string
-    required:
-    - patient-id
-    - svcpackage-id
-    type: object
   cuspackagecommands.CreateCustomizedTaskDTO:
     properties:
       client-note:
@@ -41,14 +31,16 @@ definitions:
         type: array
       nursing-id:
         type: string
-      package-info:
-        $ref: '#/definitions/cuspackagecommands.CreateCustomizedPackageDTO'
       patient-id:
+        type: string
+      svcpackage-id:
         type: string
       task-infos:
         items:
           $ref: '#/definitions/cuspackagecommands.CreateCustomizedTaskDTO'
         type: array
+    required:
+    - svcpackage-id
     type: object
   servicecommands.CreateServiceDTO:
     properties:

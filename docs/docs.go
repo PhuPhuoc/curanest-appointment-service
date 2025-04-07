@@ -783,21 +783,6 @@ const docTemplate = `{
                 }
             }
         },
-        "cuspackagecommands.CreateCustomizedPackageDTO": {
-            "type": "object",
-            "required": [
-                "patient-id",
-                "svcpackage-id"
-            ],
-            "properties": {
-                "patient-id": {
-                    "type": "string"
-                },
-                "svcpackage-id": {
-                    "type": "string"
-                }
-            }
-        },
         "cuspackagecommands.CreateCustomizedTaskDTO": {
             "type": "object",
             "required": [
@@ -823,6 +808,9 @@ const docTemplate = `{
         },
         "cuspackagecommands.ReqCreatePackageTaskDTO": {
             "type": "object",
+            "required": [
+                "svcpackage-id"
+            ],
             "properties": {
                 "dates": {
                     "type": "array",
@@ -833,10 +821,10 @@ const docTemplate = `{
                 "nursing-id": {
                     "type": "string"
                 },
-                "package-info": {
-                    "$ref": "#/definitions/cuspackagecommands.CreateCustomizedPackageDTO"
-                },
                 "patient-id": {
+                    "type": "string"
+                },
+                "svcpackage-id": {
                     "type": "string"
                 },
                 "task-infos": {

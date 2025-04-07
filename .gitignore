@@ -8,4 +8,5 @@ appointment_service_migration_script.sql
 service_packages.sql
 service_tasks.sql
 services.sql
+categories.sql
 

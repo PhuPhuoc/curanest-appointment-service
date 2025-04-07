@@ -16,7 +16,7 @@ func (repo *cusPackageRepo) CreateCustomizedTasks(ctx context.Context, entities 
 	if tx := common.GetTxFromContext(ctx); tx != nil {
 		stmt, err := tx.PrepareNamedContext(ctx, query)
 		if err != nil {
-			return fmt.Errorf("prepare statement failed: %w", err)
+			return fmt.Errorf("[create-tasks] prepare statement failed: %w", err)
 		}
 		defer stmt.Close()
 
@@ -24,7 +24,7 @@ func (repo *cusPackageRepo) CreateCustomizedTasks(ctx context.Context, entities 
 			dto := ToCusTaskDTO(&entity)
 			_, err := stmt.ExecContext(ctx, dto)
 			if err != nil {
-				return fmt.Errorf("insert failed at index %d: %w", i, err)
+				return fmt.Errorf("[create-tasks] insert failed at index %d: %w", i, err)
 			}
 		}
 		return nil
@@ -34,7 +34,7 @@ func (repo *cusPackageRepo) CreateCustomizedTasks(ctx context.Context, entities 
 	var tx *sqlx.Tx
 	tx, err = repo.db.Beginx()
 	if err != nil {
-		return fmt.Errorf("cannot begin transaction: %w", err)
+		return fmt.Errorf("[create-tasks] cannot begin transaction: %w", err)
 	}
 
 	defer func() {
@@ -50,7 +50,7 @@ func (repo *cusPackageRepo) CreateCustomizedTasks(ctx context.Context, entities 
 
 	stmt, err := tx.PrepareNamedContext(ctx, query)
 	if err != nil {
-		return fmt.Errorf("prepare statement failed: %w", err)
+		return fmt.Errorf("[create-tasks] prepare statement failed: %w", err)
 	}
 	defer stmt.Close()
 
@@ -58,7 +58,7 @@ func (repo *cusPackageRepo) CreateCustomizedTasks(ctx context.Context, entities 
 		dto := ToCusTaskDTO(&entity)
 		_, err = stmt.ExecContext(ctx, dto)
 		if err != nil {
-			return fmt.Errorf("insert failed at index %d: %w", i, err)
+			return fmt.Errorf("[create-tasks] insert failed at index %d: %w", i, err)
 		}
 	}
 

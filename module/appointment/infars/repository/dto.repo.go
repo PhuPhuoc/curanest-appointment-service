@@ -9,9 +9,9 @@ import (
 )
 
 var (
-	TABLE_CUSPACKAGE = `customized_packages`
+	TABLE_APPOINTMENT = `appointments`
 
-	CREATE_CUSPACKAGE = []string{
+	CREATE_APPOINTMENT = []string{
 		"id",
 		"service_id",
 		"customized_package_id",
@@ -22,7 +22,7 @@ var (
 		"status",
 	}
 
-	GET_CUSPACKAGE = []string{
+	GET_APPOINTMENT = []string{
 		"id",
 		"service_id",
 		"customized_package_id",
@@ -33,7 +33,7 @@ var (
 		"created_at",
 	}
 
-	UPDATE_CUSPACKAGE = []string{
+	UPDATE_APPOINTMENT = []string{
 		"nursing_id",
 		"act_date",
 	}
@@ -41,13 +41,13 @@ var (
 
 type AppointmentDTO struct {
 	Id                  uuid.UUID  `db:"id"`
-	ServiceId           uuid.UUID  `db:"service_package_id"`
-	CustomizedPackageId uuid.UUID  `db:"patient_id"`
-	NursingId           *uuid.UUID `db:"patient_id"`
+	ServiceId           uuid.UUID  `db:"service_id"`
+	CustomizedPackageId uuid.UUID  `db:"customized_package_id"`
+	NursingId           *uuid.UUID `db:"nursing_id"`
 	PatientId           uuid.UUID  `db:"patient_id"`
-	EstDate             time.Time  `db:"created_at"`
-	ActDate             *time.Time `db:"created_at"`
-	Status              string     `db:"created_at"`
+	EstDate             time.Time  `db:"est_date"`
+	ActDate             *time.Time `db:"act_date"`
+	Status              string     `db:"status"`
 	CreatedAt           *time.Time `db:"created_at"`
 }
 

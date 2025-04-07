@@ -55,16 +55,16 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 	}()
 
 	dates := req.Dates
-	customizedPackage := req.PackageInfo
 	customizedTasks := req.TaskInfos
 
+	fmt.Println("patient-id: ", req.PatientId)
 	// verify tasks len
 	if err = verifyLenOfTask(customizedTasks); err != nil {
 		return err
 	}
 
 	// get service package to create and verify customized package
-	servicePackage, err := h.fetchServicePackage(ctx, customizedPackage.SvcPackageId)
+	servicePackage, err := h.fetchServicePackage(ctx, req.SvcPackageId)
 	if err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 	cusPackageId := common.GenUUID()
 
 	// verify the valid of dates
-	if err = verifyDates(servicePackage.GetComboDays(), servicePackage.GetTimeInterVal(), dates); err != nil {
+	if err := verifyDates(servicePackage.GetComboDays(), servicePackage.GetTimeInterVal(), dates); err != nil {
 		return err
 	}
 
@@ -91,7 +91,7 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 	cusPackageEntity, _ := cuspackagedomain.NewCustomizedPackage(
 		cusPackageId,
 		servicePackage.GetID(),
-		customizedPackage.PatientId,
+		req.PatientId,
 		servicePackage.GetName(),
 		totalFee,
 		0,
@@ -100,12 +100,21 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		nil,
 	)
 
-	if err = h.savePackageAndTasks(ctx, cusPackageEntity, cusTaskEnties); err != nil {
+	recordEntity, _ := cuspackagedomain.NewMedicalRecord(
+		common.GenUUID(),
+		cusPackageId,
+		req.NursingId,
+		"",
+		"",
+		cuspackagedomain.RecordStatusNotDone,
+		nil)
+
+	if err = h.savePackageAndTasks(ctx, cusPackageEntity, cusTaskEnties, recordEntity); err != nil {
 		return err
 	}
 
 	// create appointment
-	if err = h.saveAppointment(ctx, dates, req.NursingId, req.PatientId, cusPackageEntity); err != nil {
+	if err = h.saveAppointment(ctx, dates, servicePackage.GetServiceID(), req.NursingId, req.PatientId, cusPackageEntity); err != nil {
 		return err
 	}
 
@@ -124,7 +133,12 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 	return nil
 }
 
-func (h *createCusPackageAndTaskHandler) savePackageAndTasks(ctx context.Context, packageEntity *cuspackagedomain.CustomizedPackage, taskEnties []cuspackagedomain.CustomizedTask) error {
+func (h *createCusPackageAndTaskHandler) savePackageAndTasks(
+	ctx context.Context,
+	packageEntity *cuspackagedomain.CustomizedPackage,
+	taskEnties []cuspackagedomain.CustomizedTask,
+	recordEntity *cuspackagedomain.MedicalRecord,
+) error {
 	// create customized package after verify
 	if err := h.cmdRepo.CreateCustomizedPackage(ctx, packageEntity); err != nil {
 		return common.NewInternalServerError().
@@ -138,16 +152,21 @@ func (h *createCusPackageAndTaskHandler) savePackageAndTasks(ctx context.Context
 			WithInner(err.Error())
 	}
 
+	if err := h.cmdRepo.CreateMedicalRecord(ctx, recordEntity); err != nil {
+		return common.NewInternalServerError().
+			WithReason("cannot create medical-record").
+			WithInner(err.Error())
+	}
 	return nil
 }
 
-func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, dates []time.Time, nursingId *uuid.UUID, patientId uuid.UUID, cusPackageEntity *cuspackagedomain.CustomizedPackage) error {
+func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, dates []time.Time, serviceId uuid.UUID, nursingId *uuid.UUID, patientId uuid.UUID, cusPackageEntity *cuspackagedomain.CustomizedPackage) error {
 	appointmentEnties := make([]appointmentdomain.Appointment, len(dates))
 	for i, date := range dates {
 		appointmentId := common.GenUUID()
 		appointmentEntity, _ := appointmentdomain.NewAppointment(
 			appointmentId,
-			cusPackageEntity.GetServicePackageID(),
+			serviceId,
 			cusPackageEntity.GetID(),
 			patientId,
 			nursingId,
@@ -174,7 +193,6 @@ func (h *createCusPackageAndTaskHandler) saveInvoice(ctx context.Context, cusPac
 		cusPackageId,
 		totalFee,
 		invoicedomain.PaymentStatusUnpaid,
-		invoicedomain.PaymentTypeWallet,
 		"",
 		nil,
 	)

@@ -9,27 +9,27 @@ import (
 
 type MedicalRecord struct {
 	id            uuid.UUID
-	cusTaskId     uuid.UUID
 	nursingId     *uuid.UUID
+	cusPackageId  uuid.UUID
 	nursingReport string
-	staffAdvice   string
-	status        string
+	staffConfirm  string
+	status        RecordStatus
 	createdAt     *time.Time
 }
 
 func NewMedicalRecord(
-	id, cusTaskId uuid.UUID,
+	id, cusPackageId uuid.UUID,
 	nursingId *uuid.UUID,
-	nursingReport, staffAdvice string,
-	status string,
+	nursingReport, staffConfirm string,
+	status RecordStatus,
 	createdAt *time.Time,
 ) (*MedicalRecord, error) {
 	return &MedicalRecord{
 		id:            id,
-		cusTaskId:     cusTaskId,
+		cusPackageId:  cusPackageId,
 		nursingId:     nursingId,
 		nursingReport: nursingReport,
-		staffAdvice:   staffAdvice,
+		staffConfirm:  staffConfirm,
 		status:        status,
 		createdAt:     createdAt,
 	}, nil
@@ -39,8 +39,8 @@ func (a *MedicalRecord) GetID() uuid.UUID {
 	return a.id
 }
 
-func (a *MedicalRecord) GetCusTaskId() uuid.UUID {
-	return a.cusTaskId
+func (a *MedicalRecord) GetCusPackageId() uuid.UUID {
+	return a.cusPackageId
 }
 
 func (a *MedicalRecord) GetNursingId() *uuid.UUID {
@@ -51,11 +51,11 @@ func (a *MedicalRecord) GetNursingReport() string {
 	return a.nursingReport
 }
 
-func (a *MedicalRecord) GetStaffAdvice() string {
-	return a.staffAdvice
+func (a *MedicalRecord) GetStaffConfirm() string {
+	return a.staffConfirm
 }
 
-func (a *MedicalRecord) GetStatus() string {
+func (a *MedicalRecord) GetStatus() RecordStatus {
 	return a.status
 }
 

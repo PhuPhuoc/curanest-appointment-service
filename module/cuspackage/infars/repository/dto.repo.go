@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	TABLE_CUSPACKAGE = `customized_packages`
-	TABLE_CUSTASK    = `customized_tasks`
+	TABLE_CUSPACKAGE    = `customized_packages`
+	TABLE_CUSTASK       = `customized_tasks`
+	TABLE_MEDICALRECORD = `medical_records`
 
 	CREATE_CUSPACKAGE = []string{
 		"id",
@@ -36,6 +37,14 @@ var (
 		"unit",
 		"est_date",
 		"act_date",
+		"status",
+	}
+	CREATE_MEDICALRECORD = []string{
+		"id",
+		"nursing_id",
+		"customized_package_id",
+		"nursing_report",
+		"staff_confirmation",
 		"status",
 	}
 
@@ -65,6 +74,15 @@ var (
 		"act_date",
 		"status",
 	}
+	GET_MEDICALRECORD = []string{
+		"id",
+		"nursing_id",
+		"customized_package_id",
+		"nursing_report",
+		"staff_confirmation",
+		"status",
+		"created_at",
+	}
 
 	UPDATE_CUSPACKAGE = []string{
 		"total_fee",
@@ -72,13 +90,19 @@ var (
 		"unpaid_amount",
 		"payment_status",
 	}
-	UPDATE_FIELD_TASK = []string{
+	UPDATE_TASK = []string{
 		"client_note",
 		"est_duration",
 		"total_cost",
 		"total_unit",
 		"unit",
 		"act_date",
+		"status",
+	}
+	UPDATE_MEDICALRECORD = []string{
+		"nursing_id",
+		"nursing_report",
+		"staff_confirmation",
 		"status",
 	}
 )
@@ -174,5 +198,38 @@ func ToCusTaskDTO(data *cuspackagedomain.CustomizedTask) *CusTaskDTO {
 		EstDate:      data.GetEstDate(),
 		ActDate:      data.GetActDate(),
 		Status:       data.GetStatus().String(),
+	}
+}
+
+type MedicalRecordDTO struct {
+	Id                  uuid.UUID  `db:"id"`
+	NursingId           *uuid.UUID `db:"nursing_id"`
+	CustomizedPackageId uuid.UUID  `db:"customized_package_id"`
+	NursingReport       string     `db:"nursing_report"`
+	StaffConfirmation   string     `db:"staff_confirmation"`
+	Status              string     `db:"status"`
+	CreatedAt           *time.Time `db:"created_at"`
+}
+
+func (dto *MedicalRecordDTO) ToMedicalRecordEntity() (*cuspackagedomain.MedicalRecord, error) {
+	return cuspackagedomain.NewMedicalRecord(
+		dto.Id,
+		dto.CustomizedPackageId,
+		dto.NursingId,
+		dto.NursingReport,
+		dto.StaffConfirmation,
+		cuspackagedomain.EnumRecordStatus(dto.Status),
+		dto.CreatedAt,
+	)
+}
+
+func ToMedicalRecordDTO(data *cuspackagedomain.MedicalRecord) *MedicalRecordDTO {
+	return &MedicalRecordDTO{
+		Id:                  data.GetID(),
+		NursingId:           data.GetNursingId(),
+		CustomizedPackageId: data.GetCusPackageId(),
+		NursingReport:       data.GetNursingReport(),
+		StaffConfirmation:   data.GetStaffConfirm(),
+		Status:              data.GetStatus().String(),
 	}
 }

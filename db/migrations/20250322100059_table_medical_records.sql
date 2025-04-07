@@ -3,14 +3,14 @@
 CREATE TABLE `medical_records` (
     `id` varchar(36) NOT NULL,
     `nursing_id` varchar(36),
-    `customized_task_id` varchar(36) NOT NULL,
+    `customized_package_id` varchar(36) NOT NULL,
     `nursing_report` text,
-    `staff_advise` text,
+    `staff_confirmation` text,
     `status` enum('not_done','done') DEFAULT 'not_done',
     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
     `deleted_at` datetime,
     PRIMARY KEY (`id`),
-    CONSTRAINT `invoices_customizedtaskid_fk` FOREIGN KEY (`customized_task_id`) REFERENCES `customized_tasks` (`id`) ON UPDATE CASCADE
+    CONSTRAINT `medicalrecords_customizedpackageid_fk` FOREIGN KEY (`customized_package_id`) REFERENCES `customized_packages` (`id`) ON UPDATE CASCADE
 );
 -- +goose StatementEnd
 
