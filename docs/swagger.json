@@ -7,6 +7,77 @@
         "version": "1.0"
     },
     "paths": {
+        "/api/v1/appointments": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get appointment by filter option",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "get appointment by filter option",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "service ID (UUID)",
+                        "name": "service-id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "customized package ID (UUID)",
+                        "name": "cuspackage-id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "nursing ID (UUID)",
+                        "name": "nursing-id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "patient ID (UUID)",
+                        "name": "patient-id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "est date from (YYYY-MM-DD)",
+                        "name": "est-date-from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "est date to (YYYY-MM-DD)",
+                        "name": "est-date-to",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/categories": {
             "get": {
                 "security": [

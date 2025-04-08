@@ -16,6 +16,9 @@ import (
 	"github.com/PhuPhuoc/curanest-appointment-service/config"
 	"github.com/PhuPhuoc/curanest-appointment-service/docs"
 	"github.com/PhuPhuoc/curanest-appointment-service/middleware"
+	appointmenthttpservice "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/infars/httpservice"
+	apppointmentcommands "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/usecase/commands"
+	appointmentqueries "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/usecase/queries"
 	categoryhttpservice "github.com/PhuPhuoc/curanest-appointment-service/module/category/infars/httpservice"
 	categorycommands "github.com/PhuPhuoc/curanest-appointment-service/module/category/usecase/commands"
 	categoryqueries "github.com/PhuPhuoc/curanest-appointment-service/module/category/usecase/queries"
@@ -123,6 +126,14 @@ func (sv *server) RunApp() error {
 		builder.NewCusPackageBuilder(sv.db),
 	)
 
+	appointment_cmd_builder := apppointmentcommands.NewAppointmentCmdWithBuilder(
+		builder.NewAppointmentBuilder(sv.db),
+	)
+	appointment_query_builder := appointmentqueries.NewAppointmentQueryWithBuilder(
+
+		builder.NewAppointmentBuilder(sv.db),
+	)
+
 	api := router.Group("/api/v1")
 	{
 		categoryhttpservice.NewCategoryHTTPService(
@@ -143,6 +154,11 @@ func (sv *server) RunApp() error {
 		cuspackagehttpservice.NewSvcPackageHTTPService(
 			cuspackage_cmd_builder,
 			cuspackage_query_builder,
+		).AddAuth(authClient).Routes(api)
+
+		appointmenthttpservice.NewAppointmentHTTPService(
+			appointment_cmd_builder,
+			appointment_query_builder,
 		).AddAuth(authClient).Routes(api)
 	}
 

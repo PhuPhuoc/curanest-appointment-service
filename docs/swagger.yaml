@@ -203,6 +203,52 @@ info:
   title: Appointment Service
   version: "1.0"
 paths:
+  /api/v1/appointments:
+    get:
+      consumes:
+      - application/json
+      description: get appointment by filter option
+      parameters:
+      - description: service ID (UUID)
+        in: query
+        name: service-id
+        type: string
+      - description: customized package ID (UUID)
+        in: query
+        name: cuspackage-id
+        type: string
+      - description: nursing ID (UUID)
+        in: query
+        name: nursing-id
+        type: string
+      - description: patient ID (UUID)
+        in: query
+        name: patient-id
+        type: string
+      - description: est date from (YYYY-MM-DD)
+        in: query
+        name: est-date-from
+        type: string
+      - description: est date to (YYYY-MM-DD)
+        in: query
+        name: est-date-to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: get appointment by filter option
+      tags:
+      - appointments
   /api/v1/categories:
     get:
       consumes:
