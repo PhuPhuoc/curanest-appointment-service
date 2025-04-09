@@ -42,11 +42,11 @@ func (repo *appointmentRepo) GetAppointment(ctx context.Context, filter *appoint
 			args = append(args, filter.AppointmentStatus.String())
 		}
 		if filter.EstDateFrom != nil && !filter.EstDateFrom.IsZero() {
-			whereConditions = append(whereConditions, "estimated_date >= ?")
+			whereConditions = append(whereConditions, "est_date >= ?")
 			args = append(args, filter.EstDateFrom.Format("2006-01-02"))
 		}
 		if filter.EstDateTo != nil && !filter.EstDateTo.IsZero() {
-			whereConditions = append(whereConditions, "estimated_date <= ?")
+			whereConditions = append(whereConditions, "est_date <= ?")
 			args = append(args, filter.EstDateTo.Format("2006-01-02"))
 		}
 	}
