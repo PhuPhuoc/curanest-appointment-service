@@ -491,6 +491,33 @@ paths:
       summary: create customized service package and task (client)
       tags:
       - customized packages
+  /api/v1/cuspackage/{cus-package-id}/invoices:
+    get:
+      consumes:
+      - application/json
+      description: find invoices with cus-package-id
+      parameters:
+      - description: customized-package ID (UUID)
+        in: path
+        name: cus-package-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: find invoices with cus-package-id
+      tags:
+      - invoices
   /api/v1/services/{service-id}/svcpackage:
     get:
       consumes:

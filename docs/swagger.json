@@ -452,6 +452,48 @@
                 }
             }
         },
+        "/api/v1/cuspackage/{cus-package-id}/invoices": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find invoices with cus-package-id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "invoices"
+                ],
+                "summary": "find invoices with cus-package-id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "customized-package ID (UUID)",
+                        "name": "cus-package-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/services/group-by-category": {
             "get": {
                 "description": "get list service with category (guest)",
