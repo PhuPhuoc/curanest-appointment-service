@@ -225,6 +225,14 @@ paths:
         in: query
         name: patient-id
         type: string
+      - description: had a nurse not not
+        in: query
+        name: had-nurse
+        type: string
+      - description: appointment status
+        in: query
+        name: appointment-status
+        type: string
       - description: est date from (YYYY-MM-DD)
         in: query
         name: est-date-from

@@ -30,6 +30,7 @@ var (
 		"patient_id",
 		"est_date",
 		"act_date",
+		"status",
 		"created_at",
 	}
 

@@ -9,12 +9,14 @@ import (
 )
 
 type FilterGetAppointmentDTO struct {
-	ServiceId    *uuid.UUID `json:"service-id,omitempty"`
-	CusPackageId *uuid.UUID `json:"cuspackage-id,omitempty"`
-	NursingId    *uuid.UUID `json:"nursing-id,omitempty"`
-	PatientId    *uuid.UUID `json:"patient-id,omitempty"`
-	EstDateFrom  *time.Time `json:"est-date-from,omitempty"`
-	EstDateTo    *time.Time `json:"est-date-to,omitempty"`
+	ServiceId         *uuid.UUID                           `json:"service-id,omitempty"`
+	CusPackageId      *uuid.UUID                           `json:"cuspackage-id,omitempty"`
+	NursingId         *uuid.UUID                           `json:"nursing-id,omitempty"`
+	PatientId         *uuid.UUID                           `json:"patient-id,omitempty"`
+	HadNurse          *bool                                `json:"had-nurse,omitempty"`
+	AppointmentStatus *appointmentdomain.AppointmentStatus `json:"appointment-status,omitempty" binding:"oneof=success waiting confirmed refused change"`
+	EstDateFrom       *time.Time                           `json:"est-date-from,omitempty"`
+	EstDateTo         *time.Time                           `json:"est-date-to,omitempty"`
 }
 
 type AppointmentDTO struct {

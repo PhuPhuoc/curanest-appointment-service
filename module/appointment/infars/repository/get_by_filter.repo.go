@@ -30,6 +30,17 @@ func (repo *appointmentRepo) GetAppointment(ctx context.Context, filter *appoint
 			whereConditions = append(whereConditions, "patient_id = ?")
 			args = append(args, filter.PatientId.String())
 		}
+		if filter.HadNurse != nil {
+			if *filter.HadNurse {
+				whereConditions = append(whereConditions, "nursing_id is not null")
+			} else {
+				whereConditions = append(whereConditions, "nursing_id is null")
+			}
+		}
+		if filter.AppointmentStatus != nil && filter.AppointmentStatus.String() != "" {
+			whereConditions = append(whereConditions, "status = ?")
+			args = append(args, filter.AppointmentStatus.String())
+		}
 		if filter.EstDateFrom != nil && !filter.EstDateFrom.IsZero() {
 			whereConditions = append(whereConditions, "estimated_date >= ?")
 			args = append(args, filter.EstDateFrom.Format("2006-01-02"))

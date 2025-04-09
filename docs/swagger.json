@@ -52,6 +52,18 @@
                     },
                     {
                         "type": "string",
+                        "description": "had a nurse not not",
+                        "name": "had-nurse",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "appointment status",
+                        "name": "appointment-status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "est date from (YYYY-MM-DD)",
                         "name": "est-date-from",
                         "in": "query"
