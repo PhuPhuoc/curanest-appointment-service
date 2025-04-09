@@ -370,6 +370,53 @@ const docTemplate = `{
             }
         },
         "/api/v1/cuspackage": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find customized-package \u0026 customized-tasks with Id and est-date",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customized packages"
+                ],
+                "summary": "find customized-package \u0026 customized-tasks with Id and est-date",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "customized-package ID (UUID)",
+                        "name": "cus-package-id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "est date (YYYY-MM-DD)",
+                        "name": "est-date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {

@@ -57,7 +57,6 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 	dates := req.Dates
 	customizedTasks := req.TaskInfos
 
-	fmt.Println("patient-id: ", req.PatientId)
 	// verify tasks len
 	if err = verifyLenOfTask(customizedTasks); err != nil {
 		return err
@@ -288,9 +287,9 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 	// total fee of the service
 	var total float64
 	// after verify custask from request body -> change dto to entity(domain)
-	cusTaskEnties := make([]cuspackagedomain.CustomizedTask, len(cusTask))
+	cusTaskEnties := []cuspackagedomain.CustomizedTask{}
 	for _, estDate := range dates {
-		for i, item := range cusTask {
+		for _, item := range cusTask {
 			svctask := svcTaskMap[item.SvcTaskId]
 			custask, _ := cuspackagedomain.NewCustomizedTask(
 				common.GenUUID(),
@@ -308,7 +307,7 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 				nil,
 				cuspackagedomain.CusTaskStatusNotDone,
 			)
-			cusTaskEnties[i] = *custask
+			cusTaskEnties = append(cusTaskEnties, *custask)
 			total += item.TotalCost
 		}
 	}

@@ -433,6 +433,37 @@ paths:
       tags:
       - categories
   /api/v1/cuspackage:
+    get:
+      consumes:
+      - application/json
+      description: find customized-package & customized-tasks with Id and est-date
+      parameters:
+      - description: customized-package ID (UUID)
+        in: query
+        name: cus-package-id
+        required: true
+        type: string
+      - description: est date (YYYY-MM-DD)
+        in: query
+        name: est-date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: find customized-package & customized-tasks with Id and est-date
+      tags:
+      - customized packages
     post:
       consumes:
       - application/json
