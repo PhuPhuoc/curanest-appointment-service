@@ -26,13 +26,22 @@ func (s *invoiceHttpService) AddAuth(auth middleware.AuthClient) *invoiceHttpSer
 }
 
 func (s *invoiceHttpService) Routes(g *gin.RouterGroup) {
-	cuspackage_route := g.Group("/cuspackage/:cus-package-id/invoices")
+	cuspackage_invoice_route := g.Group("/cuspackage/:cus-package-id/invoices")
 	{
-		cuspackage_route.GET(
+		cuspackage_invoice_route.GET(
 			"",
 			// middleware.RequireAuth(s.auth),
 			// middleware.RequireRole("relatives"),
 			s.handleFindInvoice(),
+		)
+	}
+	invoice_route := g.Group("/invoices")
+	{
+		invoice_route.GET(
+			"/:invoice-id/url-payment",
+			// middleware.RequireAuth(s.auth),
+			// middleware.RequireRole("relatives"),
+			s.handleGetUrlPaymentForInvoice(),
 		)
 	}
 }

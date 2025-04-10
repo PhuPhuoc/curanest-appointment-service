@@ -518,6 +518,33 @@ paths:
       summary: find invoices with cus-package-id
       tags:
       - invoices
+  /api/v1/invoices/{invoice-id}/url-payment:
+    get:
+      consumes:
+      - application/json
+      description: get url for payment with payos
+      parameters:
+      - description: invoice ID (UUID)
+        in: path
+        name: invoice-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: get url for payment with payos
+      tags:
+      - invoices
   /api/v1/services/{service-id}/svcpackage:
     get:
       consumes:

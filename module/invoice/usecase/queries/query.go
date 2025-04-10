@@ -9,7 +9,8 @@ import (
 )
 
 type Queries struct {
-	FindInvoice *findInvoiceHandler
+	FindInvoice    *findInvoiceHandler
+	GetInvoiceById *getInvoiceHandler
 }
 
 type Builder interface {
@@ -21,9 +22,13 @@ func NewInvoiceQueryWithBuilder(b Builder) Queries {
 		FindInvoice: NewFindInvoiceHandler(
 			b.BuildInvoiceQueryRepo(),
 		),
+		GetInvoiceById: NewGetInvoiceHandler(
+			b.BuildInvoiceQueryRepo(),
+		),
 	}
 }
 
 type InvoiceQueryRepo interface {
+	FindById(ctx context.Context, Id uuid.UUID) (*invoicedomain.Invoice, error)
 	FindByCusPackageId(ctx context.Context, cusPackageId uuid.UUID) ([]invoicedomain.Invoice, error)
 }

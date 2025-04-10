@@ -10,6 +10,7 @@ import (
 type Invoice struct {
 	id            uuid.UUID
 	cusPackageId  uuid.UUID
+	orderCode     int64
 	totalFee      float64
 	paymentStatus PaymentStatus
 	note          string
@@ -22,6 +23,10 @@ func (a *Invoice) GetID() uuid.UUID {
 
 func (a *Invoice) GetCusPackageID() uuid.UUID {
 	return a.cusPackageId
+}
+
+func (a *Invoice) GetOrderCode() int64 {
+	return a.orderCode
 }
 
 func (a *Invoice) GetTotalFee() float64 {
@@ -42,6 +47,7 @@ func (a *Invoice) GetCreatedAt() *time.Time {
 
 func NewInvoice(
 	id, cusPackageId uuid.UUID,
+	orderCode int64,
 	totalFee float64,
 	paymentStatus PaymentStatus,
 	note string,
@@ -50,6 +56,7 @@ func NewInvoice(
 	return &Invoice{
 		id:            id,
 		cusPackageId:  cusPackageId,
+		orderCode:     orderCode,
 		totalFee:      totalFee,
 		paymentStatus: paymentStatus,
 		note:          note,

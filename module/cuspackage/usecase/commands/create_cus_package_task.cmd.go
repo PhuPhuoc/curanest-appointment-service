@@ -3,6 +3,7 @@ package cuspackagecommands
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"time"
 
 	"github.com/google/uuid"
@@ -187,9 +188,12 @@ func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, da
 
 func (h *createCusPackageAndTaskHandler) saveInvoice(ctx context.Context, cusPackageId uuid.UUID, totalFee float64) error {
 	invoiceId := common.GenUUID()
+	orderCode := time.Now().Unix()*1000 + int64(rand.Intn(1000))
+
 	entity, _ := invoicedomain.NewInvoice(
 		invoiceId,
 		cusPackageId,
+		orderCode,
 		totalFee,
 		invoicedomain.PaymentStatusUnpaid,
 		"",

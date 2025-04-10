@@ -100,6 +100,7 @@ func (sv *server) RunApp() error {
 	router.GET("/ping", func(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"message": "curanest-appointment-service - pong"}) })
 
 	authClient := common.NewJWTx(config.AppConfig.Key)
+	payosConfig := common.NewPayOs(config.AppConfig.PayOsClientId, config.AppConfig.PayOsApiKey, config.AppConfig.PayOsCheckSumKey)
 
 	category_cmd_builder := categorycommands.NewCategoryCmdWithBuilder(
 		builder.NewCategoryBuilder(sv.db).AddUrlPathAccountService(urlAccServices),
@@ -138,7 +139,7 @@ func (sv *server) RunApp() error {
 	)
 
 	invoice_cmd_builder := invoicecommands.NewInvoiceCmdWithBuilder(
-		builder.NewInvoiceBuilder(sv.db),
+		builder.NewInvoiceBuilder(sv.db).AddPayOsConfig(*payosConfig),
 	)
 	invoice_query_builder := invoicequeries.NewInvoiceQueryWithBuilder(
 		builder.NewInvoiceBuilder(sv.db),
