@@ -43,10 +43,10 @@ func NewCreateCusPackageAndTaskHandler(
 	}
 }
 
-func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCreatePackageTaskDTO) error {
+func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCreatePackageTaskDTO) (*uuid.UUID, error) {
 	ctx, err := h.txManager.Begin(ctx)
 	if err != nil {
-		return common.NewInternalServerError().
+		return nil, common.NewInternalServerError().
 			WithReason("cannot start transaction").
 			WithInner(err.Error())
 	}
@@ -64,31 +64,31 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 
 	// verify tasks len
 	if err = verifyLenOfTask(customizedTasks); err != nil {
-		return err
+		return nil, err
 	}
 
 	// get service package to create and verify customized package
 	servicePackage, err := h.fetchServicePackage(ctx, req.SvcPackageId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	// generate uuid of customized-package to create customized-task
 	cusPackageId := common.GenUUID()
 
 	// verify the valid of dates
 	if err := verifyDates(servicePackage.GetComboDays(), servicePackage.GetTimeInterVal(), dates); err != nil {
-		return err
+		return nil, err
 	}
 
 	// get list service task of service package above -> to verify customized task before create them
 	serviceTasks, err := h.fetchServiceTasks(ctx, servicePackage.GetID())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	cusTaskEnties, totalFee, err := validateCustomizedTasks(cusPackageId, serviceTasks, customizedTasks, dates)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// create complete dto for creating entity
@@ -114,27 +114,28 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		nil)
 
 	if err = h.savePackageAndTasks(ctx, cusPackageEntity, cusTaskEnties, recordEntity); err != nil {
-		return err
+		return nil, err
 	}
 
 	// create appointment
 	if err = h.saveAppointment(ctx, dates, servicePackage.GetServiceID(), req.NursingId, req.PatientId, cusPackageEntity); err != nil {
-		return err
+		return nil, err
 	}
 
 	// create invoice
 	if err = h.saveInvoice(ctx, cusPackageEntity.GetID(), cusPackageEntity.GetTotalFee()); err != nil {
-		return err
+		return nil, err
 	}
 
 	// Commit transaction if all services created successfully
 	if err = h.txManager.Commit(ctx); err != nil {
-		return common.NewInternalServerError().
+		return nil, common.NewInternalServerError().
 			WithReason("cannot commit transaction").
 			WithInner(err.Error())
 	}
 
-	return nil
+	objId := cusPackageEntity.GetID()
+	return &objId, nil
 }
 
 func (h *createCusPackageAndTaskHandler) savePackageAndTasks(
@@ -199,8 +200,8 @@ func (h *createCusPackageAndTaskHandler) saveInvoice(ctx context.Context, cusPac
 		OrderCode:   orderCode,
 		Amount:      int(totalFee),
 		Description: "curanest",
-		CancelUrl:   "http://localhost:8080/cancel",
-		ReturnUrl:   "http://localhost:8080/success",
+		CancelUrl:   "https://curanest.com.vn/payment-result-fail",
+		ReturnUrl:   "https://curanest.com.vn/payment-result-success",
 	}
 
 	response, err := payos.CreatePaymentLink(paymentRequest)

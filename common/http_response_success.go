@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func ResponseSuccess(c *gin.Context, data interface{}) {
@@ -17,6 +18,14 @@ func ResponseCreated(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{
 		"success": true,
 		"message": "Created successfully",
+	})
+}
+
+func ResponseCreatedWithObjectId(c *gin.Context, id uuid.UUID) {
+	c.JSON(http.StatusCreated, gin.H{
+		"success":   true,
+		"message":   "Created successfully",
+		"object-id": id,
 	})
 }
 

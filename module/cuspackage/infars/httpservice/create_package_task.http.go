@@ -25,11 +25,12 @@ func (s *cusPackageHttpService) handleCreateCustomizedPackageAndTask() gin.Handl
 			return
 		}
 
-		if err := s.cmd.CreateCusPackageAndCusTask.Handle(ctx.Request.Context(), &dto); err != nil {
+		resp, err := s.cmd.CreateCusPackageAndCusTask.Handle(ctx.Request.Context(), &dto)
+		if err != nil {
 			common.ResponseError(ctx, err)
 			return
 		}
 
-		common.ResponseCreated(ctx)
+		common.ResponseCreatedWithObjectId(ctx, *resp)
 	}
 }
