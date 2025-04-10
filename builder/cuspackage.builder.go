@@ -15,6 +15,7 @@ import (
 type builderOfCusPackage struct {
 	db             *sqlx.DB
 	transactionMgr common.TransactionManager
+	payOS          common.PayOSConfig
 }
 
 func NewCusPackageBuilder(db *sqlx.DB) builderOfCusPackage {
@@ -22,6 +23,11 @@ func NewCusPackageBuilder(db *sqlx.DB) builderOfCusPackage {
 		db:             db,
 		transactionMgr: NewSQLxTransactionManager(db),
 	}
+}
+
+func (s builderOfCusPackage) AddPayOsConfig(payOS common.PayOSConfig) builderOfCusPackage {
+	s.payOS = payOS
+	return s
 }
 
 func (s builderOfCusPackage) BuildCusPackageCmdRepo() cuspackagecommands.CusPackageCommandRepo {
@@ -46,4 +52,8 @@ func (s builderOfCusPackage) BuildInvoiceFetcher() cuspackagecommands.InvoiceFet
 
 func (s builderOfCusPackage) BuildTransactionManager() common.TransactionManager {
 	return s.transactionMgr
+}
+
+func (s builderOfCusPackage) BuilderPayosConfig() common.PayOSConfig {
+	return s.payOS
 }

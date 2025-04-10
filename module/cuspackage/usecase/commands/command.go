@@ -22,6 +22,7 @@ type Builder interface {
 	BuildSvcPackageFetcher() SvcPackageFetcher
 	BuildAppointmentFetcher() AppointmentFetcher
 	BuildInvoiceFetcher() InvoiceFetcher
+	BuilderPayosConfig() common.PayOSConfig
 }
 
 func NewCusPackageCmdWithBuilder(b Builder) Commands {
@@ -32,6 +33,7 @@ func NewCusPackageCmdWithBuilder(b Builder) Commands {
 			b.BuildAppointmentFetcher(),
 			b.BuildInvoiceFetcher(),
 			b.BuildTransactionManager(),
+			b.BuilderPayosConfig(),
 		),
 	}
 }

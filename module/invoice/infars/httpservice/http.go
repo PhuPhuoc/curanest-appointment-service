@@ -35,13 +35,13 @@ func (s *invoiceHttpService) Routes(g *gin.RouterGroup) {
 			s.handleFindInvoice(),
 		)
 	}
-	invoice_route := g.Group("/invoices")
-	{
-		invoice_route.GET(
-			"/:invoice-id/url-payment",
-			// middleware.RequireAuth(s.auth),
-			// middleware.RequireRole("relatives"),
-			s.handleGetUrlPaymentForInvoice(),
-		)
-	}
+	// invoice_route := g.Group("/invoices")
+	// {
+	// 	invoice_route.GET(
+	// 		"/:invoice-id/url-payment",
+	// 		// middleware.RequireAuth(s.auth),
+	// 		// middleware.RequireRole("relatives"),
+	// 		s.handleGetUrlPaymentForInvoice(),
+	// 	)
+	// }
 }

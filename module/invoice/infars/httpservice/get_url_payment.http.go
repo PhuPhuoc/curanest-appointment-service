@@ -7,16 +7,6 @@ import (
 	"github.com/google/uuid"
 )
 
-//	@Summary		get url for payment with payos
-//	@Description	get url for payment with payos
-//	@Tags			invoices
-//	@Accept			json
-//	@Produce		json
-//	@Param			invoice-id	path		string					true	"invoice ID (UUID)"
-//	@Success		200			{object}	map[string]interface{}	"data"
-//	@Failure		400			{object}	error					"Bad request error"
-//	@Router			/api/v1/invoices/{invoice-id}/url-payment [get]
-//	@Security		ApiKeyAuth
 func (s *invoiceHttpService) handleGetUrlPaymentForInvoice() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		invoiceId := ctx.Param("invoice-id")
@@ -36,8 +26,9 @@ func (s *invoiceHttpService) handleGetUrlPaymentForInvoice() gin.HandlerFunc {
 		}
 
 		invoiceDTO := &invoicecommands.DetailInvoiceCmdDTO{
-			Id:       invoice.Id,
-			TotalFee: invoice.TotalFee,
+			Id:        invoice.Id,
+			OrderCode: invoice.OrderCode,
+			TotalFee:  invoice.TotalFee,
 		}
 		url, err := s.cmd.GetUrlPayment.Handle(ctx.Request.Context(), invoiceDTO)
 		if err != nil {

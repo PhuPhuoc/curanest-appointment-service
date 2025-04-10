@@ -25,8 +25,8 @@ func (h *getUrlPaymentHandler) Handle(ctx context.Context, invoice *DetailInvoic
 
 	paymentRequest := payos.CheckoutRequestType{
 		OrderCode:   invoice.OrderCode,
-		Amount:      int(invoice.TotalFee * 100),
-		Description: invoice.Id.String(),
+		Amount:      int(invoice.TotalFee),
+		Description: "curanest",
 		CancelUrl:   "http://localhost:8080/cancel",
 		ReturnUrl:   "http://localhost:8080/success",
 	}

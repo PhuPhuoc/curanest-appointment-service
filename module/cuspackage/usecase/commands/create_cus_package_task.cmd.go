@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/payOSHQ/payos-lib-golang"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	appointmentdomain "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/domain"
@@ -21,6 +22,7 @@ type createCusPackageAndTaskHandler struct {
 	appointmentFetcher AppointmentFetcher
 	invoiceFetcher     InvoiceFetcher
 	txManager          common.TransactionManager
+	payosConfig        common.PayOSConfig
 }
 
 func NewCreateCusPackageAndTaskHandler(
@@ -29,6 +31,7 @@ func NewCreateCusPackageAndTaskHandler(
 	appointmentFetcher AppointmentFetcher,
 	invoiceFetcher InvoiceFetcher,
 	txManager common.TransactionManager,
+	payosConfig common.PayOSConfig,
 ) *createCusPackageAndTaskHandler {
 	return &createCusPackageAndTaskHandler{
 		cmdRepo:            cmdRepo,
@@ -36,6 +39,7 @@ func NewCreateCusPackageAndTaskHandler(
 		appointmentFetcher: appointmentFetcher,
 		invoiceFetcher:     invoiceFetcher,
 		txManager:          txManager,
+		payosConfig:        payosConfig,
 	}
 }
 
@@ -189,6 +193,22 @@ func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, da
 func (h *createCusPackageAndTaskHandler) saveInvoice(ctx context.Context, cusPackageId uuid.UUID, totalFee float64) error {
 	invoiceId := common.GenUUID()
 	orderCode := time.Now().Unix()*1000 + int64(rand.Intn(1000))
+	payos.Key(h.payosConfig.ClientId, h.payosConfig.ApiKey, h.payosConfig.CheckSumKey)
+
+	paymentRequest := payos.CheckoutRequestType{
+		OrderCode:   orderCode,
+		Amount:      int(totalFee),
+		Description: "curanest",
+		CancelUrl:   "http://localhost:8080/cancel",
+		ReturnUrl:   "http://localhost:8080/success",
+	}
+
+	response, err := payos.CreatePaymentLink(paymentRequest)
+	if err != nil {
+		return common.NewInternalServerError().
+			WithReason("failed to create payment url").
+			WithInner(err.Error())
+	}
 
 	entity, _ := invoicedomain.NewInvoice(
 		invoiceId,
@@ -197,6 +217,7 @@ func (h *createCusPackageAndTaskHandler) saveInvoice(ctx context.Context, cusPac
 		totalFee,
 		invoicedomain.PaymentStatusUnpaid,
 		"",
+		response.CheckoutUrl,
 		nil,
 	)
 	if err := h.invoiceFetcher.CreateInvoice(ctx, entity); err != nil {

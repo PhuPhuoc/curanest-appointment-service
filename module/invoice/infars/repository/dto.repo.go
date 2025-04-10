@@ -17,6 +17,7 @@ var (
 		"order_code",
 		"total_fee",
 		"payment_status",
+		"payos_url",
 		"note",
 	}
 
@@ -27,6 +28,7 @@ var (
 		"total_fee",
 		"payment_status",
 		"note",
+		"payos_url",
 		"created_at",
 	}
 
@@ -43,6 +45,7 @@ type InvoiceDTO struct {
 	TotalFee      float64    `db:"total_fee"`
 	PaymentStatus string     `db:"payment_status"`
 	Note          string     `db:"note"`
+	PayosUrl      string     `db:"payos_url"`
 	CreatedAt     *time.Time `db:"created_at"`
 }
 
@@ -54,6 +57,7 @@ func (dto *InvoiceDTO) ToInvoiceEntity() (*invoicedomain.Invoice, error) {
 		dto.TotalFee,
 		invoicedomain.EnumPaymentStatus(dto.PaymentStatus),
 		dto.Note,
+		dto.PayosUrl,
 		dto.CreatedAt,
 	)
 }
@@ -66,5 +70,6 @@ func ToInvoiceDTO(data *invoicedomain.Invoice) *InvoiceDTO {
 		TotalFee:      data.GetTotalFee(),
 		PaymentStatus: data.GetPaymentStatus().String(),
 		Note:          data.GetNote(),
+		PayosUrl:      data.GetPayosUrl(),
 	}
 }

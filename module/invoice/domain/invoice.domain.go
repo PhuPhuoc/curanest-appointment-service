@@ -14,6 +14,7 @@ type Invoice struct {
 	totalFee      float64
 	paymentStatus PaymentStatus
 	note          string
+	payosUrl      string
 	createdAt     *time.Time
 }
 
@@ -41,6 +42,10 @@ func (a *Invoice) GetNote() string {
 	return a.note
 }
 
+func (a *Invoice) GetPayosUrl() string {
+	return a.payosUrl
+}
+
 func (a *Invoice) GetCreatedAt() *time.Time {
 	return a.createdAt
 }
@@ -50,7 +55,7 @@ func NewInvoice(
 	orderCode int64,
 	totalFee float64,
 	paymentStatus PaymentStatus,
-	note string,
+	note, payosUrl string,
 	createdAt *time.Time,
 ) (*Invoice, error) {
 	return &Invoice{
@@ -60,6 +65,7 @@ func NewInvoice(
 		totalFee:      totalFee,
 		paymentStatus: paymentStatus,
 		note:          note,
+		payosUrl:      payosUrl,
 		createdAt:     createdAt,
 	}, nil
 }
