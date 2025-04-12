@@ -7,8 +7,8 @@ import (
 	cuspackagecommands "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/usecase/commands"
 )
 
-// @Summary		create customized service package and task (client)
-// @Description	create customized service package and task (client)
+// @Summary		create customized service package (client)
+// @Description	create customized service package (client)
 // @Tags			customized packages
 // @Accept			json
 // @Produce		json

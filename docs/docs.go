@@ -423,7 +423,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "create customized service package and task (client)",
+                "description": "create customized service package (client)",
                 "consumes": [
                     "application/json"
                 ],
@@ -433,7 +433,7 @@ const docTemplate = `{
                 "tags": [
                     "customized packages"
                 ],
-                "summary": "create customized service package and task (client)",
+                "summary": "create customized service package (client)",
                 "parameters": [
                     {
                         "description": "customized package and task creation data",

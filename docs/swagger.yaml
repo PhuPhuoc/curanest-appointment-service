@@ -467,7 +467,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: create customized service package and task (client)
+      description: create customized service package (client)
       parameters:
       - description: customized package and task creation data
         in: body
@@ -488,7 +488,7 @@ paths:
           schema: {}
       security:
       - ApiKeyAuth: []
-      summary: create customized service package and task (client)
+      summary: create customized service package (client)
       tags:
       - customized packages
   /api/v1/cuspackage/{cus-package-id}/invoices:
