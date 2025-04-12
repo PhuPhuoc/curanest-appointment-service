@@ -91,15 +91,23 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		return nil, err
 	}
 
+	var totalFeeAfterDiscount float64
+	discount := servicePackage.GetDiscount()
+	if discount == 0 {
+		totalFeeAfterDiscount = totalFee
+	} else {
+		totalFeeAfterDiscount = totalFee * float64(discount) / 100
+	}
+
 	// create complete dto for creating entity
 	cusPackageEntity, _ := cuspackagedomain.NewCustomizedPackage(
 		cusPackageId,
 		servicePackage.GetID(),
 		req.PatientId,
 		servicePackage.GetName(),
-		totalFee,
+		totalFeeAfterDiscount,
 		0,
-		totalFee,
+		totalFeeAfterDiscount,
 		cuspackagedomain.PaymentStatusUnpaid,
 		nil,
 	)
