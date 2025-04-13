@@ -108,8 +108,3 @@ func getCallerInfo() (string, int) {
 func (e *AppError) Error() string {
 	return e.Message + " - " + e.ReasonField + " - " + e.Inner
 }
-
-//	func (e *AppError) WithDetail(key string, value interface{}) *AppError {
-//		e.Details[key] = value
-//		return e
-//	}

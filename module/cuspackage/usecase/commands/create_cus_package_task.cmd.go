@@ -86,7 +86,7 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		return nil, err
 	}
 
-	cusTaskEnties, totalFee, err := validateCustomizedTasks(cusPackageId, serviceTasks, customizedTasks, dates)
+	cusTaskEnties, totalFee, totalEstDuration, err := validateCustomizedTasks(cusPackageId, serviceTasks, customizedTasks, dates)
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +126,7 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 	}
 
 	// create appointment
-	if err = h.saveAppointment(ctx, dates, servicePackage.GetServiceID(), req.NursingId, req.PatientId, cusPackageEntity); err != nil {
+	if err = h.saveAppointment(ctx, dates, totalEstDuration, servicePackage.GetServiceID(), req.NursingId, req.PatientId, cusPackageEntity); err != nil {
 		return nil, err
 	}
 
@@ -173,7 +173,7 @@ func (h *createCusPackageAndTaskHandler) savePackageAndTasks(
 	return nil
 }
 
-func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, dates []time.Time, serviceId uuid.UUID, nursingId *uuid.UUID, patientId uuid.UUID, cusPackageEntity *cuspackagedomain.CustomizedPackage) error {
+func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, dates []time.Time, totalEstDuration int, serviceId uuid.UUID, nursingId *uuid.UUID, patientId uuid.UUID, cusPackageEntity *cuspackagedomain.CustomizedPackage) error {
 	appointmentEnties := make([]appointmentdomain.Appointment, len(dates))
 	for i, date := range dates {
 		appointmentId := common.GenUUID()
@@ -184,6 +184,7 @@ func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, da
 			patientId,
 			nursingId,
 			appointmentdomain.AppStatusWaiting,
+			totalEstDuration,
 			date,
 			nil,
 			nil,
@@ -286,7 +287,7 @@ func (h *createCusPackageAndTaskHandler) fetchServiceTasks(ctx context.Context, 
 	return svcTasks, nil
 }
 
-func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.ServiceTask, cusTask []CreateCustomizedTaskDTO, dates []time.Time) ([]cuspackagedomain.CustomizedTask, float64, error) {
+func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.ServiceTask, cusTask []CreateCustomizedTaskDTO, dates []time.Time) ([]cuspackagedomain.CustomizedTask, float64, int, error) {
 	// create custask map to compare with service task and verify all field before create customized task
 	cusTaskMap := make(map[uuid.UUID]CreateCustomizedTaskDTO)
 	for _, item := range cusTask {
@@ -301,7 +302,7 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 		if _, existed := cusTaskMap[item.GetID()]; !existed {
 			if item.GetIsMustHave() {
 				mess := "task (with id: " + item.GetID().String() + " ) must be included in this service"
-				return []cuspackagedomain.CustomizedTask{}, 0, common.NewBadRequestError().WithReason(mess)
+				return []cuspackagedomain.CustomizedTask{}, 0, 0, common.NewBadRequestError().WithReason(mess)
 			}
 		}
 	}
@@ -310,7 +311,7 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 	for _, item := range cusTask {
 		if _, existed := svcTaskMap[item.SvcTaskId]; !existed {
 			mess := "task (with id: " + item.SvcTaskId.String() + " ) is not included in this service"
-			return []cuspackagedomain.CustomizedTask{}, 0, common.NewBadRequestError().WithReason(mess)
+			return []cuspackagedomain.CustomizedTask{}, 0, 0, common.NewBadRequestError().WithReason(mess)
 		}
 	}
 
@@ -320,10 +321,13 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 
 	// total fee of the service
 	var total float64
+	// total duration of the service
+	var totalEstDuration int
+
 	// after verify custask from request body -> change dto to entity(domain)
 	cusTaskEnties := []cuspackagedomain.CustomizedTask{}
 	for _, estDate := range dates {
-		for _, item := range cusTask {
+		for i, item := range cusTask {
 			svctask := svcTaskMap[item.SvcTaskId]
 			custask, _ := cuspackagedomain.NewCustomizedTask(
 				common.GenUUID(),
@@ -343,8 +347,11 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 			)
 			cusTaskEnties = append(cusTaskEnties, *custask)
 			total += item.TotalCost
+			if i == 0 {
+				totalEstDuration += item.EstDuration
+			}
 		}
 	}
 
-	return cusTaskEnties, total, nil
+	return cusTaskEnties, total, totalEstDuration, nil
 }

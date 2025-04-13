@@ -8,6 +8,7 @@ CREATE TABLE `appointments` (
     `patient_id` varchar(36) NOT NULL,
     `est_date` datetime NOT NULL,
     `act_date` datetime,
+    `total_est_duration` int NOT NULL,
     `status` enum('success', 'waiting', 'confirmed', 'refused', 'changed') DEFAULT 'success',
     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
     `deleted_at` datetime,

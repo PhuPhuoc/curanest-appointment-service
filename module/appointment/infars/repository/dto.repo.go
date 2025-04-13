@@ -20,6 +20,7 @@ var (
 		"est_date",
 		"act_date",
 		"status",
+		"total_est_duration",
 	}
 
 	GET_APPOINTMENT = []string{
@@ -31,12 +32,14 @@ var (
 		"est_date",
 		"act_date",
 		"status",
+		"total_est_duration",
 		"created_at",
 	}
 
 	UPDATE_APPOINTMENT = []string{
 		"nursing_id",
 		"act_date",
+		"total_est_duration",
 	}
 )
 
@@ -49,6 +52,7 @@ type AppointmentDTO struct {
 	EstDate             time.Time  `db:"est_date"`
 	ActDate             *time.Time `db:"act_date"`
 	Status              string     `db:"status"`
+	TotalEstDuration    int        `db:"total_est_duration"`
 	CreatedAt           *time.Time `db:"created_at"`
 }
 
@@ -60,6 +64,7 @@ func (dto *AppointmentDTO) ToAppointmentEntity() (*appointmentdomain.Appointment
 		dto.PatientId,
 		dto.NursingId,
 		appointmentdomain.EnumAppointmentStatus(dto.Status),
+		dto.TotalEstDuration,
 		dto.EstDate,
 		dto.ActDate,
 		dto.CreatedAt,
@@ -75,6 +80,7 @@ func ToAppointmentDTO(data *appointmentdomain.Appointment) *AppointmentDTO {
 		NursingId:           data.GetNursingID(),
 		EstDate:             data.GetEstDate(),
 		ActDate:             data.GetActDate(),
-		Status:              data.Status.String(),
+		Status:              data.GetStatus().String(),
+		TotalEstDuration:    data.GetTotalEstDuration(),
 	}
 }

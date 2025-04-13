@@ -20,28 +20,30 @@ type FilterGetAppointmentDTO struct {
 }
 
 type AppointmentDTO struct {
-	Id           uuid.UUID  `json:"id"`
-	ServiceId    uuid.UUID  `json:"service-id"`
-	CusPackageId uuid.UUID  `json:"cuspackage-id"`
-	NursingId    *uuid.UUID `json:"nursing-id"`
-	PatientId    uuid.UUID  `json:"patient-id"`
-	EstDate      time.Time  `json:"est-date"`
-	ActDate      *time.Time `json:"act-date"`
-	Status       string     `json:"status"`
-	CreatedAt    *time.Time `json:"created-at"`
+	Id               uuid.UUID  `json:"id"`
+	ServiceId        uuid.UUID  `json:"service-id"`
+	CusPackageId     uuid.UUID  `json:"cuspackage-id"`
+	NursingId        *uuid.UUID `json:"nursing-id"`
+	PatientId        uuid.UUID  `json:"patient-id"`
+	EstDate          time.Time  `json:"est-date"`
+	ActDate          *time.Time `json:"act-date"`
+	Status           string     `json:"status"`
+	TotalEstDuration int        `json:"total-est-duration"`
+	CreatedAt        *time.Time `json:"created-at"`
 }
 
 func toAppointmentDTO(data *appointmentdomain.Appointment) *AppointmentDTO {
 	dto := &AppointmentDTO{
-		Id:           data.GetID(),
-		ServiceId:    data.GetServiceID(),
-		CusPackageId: data.GetCusPackageID(),
-		NursingId:    data.GetNursingID(),
-		PatientId:    data.GetPatientID(),
-		EstDate:      data.GetEstDate(),
-		ActDate:      data.GetActDate(),
-		Status:       data.Status.String(),
-		CreatedAt:    data.GetCreatedAt(),
+		Id:               data.GetID(),
+		ServiceId:        data.GetServiceID(),
+		CusPackageId:     data.GetCusPackageID(),
+		NursingId:        data.GetNursingID(),
+		PatientId:        data.GetPatientID(),
+		EstDate:          data.GetEstDate(),
+		ActDate:          data.GetActDate(),
+		Status:           data.GetStatus().String(),
+		TotalEstDuration: data.GetTotalEstDuration(),
+		CreatedAt:        data.GetCreatedAt(),
 	}
 	return dto
 }

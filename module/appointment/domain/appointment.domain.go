@@ -8,15 +8,16 @@ import (
 )
 
 type Appointment struct {
-	id           uuid.UUID
-	serviceId    uuid.UUID
-	cusPackageId uuid.UUID
-	nursingId    *uuid.UUID
-	patientId    uuid.UUID
-	Status       AppointmentStatus
-	estDate      time.Time
-	actDate      *time.Time
-	createdAt    *time.Time
+	id               uuid.UUID
+	serviceId        uuid.UUID
+	cusPackageId     uuid.UUID
+	nursingId        *uuid.UUID
+	patientId        uuid.UUID
+	estDate          time.Time
+	actDate          *time.Time
+	status           AppointmentStatus
+	totalEstDuration int
+	createdAt        *time.Time
 }
 
 func (a *Appointment) GetID() uuid.UUID {
@@ -40,7 +41,11 @@ func (a *Appointment) GetPatientID() uuid.UUID {
 }
 
 func (a *Appointment) GetStatus() AppointmentStatus {
-	return a.Status
+	return a.status
+}
+
+func (a *Appointment) GetTotalEstDuration() int {
+	return a.totalEstDuration
 }
 
 func (a *Appointment) GetEstDate() time.Time {
@@ -59,20 +64,22 @@ func NewAppointment(
 	id, serviceId, cusPackageId, patientId uuid.UUID,
 	nursingId *uuid.UUID,
 	status AppointmentStatus,
+	totalEstDuration int,
 	estDate time.Time,
 	actDate *time.Time,
 	createdAt *time.Time,
 ) (*Appointment, error) {
 	return &Appointment{
-		id:           id,
-		serviceId:    serviceId,
-		cusPackageId: cusPackageId,
-		nursingId:    nursingId,
-		patientId:    patientId,
-		Status:       status,
-		estDate:      estDate,
-		actDate:      actDate,
-		createdAt:    createdAt,
+		id:               id,
+		serviceId:        serviceId,
+		cusPackageId:     cusPackageId,
+		nursingId:        nursingId,
+		patientId:        patientId,
+		status:           status,
+		totalEstDuration: totalEstDuration,
+		estDate:          estDate,
+		actDate:          actDate,
+		createdAt:        createdAt,
 	}, nil
 }
 
