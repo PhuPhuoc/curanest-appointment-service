@@ -78,8 +78,20 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "est date to (YYYY-MM-DD)",
-                        "name": "est-date-to",
+                        "description": "apply pagination not not",
+                        "name": "apply-paging",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "current page index",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "number of items per page",
+                        "name": "page-size",
                         "in": "query"
                     }
                 ],

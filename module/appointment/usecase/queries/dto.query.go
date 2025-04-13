@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	appointmentdomain "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/domain"
 )
 
@@ -17,6 +18,8 @@ type FilterGetAppointmentDTO struct {
 	AppointmentStatus *appointmentdomain.AppointmentStatus `json:"appointment-status,omitempty" binding:"oneof=success waiting confirmed refused change"`
 	EstDateFrom       *time.Time                           `json:"est-date-from,omitempty"`
 	EstDateTo         *time.Time                           `json:"est-date-to,omitempty"`
+	ApplyPaging       *bool                                `json:"apply-paging,omitempty"`
+	Paging            *common.Paging                       `json:"-"`
 }
 
 type AppointmentDTO struct {

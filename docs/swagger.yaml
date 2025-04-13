@@ -237,10 +237,18 @@ paths:
         in: query
         name: est-date-from
         type: string
-      - description: est date to (YYYY-MM-DD)
+      - description: apply pagination not not
         in: query
-        name: est-date-to
+        name: apply-paging
         type: string
+      - description: current page index
+        in: query
+        name: page
+        type: integer
+      - description: number of items per page
+        in: query
+        name: page-size
+        type: integer
       produces:
       - application/json
       responses:

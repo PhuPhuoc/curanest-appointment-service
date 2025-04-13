@@ -2,6 +2,8 @@ package appointmentrepository
 
 import (
 	"context"
+	"fmt"
+	"math"
 	"strings"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
@@ -51,12 +53,25 @@ func (repo *appointmentRepo) GetAppointment(ctx context.Context, filter *appoint
 		}
 	}
 
+	orderBy := " order by est_date desc "
+
+	limit := ""
+	if filter.ApplyPaging != nil && filter.Paging != nil {
+		limit = " limit ? offset ?"
+		if *filter.ApplyPaging {
+			args = append(args, filter.Paging.Size, (filter.Paging.Page-1)*filter.Paging.Size)
+		}
+	}
+
 	var where string
 	if len(whereConditions) > 0 {
 		where = strings.Join(whereConditions, " AND ")
 	}
 	query := common.GenerateSQLQueries(common.SELECT_WITHOUT_COUNT, TABLE_APPOINTMENT, GET_APPOINTMENT, &where)
 
+	query += orderBy + limit
+
+	fmt.Println("query: ", query)
 	var dtos []AppointmentDTO
 	if err := repo.db.SelectContext(ctx, &dtos, query, args...); err != nil {
 		return nil, err
@@ -68,5 +83,10 @@ func (repo *appointmentRepo) GetAppointment(ctx context.Context, filter *appoint
 		entities[i] = *entity
 	}
 
+	if filter.ApplyPaging != nil && filter.Paging != nil {
+		totalRecord := 10
+		totalPages := int(math.Ceil(float64(totalRecord) / float64(filter.Paging.Size)))
+		filter.Paging.Total = totalPages
+	}
 	return entities, nil
 }

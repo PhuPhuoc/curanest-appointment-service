@@ -17,6 +17,9 @@ func NewGetAppointmentsHandler(queryRepo AppointmentQueryRepo) *getAppointmentsH
 }
 
 func (h *getAppointmentsHandler) Handle(ctx context.Context, filter *FilterGetAppointmentDTO) ([]AppointmentDTO, error) {
+	if filter.Paging != nil {
+		filter.Paging.Process()
+	}
 	entities, err := h.queryRepo.GetAppointment(ctx, filter)
 	if err != nil {
 		return []AppointmentDTO{}, common.NewInternalServerError().

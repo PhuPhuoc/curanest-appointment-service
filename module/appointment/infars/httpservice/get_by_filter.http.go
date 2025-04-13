@@ -12,23 +12,25 @@ import (
 	appointmentqueries "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/usecase/queries"
 )
 
-//	@Summary		get appointment by filter option
-//	@Description	get appointment by filter option
-//	@Tags			appointments
-//	@Accept			json
-//	@Produce		json
-//	@Param			service-id			query		string					false	"service ID (UUID)"
-//	@Param			cuspackage-id		query		string					false	"customized package ID (UUID)"
-//	@Param			nursing-id			query		string					false	"nursing ID (UUID)"
-//	@Param			patient-id			query		string					false	"patient ID (UUID)"
-//	@Param			had-nurse			query		string					false	"had a nurse not not"
-//	@Param			appointment-status	query		string					false	"appointment status"
-//	@Param			est-date-from		query		string					false	"est date from (YYYY-MM-DD)"
-//	@Param			est-date-to			query		string					false	"est date to (YYYY-MM-DD)"
-//	@Success		200					{object}	map[string]interface{}	"data"
-//	@Failure		400					{object}	error					"Bad request error"
-//	@Router			/api/v1/appointments [get]
-//	@Security		ApiKeyAuth
+// @Summary		get appointment by filter option
+// @Description	get appointment by filter option
+// @Tags			appointments
+// @Accept			json
+// @Produce		json
+// @Param			service-id			query		string					false	"service ID (UUID)"
+// @Param			cuspackage-id		query		string					false	"customized package ID (UUID)"
+// @Param			nursing-id			query		string					false	"nursing ID (UUID)"
+// @Param			patient-id			query		string					false	"patient ID (UUID)"
+// @Param			had-nurse			query		string					false	"had a nurse not not"
+// @Param			appointment-status	query		string					false	"appointment status"
+// @Param			est-date-from		query		string					false	"est date from (YYYY-MM-DD)"
+// @Param			apply-paging		query		string					false	"apply pagination not not"
+// @Param			page				query		int						false	"current page index"
+// @Param			page-size			query		int						false	"number of items per page"
+// @Success		200					{object}	map[string]interface{}	"data"
+// @Failure		400					{object}	error					"Bad request error"
+// @Router			/api/v1/appointments [get]
+// @Security		ApiKeyAuth
 func (s *appointmentHttpService) handleGetAppointmentByFilter() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		filter := &appointmentqueries.FilterGetAppointmentDTO{}
@@ -101,12 +103,44 @@ func (s *appointmentHttpService) handleGetAppointmentByFilter() gin.HandlerFunc 
 			filter.EstDateTo = &parsedDate
 		}
 
+		if applyPaging := ctx.Query("apply-paging"); applyPaging != "" {
+			applyPagingBool, err := strconv.ParseBool(applyPaging)
+			if err != nil {
+				common.ResponseError(ctx, common.NewBadRequestError().WithReason("apply-paging must be a bool"))
+				return
+			}
+			filter.ApplyPaging = &applyPagingBool
+		}
+
+		if filter.ApplyPaging != nil && *filter.ApplyPaging {
+			paging := common.Paging{}
+			if page := ctx.Query("page"); page != "" {
+				pageInt, err := strconv.Atoi(page)
+				if err != nil {
+					common.ResponseError(ctx, common.NewBadRequestError().WithReason("page must be a integer"))
+					return
+				}
+				paging.Page = pageInt
+			}
+
+			if pageSize := ctx.Query("page-size"); pageSize != "" {
+				pageSizeInt, err := strconv.Atoi(pageSize)
+				if err != nil {
+					common.ResponseError(ctx, common.NewBadRequestError().WithReason("page-size must be a integer"))
+					return
+				}
+				paging.Size = pageSizeInt
+			}
+			paging.Process()
+			filter.Paging = &paging
+		}
+
 		appointments, err := s.query.GetAppointment.Handle(ctx, filter)
 		if err != nil {
 			common.ResponseError(ctx, err)
 			return
 		}
 
-		common.ResponseGetWithPagination(ctx, appointments, nil, filter)
+		common.ResponseGetWithPagination(ctx, appointments, filter.Paging, filter)
 	}
 }
