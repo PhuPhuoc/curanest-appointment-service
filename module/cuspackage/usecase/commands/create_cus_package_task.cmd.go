@@ -96,9 +96,12 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 	if discount == 0 {
 		totalAfterDiscount = totalFee
 	} else {
-		totalAfterDiscount = totalFee * float64(discount) / 100
+		totalAfterDiscount = totalFee * float64(100-discount) / 100
 	}
 
+	fmt.Println("totalFee: ", totalFee)
+	fmt.Println("Discount: ", discount)
+	fmt.Println("totalAfterDiscount: ", totalAfterDiscount)
 	// create complete dto for creating entity
 	cusPackageEntity, _ := cuspackagedomain.NewCustomizedPackage(
 		cusPackageId,
@@ -322,7 +325,7 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 	// total fee of the service
 	var total float64
 	// total duration of the service
-	var totalEstDuration int
+	totalEstDuration := 0
 
 	// after verify custask from request body -> change dto to entity(domain)
 	cusTaskEnties := []cuspackagedomain.CustomizedTask{}
@@ -349,6 +352,8 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 			total += item.TotalCost
 			if i == 0 {
 				totalEstDuration += item.EstDuration
+				fmt.Println("item : ", item.EstDuration)
+				fmt.Println("totalEstDuration: ", totalEstDuration)
 			}
 		}
 	}
