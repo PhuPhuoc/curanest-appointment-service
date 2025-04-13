@@ -16,6 +16,7 @@ const (
 	HARD_DELETE
 	SELECT_WITHOUT_COUNT
 	SELECT_EXIST
+	SELECT_COUNT
 )
 
 func (r SQLMethod) String() string {
@@ -55,6 +56,11 @@ func GenerateSQLQueries(method SQLMethod, table string, fields []string, where *
 		return fmt.Sprintf("DELETE FROM %s WHERE %s", table, *where)
 	case SELECT_EXIST:
 		return fmt.Sprintf("SELECT EXISTS (SELECT 1 FROM %s WHERE %s)", table, *where)
+	case SELECT_COUNT:
+		if where == nil || *where == "" {
+			return fmt.Sprintf("SELECT COUNT(*) FROM %s", table)
+		}
+		return fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE %s", table, *where)
 	}
 	return ""
 }
