@@ -99,9 +99,6 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		totalAfterDiscount = totalFee * float64(100-discount) / 100
 	}
 
-	fmt.Println("totalFee: ", totalFee)
-	fmt.Println("Discount: ", discount)
-	fmt.Println("totalAfterDiscount: ", totalAfterDiscount)
 	// create complete dto for creating entity
 	cusPackageEntity, _ := cuspackagedomain.NewCustomizedPackage(
 		cusPackageId,
@@ -177,6 +174,10 @@ func (h *createCusPackageAndTaskHandler) savePackageAndTasks(
 }
 
 func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, dates []time.Time, totalEstDuration int, serviceId uuid.UUID, nursingId *uuid.UUID, patientId uuid.UUID, cusPackageEntity *cuspackagedomain.CustomizedPackage) error {
+	appStatus := appointmentdomain.AppStatusWaiting
+	if nursingId != nil {
+		appStatus = appointmentdomain.AppStatusConfirmed
+	}
 	appointmentEnties := make([]appointmentdomain.Appointment, len(dates))
 	for i, date := range dates {
 		appointmentId := common.GenUUID()
@@ -186,7 +187,7 @@ func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, da
 			cusPackageEntity.GetID(),
 			patientId,
 			nursingId,
-			appointmentdomain.AppStatusWaiting,
+			appStatus,
 			totalEstDuration,
 			date,
 			nil,
@@ -329,8 +330,8 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 
 	// after verify custask from request body -> change dto to entity(domain)
 	cusTaskEnties := []cuspackagedomain.CustomizedTask{}
-	for _, estDate := range dates {
-		for i, item := range cusTask {
+	for i, estDate := range dates {
+		for _, item := range cusTask {
 			svctask := svcTaskMap[item.SvcTaskId]
 			custask, _ := cuspackagedomain.NewCustomizedTask(
 				common.GenUUID(),
@@ -351,9 +352,9 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 			cusTaskEnties = append(cusTaskEnties, *custask)
 			total += item.TotalCost
 			if i == 0 {
+				fmt.Printf("item %v - duration: %v \n", i, item.EstDuration)
 				totalEstDuration += item.EstDuration
-				fmt.Println("item : ", item.EstDuration)
-				fmt.Println("totalEstDuration: ", totalEstDuration)
+				fmt.Printf("total after increate new item's est-duration: %v \n", totalEstDuration)
 			}
 		}
 	}

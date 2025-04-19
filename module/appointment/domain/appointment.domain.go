@@ -87,10 +87,10 @@ type AppointmentStatus int
 
 const (
 	AppStatusWaiting AppointmentStatus = iota
-	AppStatusSuccess
 	AppStatusConfirmed
-	AppStatusRefused
 	AppStatusChanged
+	AppStatusUpcoming
+	AppStatusSuccess
 )
 
 func EnumAppointmentStatus(s string) AppointmentStatus {
@@ -100,7 +100,7 @@ func EnumAppointmentStatus(s string) AppointmentStatus {
 	case "confirmed":
 		return AppStatusConfirmed
 	case "refused":
-		return AppStatusRefused
+		return AppStatusUpcoming
 	case "changed":
 		return AppStatusChanged
 	default:
@@ -112,14 +112,14 @@ func (r AppointmentStatus) String() string {
 	switch r {
 	case AppStatusWaiting:
 		return "waiting"
-	case AppStatusSuccess:
-		return "success"
 	case AppStatusConfirmed:
 		return "confirmed"
-	case AppStatusRefused:
-		return "refused"
 	case AppStatusChanged:
 		return "changed"
+	case AppStatusUpcoming:
+		return "upcoming"
+	case AppStatusSuccess:
+		return "success"
 	default:
 		return "unknown"
 	}
