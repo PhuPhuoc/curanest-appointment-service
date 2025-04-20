@@ -32,9 +32,10 @@ func (h *getNursingTimeSheetHandler) Handle(ctx context.Context, filter *FilterG
 		return []TimesheetDTO{}, nil
 	}
 
+	estTravelTime := 20 // default 20 min - change later
 	dtos := make([]TimesheetDTO, len(entities))
 	for i, entity := range entities {
-		dtos[i] = *toTimesheetDTO(&entity)
+		dtos[i] = *toTimesheetDTO(&entity, estTravelTime)
 	}
 
 	return dtos, nil

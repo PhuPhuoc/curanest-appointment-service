@@ -19,17 +19,23 @@ type TimesheetDTO struct {
 	AppointmentId    uuid.UUID `json:"appointment-id"`
 	PatientId        uuid.UUID `json:"patient-id"`
 	EstDate          time.Time `json:"est-date"`
+	EstEndTime       time.Time `json:"est-end-time"`
 	Status           string    `json:"status"`
 	TotalEstDuration int       `json:"total-est-duration"`
+	EstTravelTime    int       `json:"est-travel-time"`
 }
 
-func toTimesheetDTO(data *appointmentdomain.Appointment) *TimesheetDTO {
+func toTimesheetDTO(data *appointmentdomain.Appointment, estTravelTime int) *TimesheetDTO {
+	estDate := data.GetEstDate()
+	endTime := estDate.Add(time.Duration(data.GetTotalEstDuration()+estTravelTime) * time.Minute)
 	dto := &TimesheetDTO{
 		AppointmentId:    data.GetID(),
 		PatientId:        data.GetPatientID(),
 		EstDate:          data.GetEstDate(),
+		EstEndTime:       endTime,
 		Status:           data.GetStatus().String(),
 		TotalEstDuration: data.GetTotalEstDuration(),
+		EstTravelTime:    estTravelTime,
 	}
 	return dto
 }
