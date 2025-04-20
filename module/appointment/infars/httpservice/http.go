@@ -34,5 +34,15 @@ func (s *appointmentHttpService) Routes(g *gin.RouterGroup) {
 			// middleware.RequireAuth(s.auth),
 			s.handleGetAppointmentByFilter(),
 		)
+		appointment_route.GET(
+			"/nursing-timesheet",
+			// middleware.RequireAuth(s.auth),
+			s.handleGetNursingTimesheet(),
+		)
+		appointment_route.PATCH(
+			":appointment-id/status",
+			// middleware.RequireAuth(s.auth),
+			s.handleChangeAppointmentStatus(),
+		)
 	}
 }

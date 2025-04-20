@@ -237,6 +237,10 @@ paths:
         in: query
         name: est-date-from
         type: string
+      - description: est date to (YYYY-MM-DD)
+        in: query
+        name: est-date-to
+        type: string
       - description: apply pagination not not
         in: query
         name: apply-paging
@@ -263,6 +267,72 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: get appointment by filter option
+      tags:
+      - appointments
+  /api/v1/appointments/{appointment-id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: get appointment by filter option
+      parameters:
+      - description: appointment ID (UUID)
+        in: path
+        name: appointment-id
+        required: true
+        type: string
+      - description: new status to update appointment's status
+        in: query
+        name: new-status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: get appointment by filter option
+      tags:
+      - appointments
+  /api/v1/appointments/nursing-timesheet:
+    get:
+      consumes:
+      - application/json
+      description: get timesheet of nursing
+      parameters:
+      - description: nursing ID (UUID)
+        in: query
+        name: nursing-id
+        type: string
+      - description: est date from (YYYY-MM-DD)
+        in: query
+        name: est-date-from
+        type: string
+      - description: est date to (YYYY-MM-DD)
+        in: query
+        name: est-date-to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: get timesheet of nursing
       tags:
       - appointments
   /api/v1/categories:

@@ -78,6 +78,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "est date to (YYYY-MM-DD)",
+                        "name": "est-date-to",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "apply pagination not not",
                         "name": "apply-paging",
                         "in": "query"
@@ -93,6 +99,108 @@ const docTemplate = `{
                         "description": "number of items per page",
                         "name": "page-size",
                         "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/api/v1/appointments/nursing-timesheet": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get timesheet of nursing",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "get timesheet of nursing",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "nursing ID (UUID)",
+                        "name": "nursing-id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "est date from (YYYY-MM-DD)",
+                        "name": "est-date-from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "est date to (YYYY-MM-DD)",
+                        "name": "est-date-to",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/api/v1/appointments/{appointment-id}/status": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get appointment by filter option",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "get appointment by filter option",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "appointment ID (UUID)",
+                        "name": "appointment-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "new status to update appointment's status",
+                        "name": "new-status",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {

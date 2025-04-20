@@ -9,6 +9,31 @@ import (
 	appointmentdomain "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/domain"
 )
 
+type FilterGetNursingTimesheetDTO struct {
+	NursingId   uuid.UUID  `json:"nursing-id,omitempty"`
+	EstDateFrom *time.Time `json:"est-date-from,omitempty"`
+	EstDateTo   *time.Time `json:"est-date-to,omitempty"`
+}
+
+type TimesheetDTO struct {
+	AppointmentId    uuid.UUID `json:"appointment-id"`
+	PatientId        uuid.UUID `json:"patient-id"`
+	EstDate          time.Time `json:"est-date"`
+	Status           string    `json:"status"`
+	TotalEstDuration int       `json:"total-est-duration"`
+}
+
+func toTimesheetDTO(data *appointmentdomain.Appointment) *TimesheetDTO {
+	dto := &TimesheetDTO{
+		AppointmentId:    data.GetID(),
+		PatientId:        data.GetPatientID(),
+		EstDate:          data.GetEstDate(),
+		Status:           data.GetStatus().String(),
+		TotalEstDuration: data.GetTotalEstDuration(),
+	}
+	return dto
+}
+
 type FilterGetAppointmentDTO struct {
 	ServiceId         *uuid.UUID                           `json:"service-id,omitempty"`
 	CusPackageId      *uuid.UUID                           `json:"cuspackage-id,omitempty"`
@@ -49,4 +74,19 @@ func toAppointmentDTO(data *appointmentdomain.Appointment) *AppointmentDTO {
 		CreatedAt:        data.GetCreatedAt(),
 	}
 	return dto
+}
+
+func (dto AppointmentDTO) ToAppointmentDomain() (*appointmentdomain.Appointment, error) {
+	return appointmentdomain.NewAppointment(
+		dto.Id,
+		dto.ServiceId,
+		dto.CusPackageId,
+		dto.PatientId,
+		dto.NursingId,
+		appointmentdomain.EnumAppointmentStatus(dto.Status),
+		dto.TotalEstDuration,
+		dto.EstDate,
+		dto.ActDate,
+		dto.CreatedAt,
+	)
 }

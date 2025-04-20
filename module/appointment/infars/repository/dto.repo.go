@@ -39,6 +39,7 @@ var (
 	UPDATE_APPOINTMENT = []string{
 		"nursing_id",
 		"act_date",
+		"status",
 		"total_est_duration",
 	}
 )
