@@ -13,6 +13,8 @@ type Appointment struct {
 	cusPackageId     uuid.UUID
 	nursingId        *uuid.UUID
 	patientId        uuid.UUID
+	patientAddress   string
+	patientLatLng    string
 	estDate          time.Time
 	actDate          *time.Time
 	status           AppointmentStatus
@@ -40,6 +42,14 @@ func (a *Appointment) GetPatientID() uuid.UUID {
 	return a.patientId
 }
 
+func (a *Appointment) GetPatientAddress() string {
+	return a.patientAddress
+}
+
+func (a *Appointment) GetPatientLatLng() string {
+	return a.patientLatLng
+}
+
 func (a *Appointment) GetStatus() AppointmentStatus {
 	return a.status
 }
@@ -63,6 +73,7 @@ func (a *Appointment) GetCreatedAt() *time.Time {
 func NewAppointment(
 	id, serviceId, cusPackageId, patientId uuid.UUID,
 	nursingId *uuid.UUID,
+	patientAddress, patientLatLng string,
 	status AppointmentStatus,
 	totalEstDuration int,
 	estDate time.Time,
@@ -75,6 +86,8 @@ func NewAppointment(
 		cusPackageId:     cusPackageId,
 		nursingId:        nursingId,
 		patientId:        patientId,
+		patientAddress:   patientAddress,
+		patientLatLng:    patientLatLng,
 		status:           status,
 		totalEstDuration: totalEstDuration,
 		estDate:          estDate,

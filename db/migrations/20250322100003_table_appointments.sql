@@ -6,6 +6,8 @@ CREATE TABLE `appointments` (
     `customized_package_id` varchar(36) NOT NULL,
     `nursing_id` varchar(36),
     `patient_id` varchar(36) NOT NULL,
+    `patient_address` text NOT NULL,
+    `patient_lat_lng` varchar(255) NOT NULL,
     `est_date` datetime NOT NULL,
     `act_date` datetime,
     `total_est_duration` int NOT NULL,

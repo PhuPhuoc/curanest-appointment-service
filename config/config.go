@@ -19,6 +19,8 @@ type Config struct {
 	PayOsClientId    string
 	PayOsApiKey      string
 	PayOsCheckSumKey string
+	GoongAPIURL      string
+	GoongAPIKEY      string
 }
 
 var AppConfig Config
@@ -41,5 +43,7 @@ func LoadConfig() {
 		PayOsClientId:    os.Getenv("PAYOS_CLIENTID"),
 		PayOsApiKey:      os.Getenv("PAYOS_APIKEY"),
 		PayOsCheckSumKey: os.Getenv("PAYOS_CHECKSUMKEY"),
+		GoongAPIURL:      os.Getenv("GOONG_API_URL"),
+		GoongAPIKEY:      os.Getenv("GOONG_API_KEY"),
 	}
 }

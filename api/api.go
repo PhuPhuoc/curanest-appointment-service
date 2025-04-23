@@ -70,6 +70,8 @@ func (sv *server) RunApp() error {
 	var urlAccServices string
 	var urlNursingServices string
 	envDevlopment := config.AppConfig.EnvDev
+	goongApiUrl := config.AppConfig.GoongAPIURL
+	goongApiKey := config.AppConfig.GoongAPIKEY
 	if envDevlopment == env_local {
 		// gin.SetMode(gin.ReleaseMode)
 		docs.SwaggerInfo.BasePath = "/"
@@ -124,7 +126,7 @@ func (sv *server) RunApp() error {
 	)
 
 	cuspackage_cmd_builder := cuspackagecommands.NewCusPackageCmdWithBuilder(
-		builder.NewCusPackageBuilder(sv.db).AddPayOsConfig(*payosConfig),
+		builder.NewCusPackageBuilder(sv.db).AddPayOsConfig(*payosConfig).AddGoongConfig(goongApiUrl, goongApiKey),
 	)
 	cuspackage_query_builder := cuspackagequeries.NewCusPackageQueryWithBuilder(
 		builder.NewCusPackageBuilder(sv.db),

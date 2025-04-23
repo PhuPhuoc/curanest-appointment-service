@@ -59,6 +59,8 @@ type AppointmentDTO struct {
 	CusPackageId     uuid.UUID  `json:"cuspackage-id"`
 	NursingId        *uuid.UUID `json:"nursing-id"`
 	PatientId        uuid.UUID  `json:"patient-id"`
+	PatientAddress   string     `json:"patient-address"`
+	PatientLatLng    string     `json:"patient-lat-lng"`
 	EstDate          time.Time  `json:"est-date"`
 	ActDate          *time.Time `json:"act-date"`
 	Status           string     `json:"status"`
@@ -73,6 +75,8 @@ func toAppointmentDTO(data *appointmentdomain.Appointment) *AppointmentDTO {
 		CusPackageId:     data.GetCusPackageID(),
 		NursingId:        data.GetNursingID(),
 		PatientId:        data.GetPatientID(),
+		PatientAddress:   data.GetPatientAddress(),
+		PatientLatLng:    data.GetPatientLatLng(),
 		EstDate:          data.GetEstDate(),
 		ActDate:          data.GetActDate(),
 		Status:           data.GetStatus().String(),
@@ -89,6 +93,8 @@ func (dto AppointmentDTO) ToAppointmentDomain() (*appointmentdomain.Appointment,
 		dto.CusPackageId,
 		dto.PatientId,
 		dto.NursingId,
+		dto.PatientAddress,
+		dto.PatientLatLng,
 		appointmentdomain.EnumAppointmentStatus(dto.Status),
 		dto.TotalEstDuration,
 		dto.EstDate,

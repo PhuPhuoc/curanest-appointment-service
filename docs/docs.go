@@ -1113,6 +1113,9 @@ const docTemplate = `{
                 "nursing-id": {
                     "type": "string"
                 },
+                "patient-address": {
+                    "type": "string"
+                },
                 "patient-id": {
                     "type": "string"
                 },

@@ -23,6 +23,7 @@ type createCusPackageAndTaskHandler struct {
 	invoiceFetcher     InvoiceFetcher
 	txManager          common.TransactionManager
 	payosConfig        common.PayOSConfig
+	goongapi           ExternalGoongAPI
 }
 
 func NewCreateCusPackageAndTaskHandler(
@@ -32,6 +33,7 @@ func NewCreateCusPackageAndTaskHandler(
 	invoiceFetcher InvoiceFetcher,
 	txManager common.TransactionManager,
 	payosConfig common.PayOSConfig,
+	goongAPI ExternalGoongAPI,
 ) *createCusPackageAndTaskHandler {
 	return &createCusPackageAndTaskHandler{
 		cmdRepo:            cmdRepo,
@@ -40,6 +42,7 @@ func NewCreateCusPackageAndTaskHandler(
 		invoiceFetcher:     invoiceFetcher,
 		txManager:          txManager,
 		payosConfig:        payosConfig,
+		goongapi:           goongAPI,
 	}
 }
 
@@ -126,7 +129,7 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 	}
 
 	// create appointment
-	if err = h.saveAppointment(ctx, dates, totalEstDuration, servicePackage.GetServiceID(), req.NursingId, req.PatientId, cusPackageEntity); err != nil {
+	if err = h.saveAppointment(ctx, dates, totalEstDuration, servicePackage.GetServiceID(), req.NursingId, req.PatientId, req.PatientAddress, cusPackageEntity); err != nil {
 		return nil, err
 	}
 
@@ -173,7 +176,7 @@ func (h *createCusPackageAndTaskHandler) savePackageAndTasks(
 	return nil
 }
 
-func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, dates []time.Time, totalEstDuration int, serviceId uuid.UUID, nursingId *uuid.UUID, patientId uuid.UUID, cusPackageEntity *cuspackagedomain.CustomizedPackage) error {
+func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, dates []time.Time, totalEstDuration int, serviceId uuid.UUID, nursingId *uuid.UUID, patientId uuid.UUID, patientAddress string, cusPackageEntity *cuspackagedomain.CustomizedPackage) error {
 	appStatus := appointmentdomain.AppStatusWaiting
 	if nursingId != nil {
 		appStatus = appointmentdomain.AppStatusConfirmed
@@ -187,6 +190,8 @@ func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, da
 			cusPackageEntity.GetID(),
 			patientId,
 			nursingId,
+			patientAddress,
+			"000",
 			appStatus,
 			totalEstDuration,
 			date,

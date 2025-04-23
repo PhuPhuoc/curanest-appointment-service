@@ -17,6 +17,8 @@ var (
 		"customized_package_id",
 		"nursing_id",
 		"patient_id",
+		"patient_address",
+		"patient_lag_lng",
 		"est_date",
 		"act_date",
 		"status",
@@ -29,6 +31,8 @@ var (
 		"customized_package_id",
 		"nursing_id",
 		"patient_id",
+		"patient_address",
+		"patient_lag_lng",
 		"est_date",
 		"act_date",
 		"status",
@@ -37,6 +41,8 @@ var (
 	}
 
 	UPDATE_APPOINTMENT = []string{
+		"patient_address",
+		"patient_lag_lng",
 		"nursing_id",
 		"act_date",
 		"status",
@@ -50,6 +56,8 @@ type AppointmentDTO struct {
 	CustomizedPackageId uuid.UUID  `db:"customized_package_id"`
 	NursingId           *uuid.UUID `db:"nursing_id"`
 	PatientId           uuid.UUID  `db:"patient_id"`
+	PatientAddress      string     `db:"patient_address"`
+	PatientLagLng       string     `db:"patient_lag_lng"`
 	EstDate             time.Time  `db:"est_date"`
 	ActDate             *time.Time `db:"act_date"`
 	Status              string     `db:"status"`
@@ -64,6 +72,8 @@ func (dto *AppointmentDTO) ToAppointmentEntity() (*appointmentdomain.Appointment
 		dto.CustomizedPackageId,
 		dto.PatientId,
 		dto.NursingId,
+		dto.PatientAddress,
+		dto.PatientLagLng,
 		appointmentdomain.EnumAppointmentStatus(dto.Status),
 		dto.TotalEstDuration,
 		dto.EstDate,
@@ -79,6 +89,8 @@ func ToAppointmentDTO(data *appointmentdomain.Appointment) *AppointmentDTO {
 		CustomizedPackageId: data.GetCusPackageID(),
 		PatientId:           data.GetPatientID(),
 		NursingId:           data.GetNursingID(),
+		PatientAddress:      data.GetPatientAddress(),
+		PatientLagLng:       data.GetPatientLatLng(),
 		EstDate:             data.GetEstDate(),
 		ActDate:             data.GetActDate(),
 		Status:              data.GetStatus().String(),

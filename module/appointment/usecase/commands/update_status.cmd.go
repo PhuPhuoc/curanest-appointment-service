@@ -61,6 +61,8 @@ func (h *updateAppointmentHandler) Handle(ctx context.Context, newStatus appoint
 		entity.GetCusPackageID(),
 		entity.GetPatientID(),
 		entity.GetNursingID(),
+		entity.GetPatientAddress(),
+		entity.GetPatientLatLng(),
 		newStatus,
 		entity.GetTotalEstDuration(),
 		entity.GetEstDate(),

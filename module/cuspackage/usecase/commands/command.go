@@ -23,6 +23,7 @@ type Builder interface {
 	BuildAppointmentFetcher() AppointmentFetcher
 	BuildInvoiceFetcher() InvoiceFetcher
 	BuilderPayosConfig() common.PayOSConfig
+	BuildExternalGoongAPI() ExternalGoongAPI
 }
 
 func NewCusPackageCmdWithBuilder(b Builder) Commands {
@@ -34,6 +35,7 @@ func NewCusPackageCmdWithBuilder(b Builder) Commands {
 			b.BuildInvoiceFetcher(),
 			b.BuildTransactionManager(),
 			b.BuilderPayosConfig(),
+			b.BuildExternalGoongAPI(),
 		),
 	}
 }
@@ -55,4 +57,8 @@ type AppointmentFetcher interface {
 
 type InvoiceFetcher interface {
 	CreateInvoice(ctx context.Context, entity *invoicedomain.Invoice) error
+}
+
+type ExternalGoongAPI interface {
+	GetGeocodeFromGoong(ctx context.Context, address string) (*GoongAPIResponse, error)
 }
