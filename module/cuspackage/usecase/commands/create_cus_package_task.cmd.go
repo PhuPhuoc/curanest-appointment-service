@@ -357,9 +357,7 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 			cusTaskEnties = append(cusTaskEnties, *custask)
 			total += item.TotalCost
 			if i == 0 {
-				fmt.Printf("item %v - duration: %v \n", i, item.EstDuration)
 				totalEstDuration += item.EstDuration
-				fmt.Printf("total after increate new item's est-duration: %v \n", totalEstDuration)
 			}
 		}
 	}

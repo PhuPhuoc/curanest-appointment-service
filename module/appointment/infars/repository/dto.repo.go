@@ -18,7 +18,7 @@ var (
 		"nursing_id",
 		"patient_id",
 		"patient_address",
-		"patient_lag_lng",
+		"patient_lat_lng",
 		"est_date",
 		"act_date",
 		"status",
@@ -32,7 +32,7 @@ var (
 		"nursing_id",
 		"patient_id",
 		"patient_address",
-		"patient_lag_lng",
+		"patient_lat_lng",
 		"est_date",
 		"act_date",
 		"status",
@@ -42,7 +42,7 @@ var (
 
 	UPDATE_APPOINTMENT = []string{
 		"patient_address",
-		"patient_lag_lng",
+		"patient_lat_lng",
 		"nursing_id",
 		"act_date",
 		"status",
@@ -57,7 +57,7 @@ type AppointmentDTO struct {
 	NursingId           *uuid.UUID `db:"nursing_id"`
 	PatientId           uuid.UUID  `db:"patient_id"`
 	PatientAddress      string     `db:"patient_address"`
-	PatientLagLng       string     `db:"patient_lag_lng"`
+	PatientLagLng       string     `db:"patient_lat_lng"`
 	EstDate             time.Time  `db:"est_date"`
 	ActDate             *time.Time `db:"act_date"`
 	Status              string     `db:"status"`
