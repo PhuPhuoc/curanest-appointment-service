@@ -1098,20 +1098,28 @@ const docTemplate = `{
                 }
             }
         },
+        "cuspackagecommands.DateNursingMapping": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "nursing-id": {
+                    "type": "string"
+                }
+            }
+        },
         "cuspackagecommands.ReqCreatePackageTaskDTO": {
             "type": "object",
             "required": [
                 "svcpackage-id"
             ],
             "properties": {
-                "dates": {
+                "date-nurse-mappings": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/cuspackagecommands.DateNursingMapping"
                     }
-                },
-                "nursing-id": {
-                    "type": "string"
                 },
                 "patient-address": {
                     "type": "string"

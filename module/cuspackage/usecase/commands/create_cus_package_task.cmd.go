@@ -3,7 +3,9 @@ package cuspackagecommands
 import (
 	"context"
 	"fmt"
+	"log"
 	"math/rand"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -62,7 +64,7 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		}
 	}()
 
-	dates := req.Dates
+	dateNurseMappings := req.DateNurseMappings
 	customizedTasks := req.TaskInfos
 
 	// verify tasks len
@@ -79,7 +81,7 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 	cusPackageId := common.GenUUID()
 
 	// verify the valid of dates
-	if err := verifyDates(servicePackage.GetComboDays(), servicePackage.GetTimeInterVal(), dates); err != nil {
+	if err := verifyDates(servicePackage.GetComboDays(), servicePackage.GetTimeInterVal(), dateNurseMappings); err != nil {
 		return nil, err
 	}
 
@@ -89,7 +91,7 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		return nil, err
 	}
 
-	cusTaskEnties, totalFee, totalEstDuration, err := validateCustomizedTasks(cusPackageId, serviceTasks, customizedTasks, dates)
+	cusTaskEnties, totalFee, totalEstDuration, err := validateCustomizedTasks(cusPackageId, serviceTasks, customizedTasks, dateNurseMappings)
 	if err != nil {
 		return nil, err
 	}
@@ -115,21 +117,12 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		nil,
 	)
 
-	recordEntity, _ := cuspackagedomain.NewMedicalRecord(
-		common.GenUUID(),
-		cusPackageId,
-		req.NursingId,
-		"",
-		"",
-		cuspackagedomain.RecordStatusNotDone,
-		nil)
-
-	if err = h.savePackageAndTasks(ctx, cusPackageEntity, cusTaskEnties, recordEntity); err != nil {
+	if err = h.savePackageAndTasks(ctx, cusPackageEntity, cusTaskEnties); err != nil {
 		return nil, err
 	}
 
 	// create appointment
-	if err = h.saveAppointment(ctx, dates, totalEstDuration, servicePackage.GetServiceID(), req.NursingId, req.PatientId, req.PatientAddress, cusPackageEntity); err != nil {
+	if err = h.saveAppointment(ctx, dateNurseMappings, totalEstDuration, servicePackage.GetServiceID(), req.PatientId, req.PatientAddress, cusPackageEntity); err != nil {
 		return nil, err
 	}
 
@@ -153,7 +146,6 @@ func (h *createCusPackageAndTaskHandler) savePackageAndTasks(
 	ctx context.Context,
 	packageEntity *cuspackagedomain.CustomizedPackage,
 	taskEnties []cuspackagedomain.CustomizedTask,
-	recordEntity *cuspackagedomain.MedicalRecord,
 ) error {
 	// create customized package after verify
 	if err := h.cmdRepo.CreateCustomizedPackage(ctx, packageEntity); err != nil {
@@ -168,37 +160,71 @@ func (h *createCusPackageAndTaskHandler) savePackageAndTasks(
 			WithInner(err.Error())
 	}
 
-	if err := h.cmdRepo.CreateMedicalRecord(ctx, recordEntity); err != nil {
-		return common.NewInternalServerError().
-			WithReason("cannot create medical-record").
-			WithInner(err.Error())
-	}
 	return nil
 }
 
-func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, dates []time.Time, totalEstDuration int, serviceId uuid.UUID, nursingId *uuid.UUID, patientId uuid.UUID, patientAddress string, cusPackageEntity *cuspackagedomain.CustomizedPackage) error {
-	appStatus := appointmentdomain.AppStatusWaiting
-	if nursingId != nil {
-		appStatus = appointmentdomain.AppStatusConfirmed
+func (h *createCusPackageAndTaskHandler) getGeocodeFromGoong(ctx context.Context, address string) (string, error) {
+	resp, err := h.goongapi.GetGeocodeFromGoong(ctx, address)
+	if err != nil {
+		return "", err
 	}
-	appointmentEnties := make([]appointmentdomain.Appointment, len(dates))
-	for i, date := range dates {
+
+	if len(resp.Results) == 0 {
+		return "", fmt.Errorf("no results found")
+	}
+	lat := resp.Results[0].Geometry.Location.Lat
+	lng := resp.Results[0].Geometry.Location.Lng
+
+	latStr := strconv.FormatFloat(lat, 'f', -1, 64)
+	lngStr := strconv.FormatFloat(lng, 'f', -1, 64)
+
+	geocode := latStr + "," + lngStr
+
+	return geocode, nil
+}
+
+func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, mappings []DateNursingMapping, totalEstDuration int, serviceId uuid.UUID, patientId uuid.UUID, patientAddress string, cusPackageEntity *cuspackagedomain.CustomizedPackage) error {
+	patientLatLng, err := h.getGeocodeFromGoong(ctx, patientAddress)
+	if err != nil {
+		log.Println("cannot get geocode with address (" + patientAddress + ") error: " + err.Error())
+	}
+
+	appointmentEnties := make([]appointmentdomain.Appointment, len(mappings))
+	recordEnties := make([]cuspackagedomain.MedicalRecord, len(mappings))
+
+	for i, obj := range mappings {
+		appStatus := appointmentdomain.AppStatusWaiting
+		if obj.NursingId != nil {
+			appStatus = appointmentdomain.AppStatusConfirmed
+		}
 		appointmentId := common.GenUUID()
+
 		appointmentEntity, _ := appointmentdomain.NewAppointment(
 			appointmentId,
 			serviceId,
 			cusPackageEntity.GetID(),
 			patientId,
-			nursingId,
+			obj.NursingId,
 			patientAddress,
-			"000",
+			patientLatLng,
 			appStatus,
 			totalEstDuration,
-			date,
+			obj.Date,
 			nil,
 			nil,
 		)
 		appointmentEnties[i] = *appointmentEntity
+
+		recordEntity, _ := cuspackagedomain.NewMedicalRecord(
+			common.GenUUID(),
+			appointmentId,
+			obj.NursingId,
+			"",
+			"",
+			cuspackagedomain.RecordStatusNotDone,
+			nil,
+		)
+		recordEnties[i] = *recordEntity
 	}
 
 	if err := h.appointmentFetcher.CreateAppointments(ctx, appointmentEnties); err != nil {
@@ -206,6 +232,13 @@ func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, da
 			WithReason("cannot create appointments").
 			WithInner(err.Error())
 	}
+
+	if err := h.cmdRepo.CreateMedicalRecords(ctx, recordEnties); err != nil {
+		return common.NewInternalServerError().
+			WithReason("cannot create medical record").
+			WithInner(err.Error())
+	}
+
 	return nil
 }
 
@@ -257,18 +290,18 @@ func verifyLenOfTask(cusTasks []CreateCustomizedTaskDTO) error {
 	return nil
 }
 
-func verifyDates(comboDays, timeInterval int, dates []time.Time) error {
-	if len(dates) != comboDays {
+func verifyDates(comboDays, timeInterval int, mappings []DateNursingMapping) error {
+	if len(mappings) != comboDays {
 		return common.NewBadRequestError().
 			WithReason("the number of dates does not equal the number of combo-days specified in the service")
 	}
 
-	for i := 1; i < len(dates); i++ {
+	for i := 1; i < len(mappings); i++ {
 		// calculate the distance between the current date and the previous date (in days)
-		daysDiff := int(dates[i].Sub(dates[i-1]).Hours() / 24)
+		daysDiff := int(mappings[i].Date.Sub(mappings[i-1].Date).Hours() / 24)
 		if daysDiff < timeInterval {
 			mess := fmt.Sprintf("the gap between date %s and %s is %d days, which is less than the required interval of %d days",
-				dates[i-1].Format("2006-01-02"), dates[i].Format("2006-01-02"), daysDiff, timeInterval)
+				mappings[i-1].Date.Format("2006-01-02"), mappings[i].Date.Format("2006-01-02"), daysDiff, timeInterval)
 			return common.NewBadRequestError().WithReason(mess)
 		}
 	}
@@ -296,7 +329,7 @@ func (h *createCusPackageAndTaskHandler) fetchServiceTasks(ctx context.Context, 
 	return svcTasks, nil
 }
 
-func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.ServiceTask, cusTask []CreateCustomizedTaskDTO, dates []time.Time) ([]cuspackagedomain.CustomizedTask, float64, int, error) {
+func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.ServiceTask, cusTask []CreateCustomizedTaskDTO, mappings []DateNursingMapping) ([]cuspackagedomain.CustomizedTask, float64, int, error) {
 	// create custask map to compare with service task and verify all field before create customized task
 	cusTaskMap := make(map[uuid.UUID]CreateCustomizedTaskDTO)
 	for _, item := range cusTask {
@@ -335,7 +368,7 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 
 	// after verify custask from request body -> change dto to entity(domain)
 	cusTaskEnties := []cuspackagedomain.CustomizedTask{}
-	for i, estDate := range dates {
+	for i := range mappings {
 		for _, item := range cusTask {
 			svctask := svcTaskMap[item.SvcTaskId]
 			custask, _ := cuspackagedomain.NewCustomizedTask(
@@ -350,7 +383,7 @@ func validateCustomizedTasks(cusPackageId uuid.UUID, svcTask []svcpackagedomain.
 				item.TotalCost,
 				cuspackagedomain.EnumCusTaskUnit(svctask.GetUnit().String()),
 				item.TotalUnit,
-				estDate,
+				mappings[i].Date,
 				nil,
 				cuspackagedomain.CusTaskStatusNotDone,
 			)

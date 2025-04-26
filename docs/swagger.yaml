@@ -23,14 +23,19 @@ definitions:
     required:
     - svctask-id
     type: object
-  cuspackagecommands.ReqCreatePackageTaskDTO:
+  cuspackagecommands.DateNursingMapping:
     properties:
-      dates:
-        items:
-          type: string
-        type: array
+      date:
+        type: string
       nursing-id:
         type: string
+    type: object
+  cuspackagecommands.ReqCreatePackageTaskDTO:
+    properties:
+      date-nurse-mappings:
+        items:
+          $ref: '#/definitions/cuspackagecommands.DateNursingMapping'
+        type: array
       patient-address:
         type: string
       patient-id:

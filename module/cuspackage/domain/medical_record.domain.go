@@ -10,7 +10,7 @@ import (
 type MedicalRecord struct {
 	id            uuid.UUID
 	nursingId     *uuid.UUID
-	cusPackageId  uuid.UUID
+	appointmentId uuid.UUID
 	nursingReport string
 	staffConfirm  string
 	status        RecordStatus
@@ -18,7 +18,7 @@ type MedicalRecord struct {
 }
 
 func NewMedicalRecord(
-	id, cusPackageId uuid.UUID,
+	id, appointmentId uuid.UUID,
 	nursingId *uuid.UUID,
 	nursingReport, staffConfirm string,
 	status RecordStatus,
@@ -26,7 +26,7 @@ func NewMedicalRecord(
 ) (*MedicalRecord, error) {
 	return &MedicalRecord{
 		id:            id,
-		cusPackageId:  cusPackageId,
+		appointmentId: appointmentId,
 		nursingId:     nursingId,
 		nursingReport: nursingReport,
 		staffConfirm:  staffConfirm,
@@ -39,8 +39,8 @@ func (a *MedicalRecord) GetID() uuid.UUID {
 	return a.id
 }
 
-func (a *MedicalRecord) GetCusPackageId() uuid.UUID {
-	return a.cusPackageId
+func (a *MedicalRecord) GetAppointmentId() uuid.UUID {
+	return a.appointmentId
 }
 
 func (a *MedicalRecord) GetNursingId() *uuid.UUID {

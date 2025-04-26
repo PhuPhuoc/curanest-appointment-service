@@ -46,10 +46,6 @@ func (h *updateAppointmentHandler) Handle(ctx context.Context, newStatus appoint
 		if err := h.isTransitionToUpcomingValid(ctx, entity); err != nil {
 			return err
 		}
-	case appointmentdomain.AppStatusChanged:
-		if err := h.isTransitionToChangedValid(ctx, entity); err != nil {
-			return err
-		}
 	default:
 		return common.NewBadRequestError().
 			WithReason(fmt.Sprintf("the status you are trying to update (%v) this appointment to is invalid", newStatus))

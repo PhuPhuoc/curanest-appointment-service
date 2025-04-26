@@ -2,25 +2,43 @@ package externalapigoong
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"net/url"
 
-	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	cuspackagecommands "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/usecase/commands"
 )
 
 func (ex *externalGoongAPI) GetGeocodeFromGoong(ctx context.Context, address string) (*cuspackagecommands.GoongAPIResponse, error) {
-	response, err := common.CallExternalAPI(ctx, common.RequestOptions{
-		Method: "GET",
-		URL:    ex.apiURL + "/geocode?address=" + address + "&api_key=" + ex.apiKey,
-	})
+	encodedAddress := url.QueryEscape(address)
+	apiURL := fmt.Sprintf("https://rsapi.goong.io/geocode?address=%s&api_key=%s", encodedAddress, ex.apiKey)
+
+	resp, err := http.Get(apiURL)
 	if err != nil {
-		return nil, common.NewInternalServerError().
-			WithReason("cannot get api get geocode from goong").WithInner("cannot call external api - " + err.Error())
+		return nil, fmt.Errorf("failed to call API: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("API returned non-200 status: %d, body: %s", resp.StatusCode, string(body))
 	}
 
-	success, ok := response["status"].(string)
-	if !ok || success != "OK" {
-		return nil, common.ExtractErrorFromResponse(response)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
 
-	return common.ExtractDataFromResponse[cuspackagecommands.GoongAPIResponse](response, "results")
+	var apiResponse *cuspackagecommands.GoongAPIResponse
+	if err := json.Unmarshal(body, &apiResponse); err != nil {
+		return nil, fmt.Errorf("failed to parse JSON: %v, body: %s", err, string(body))
+	}
+
+	if apiResponse.Status != "OK" {
+		return nil, fmt.Errorf("API returned non-OK status: %s", apiResponse.Status)
+	}
+
+	return apiResponse, nil
 }

@@ -11,7 +11,7 @@ CREATE TABLE `appointments` (
     `est_date` datetime NOT NULL,
     `act_date` datetime,
     `total_est_duration` int NOT NULL,
-    `status` enum('waiting', 'confirmed', 'changed', 'upcoming', 'success') DEFAULT 'waiting',
+    `status` enum('waiting', 'confirmed', 'upcoming', 'success') DEFAULT 'waiting',
     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
     `deleted_at` datetime,
     PRIMARY KEY (`id`),

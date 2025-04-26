@@ -43,7 +43,7 @@ func NewCusPackageCmdWithBuilder(b Builder) Commands {
 type CusPackageCommandRepo interface {
 	CreateCustomizedPackage(ctx context.Context, entity *cuspackagedomain.CustomizedPackage) error
 	CreateCustomizedTasks(ctx context.Context, entities []cuspackagedomain.CustomizedTask) error
-	CreateMedicalRecord(ctx context.Context, entities *cuspackagedomain.MedicalRecord) error
+	CreateMedicalRecords(ctx context.Context, entities []cuspackagedomain.MedicalRecord) error
 }
 
 type SvcPackageFetcher interface {
@@ -53,6 +53,7 @@ type SvcPackageFetcher interface {
 
 type AppointmentFetcher interface {
 	CreateAppointments(ctx context.Context, entities []appointmentdomain.Appointment) error
+	// CheckNursingReadyForNewAppointment(ctx context.Context, nursingId uuid.UUID)
 }
 
 type InvoiceFetcher interface {

@@ -42,7 +42,7 @@ var (
 	CREATE_MEDICALRECORD = []string{
 		"id",
 		"nursing_id",
-		"customized_package_id",
+		"appointment_id",
 		"nursing_report",
 		"staff_confirmation",
 		"status",
@@ -77,7 +77,7 @@ var (
 	GET_MEDICALRECORD = []string{
 		"id",
 		"nursing_id",
-		"customized_package_id",
+		"appointment_id",
 		"nursing_report",
 		"staff_confirmation",
 		"status",
@@ -202,19 +202,19 @@ func ToCusTaskDTO(data *cuspackagedomain.CustomizedTask) *CusTaskDTO {
 }
 
 type MedicalRecordDTO struct {
-	Id                  uuid.UUID  `db:"id"`
-	NursingId           *uuid.UUID `db:"nursing_id"`
-	CustomizedPackageId uuid.UUID  `db:"customized_package_id"`
-	NursingReport       string     `db:"nursing_report"`
-	StaffConfirmation   string     `db:"staff_confirmation"`
-	Status              string     `db:"status"`
-	CreatedAt           *time.Time `db:"created_at"`
+	Id                uuid.UUID  `db:"id"`
+	NursingId         *uuid.UUID `db:"nursing_id"`
+	AppointmentId     uuid.UUID  `db:"appointment_id"`
+	NursingReport     string     `db:"nursing_report"`
+	StaffConfirmation string     `db:"staff_confirmation"`
+	Status            string     `db:"status"`
+	CreatedAt         *time.Time `db:"created_at"`
 }
 
 func (dto *MedicalRecordDTO) ToMedicalRecordEntity() (*cuspackagedomain.MedicalRecord, error) {
 	return cuspackagedomain.NewMedicalRecord(
 		dto.Id,
-		dto.CustomizedPackageId,
+		dto.AppointmentId,
 		dto.NursingId,
 		dto.NursingReport,
 		dto.StaffConfirmation,
@@ -225,11 +225,11 @@ func (dto *MedicalRecordDTO) ToMedicalRecordEntity() (*cuspackagedomain.MedicalR
 
 func ToMedicalRecordDTO(data *cuspackagedomain.MedicalRecord) *MedicalRecordDTO {
 	return &MedicalRecordDTO{
-		Id:                  data.GetID(),
-		NursingId:           data.GetNursingId(),
-		CustomizedPackageId: data.GetCusPackageId(),
-		NursingReport:       data.GetNursingReport(),
-		StaffConfirmation:   data.GetStaffConfirm(),
-		Status:              data.GetStatus().String(),
+		Id:                data.GetID(),
+		NursingId:         data.GetNursingId(),
+		AppointmentId:     data.GetAppointmentId(),
+		NursingReport:     data.GetNursingReport(),
+		StaffConfirmation: data.GetStaffConfirm(),
+		Status:            data.GetStatus().String(),
 	}
 }
