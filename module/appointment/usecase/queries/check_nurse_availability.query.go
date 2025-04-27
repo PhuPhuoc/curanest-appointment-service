@@ -25,13 +25,13 @@ func (h *checkNursesAvailabilityHandler) Handle(ctx context.Context, dto *CheckN
 			NurseId:        obj.NurseId,
 			EstStartDate:   obj.EstStartDate,
 			EstDuration:    obj.EstDuration,
-			IsAvailability: false,
+			IsAvailability: true,
 		}
 
 		estEndDate := obj.EstStartDate.Add(time.Duration(obj.EstDuration+20) * time.Minute)
 		if err := h.queryRepo.IsNurseAvailability(ctx, obj.NurseId, obj.EstStartDate, estEndDate); err != nil {
 			if err == common.ErrNurseNotAvailable {
-				respObj.IsAvailability = true
+				respObj.IsAvailability = false
 			} else {
 				return nil, common.NewInternalServerError().
 					WithReason(fmt.Sprintf("cannot check availability for nurse with id: %v", obj.NurseId.String())).

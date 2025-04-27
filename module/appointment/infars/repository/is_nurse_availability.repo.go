@@ -23,6 +23,8 @@ func (repo *appointmentRepo) IsNurseAvailability(ctx context.Context, nursingId 
 		return fmt.Errorf("failed to check nurse availability: %w", err)
 	}
 
+	fmt.Printf("nursing_id: %v \nstartDate :%v \nendDate: %v exists: %v \n", nursingId, startDate, endDate, exists)
+
 	if exists {
 		return common.ErrNurseNotAvailable
 	}

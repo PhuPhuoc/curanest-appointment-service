@@ -9,7 +9,6 @@ import (
 )
 
 func (repo *appointmentRepo) UpdateAppointment(ctx context.Context, entity *appointmentdomain.Appointment) error {
-	fmt.Println("entity status at repo: ", entity.GetStatus().String())
 	dto := ToAppointmentDTO(entity)
 	where := "id=:id"
 	query := common.GenerateSQLQueries(common.UPDATE, TABLE_APPOINTMENT, UPDATE_APPOINTMENT, &where)
