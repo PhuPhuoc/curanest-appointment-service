@@ -1,4 +1,4 @@
-package externalapigoong
+package externalapi
 
 type externalGoongAPI struct {
 	apiURL string

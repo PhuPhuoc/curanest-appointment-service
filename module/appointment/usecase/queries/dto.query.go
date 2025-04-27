@@ -117,3 +117,12 @@ type NurseDateMappingResult struct {
 	Date           time.Time `json:"date"`
 	IsAvailability bool      `json:"is-availability"`
 }
+
+type NurseDTO struct {
+	NurseId          uuid.UUID `json:"nurse-id"`
+	NursePicture     string    `json:"nurse-picture"`
+	NurseName        string    `json:"nurse-name"`
+	Gender           bool      `json:"gender"`
+	CurrentWorkPlace string    `json:"current-work-place"`
+	Rate             float64   `json:"rate"`
+}

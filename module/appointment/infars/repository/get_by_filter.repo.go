@@ -74,9 +74,6 @@ func (repo *appointmentRepo) GetAppointment(ctx context.Context, filter *appoint
 	queryGetData += orderBy + limit
 	queryGetCount := common.GenerateSQLQueries(common.SELECT_COUNT, TABLE_APPOINTMENT, GET_APPOINTMENT, &where)
 
-	fmt.Println("queryGetCount: ", queryGetCount)
-	fmt.Println("queryGetData: ", queryGetData)
-
 	errchan := make(chan error, 2)
 	countchan := make(chan int, 1)
 	datachan := make(chan []appointmentdomain.Appointment, 1)

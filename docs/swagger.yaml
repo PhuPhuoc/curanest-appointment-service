@@ -322,6 +322,43 @@ paths:
       summary: get appointment by filter option
       tags:
       - appointments
+  /api/v1/appointments/nursing-available:
+    get:
+      consumes:
+      - application/json
+      description: get nursing available with service of appointment and date
+      parameters:
+      - description: service ID (UUID)
+        in: query
+        name: service-id
+        required: true
+        type: string
+      - description: est date (YYYY-MM-DDTHH:MM:SSZ, e.g., 2025-05-16T01:00:00Z)
+        in: query
+        name: est-date
+        required: true
+        type: string
+      - description: est duration
+        in: query
+        name: est-duration
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: get nursing available
+      tags:
+      - appointments
   /api/v1/appointments/nursing-timesheet:
     get:
       consumes:

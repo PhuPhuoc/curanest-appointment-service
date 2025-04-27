@@ -85,6 +85,10 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		return nil, err
 	}
 
+	if err := h.verifyNurseAvailabilityWithDate(ctx, req.DateNurseMappings); err != nil {
+		return nil, err
+	}
+
 	// get list service task of service package above -> to verify customized task before create them
 	serviceTasks, err := h.fetchServiceTasks(ctx, servicePackage.GetID())
 	if err != nil {
@@ -290,6 +294,24 @@ func verifyLenOfTask(cusTasks []CreateCustomizedTaskDTO) error {
 	return nil
 }
 
+func (h *createCusPackageAndTaskHandler) verifyNurseAvailabilityWithDate(ctx context.Context, req []DateNursingMapping) error {
+	listUUIDs := make([]uuid.UUID, len(req))
+	listDates := make([]time.Time, len(req))
+
+	for i, obj := range req {
+		if obj.NursingId != nil {
+			listUUIDs[i] = *obj.NursingId
+		}
+		listDates[i] = obj.Date
+	}
+
+	if err := h.appointmentFetcher.AreNursesAvailable(ctx, listUUIDs, listDates); err != nil {
+		return common.NewBadRequestError().
+			WithReason("one or more nurses are unavailable on one or more dates in the request")
+	}
+	return nil
+}
+
 func verifyDates(comboDays, timeInterval int, mappings []DateNursingMapping) error {
 	if len(mappings) != comboDays {
 		return common.NewBadRequestError().
@@ -298,7 +320,7 @@ func verifyDates(comboDays, timeInterval int, mappings []DateNursingMapping) err
 
 	for i := 1; i < len(mappings); i++ {
 		// calculate the distance between the current date and the previous date (in days)
-		daysDiff := int(mappings[i].Date.Sub(mappings[i-1].Date).Hours() / 24)
+		daysDiff := int(mappings[i].Date.Truncate(24*time.Hour).Sub(mappings[i-1].Date.Truncate(24*time.Hour)).Hours() / 24)
 		if daysDiff < timeInterval {
 			mess := fmt.Sprintf("the gap between date %s and %s is %d days, which is less than the required interval of %d days",
 				mappings[i-1].Date.Format("2006-01-02"), mappings[i].Date.Format("2006-01-02"), daysDiff, timeInterval)

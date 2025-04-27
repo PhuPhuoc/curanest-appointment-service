@@ -108,6 +108,62 @@
                 }
             }
         },
+        "/api/v1/appointments/nursing-available": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get nursing available with service of appointment and date",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "get nursing available",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "service ID (UUID)",
+                        "name": "service-id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "est date (YYYY-MM-DDTHH:MM:SSZ, e.g., 2025-05-16T01:00:00Z)",
+                        "name": "est-date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "est duration",
+                        "name": "est-duration",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/appointments/nursing-timesheet": {
             "get": {
                 "security": [

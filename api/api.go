@@ -137,7 +137,7 @@ func (sv *server) RunApp() error {
 	)
 	appointment_query_builder := appointmentqueries.NewAppointmentQueryWithBuilder(
 
-		builder.NewAppointmentBuilder(sv.db),
+		builder.NewAppointmentBuilder(sv.db).AddPathUrlNursingService(urlNursingServices),
 	)
 
 	invoice_cmd_builder := invoicecommands.NewInvoiceCmdWithBuilder(

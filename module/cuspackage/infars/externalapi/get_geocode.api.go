@@ -1,4 +1,4 @@
-package externalapigoong
+package externalapi
 
 import (
 	"context"

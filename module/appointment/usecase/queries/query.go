@@ -12,12 +12,14 @@ type Queries struct {
 	GetAppointment      *getAppointmentsHandler
 	FindAppointmentById *findAppointmentByIdHandler
 	GetNursingTimeSheet *getNursingTimeSheetHandler
+	GetNursingAvailable *getNursingAvailableHandler
 
 	CheckNursesAvailability *checkNursesAvailabilityHandler
 }
 
 type Builder interface {
 	BuildAppointmentQueryRepo() AppointmentQueryRepo
+	BuildNurseServiceExternalApi() NursingServiceExternalAPI
 }
 
 func NewAppointmentQueryWithBuilder(b Builder) Queries {
@@ -34,12 +36,21 @@ func NewAppointmentQueryWithBuilder(b Builder) Queries {
 		CheckNursesAvailability: NewCheckNursesAvailabilityHandler(
 			b.BuildAppointmentQueryRepo(),
 		),
+		GetNursingAvailable: NewGetNursingAvailableHandler(
+			b.BuildAppointmentQueryRepo(),
+			b.BuildNurseServiceExternalApi(),
+		),
 	}
 }
 
 type AppointmentQueryRepo interface {
 	GetAppointment(ctx context.Context, filter *FilterGetAppointmentDTO) ([]appointmentdomain.Appointment, error)
 	FindById(ctx context.Context, appointmentId uuid.UUID) (*appointmentdomain.Appointment, error)
+	GetAppointmentInDate(ctx context.Context, estStartDate, estEndDate time.Time) ([]appointmentdomain.Appointment, error)
 
 	IsNurseAvailability(ctx context.Context, nursingIds uuid.UUID, dates time.Time) error
+}
+
+type NursingServiceExternalAPI interface {
+	GetNursingByServiceIdRPC(ctx context.Context, serviceId uuid.UUID) ([]NurseDTO, error)
 }

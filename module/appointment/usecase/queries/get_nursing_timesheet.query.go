@@ -17,10 +17,12 @@ func NewGetNursingTimeSheetHandler(queryRepo AppointmentQueryRepo) *getNursingTi
 }
 
 func (h *getNursingTimeSheetHandler) Handle(ctx context.Context, filter *FilterGetNursingTimesheetDTO) ([]TimesheetDTO, error) {
+	flagPaing := false
 	filterQuery := FilterGetAppointmentDTO{
 		NursingId:   &filter.NursingId,
 		EstDateFrom: filter.EstDateFrom,
 		EstDateTo:   filter.EstDateTo,
+		ApplyPaging: &flagPaing,
 	}
 	entities, err := h.queryRepo.GetAppointment(ctx, &filterQuery)
 	if err != nil {
