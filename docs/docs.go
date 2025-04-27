@@ -1175,7 +1175,10 @@ const docTemplate = `{
         "appointmentqueries.NurseDateMapping": {
             "type": "object",
             "properties": {
-                "date": {
+                "est-duration": {
+                    "type": "integer"
+                },
+                "est-start-date": {
                     "type": "string"
                 },
                 "nurse-id": {

@@ -48,7 +48,7 @@ type AppointmentQueryRepo interface {
 	FindById(ctx context.Context, appointmentId uuid.UUID) (*appointmentdomain.Appointment, error)
 	GetAppointmentInDate(ctx context.Context, estStartDate, estEndDate time.Time) ([]appointmentdomain.Appointment, error)
 
-	IsNurseAvailability(ctx context.Context, nursingIds uuid.UUID, dates time.Time) error
+	IsNurseAvailability(ctx context.Context, nursingIds uuid.UUID, startDate, endDate time.Time) error
 }
 
 type NursingServiceExternalAPI interface {

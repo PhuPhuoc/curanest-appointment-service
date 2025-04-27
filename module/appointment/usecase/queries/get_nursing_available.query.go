@@ -2,7 +2,6 @@ package appointmentqueries
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
@@ -30,7 +29,6 @@ func (h *getNursingAvailableHandler) Handle(ctx context.Context, serviceId uuid.
 			WithReason("cannot get list appointments").
 			WithInner(err.Error())
 	}
-	fmt.Println("apps: ", apps)
 
 	nurses, err := h.nurseServceApi.GetNursingByServiceIdRPC(ctx, serviceId)
 	if err != nil {

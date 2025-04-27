@@ -8,7 +8,9 @@ definitions:
     type: object
   appointmentqueries.NurseDateMapping:
     properties:
-      date:
+      est-duration:
+        type: integer
+      est-start-date:
         type: string
       nurse-id:
         type: string

@@ -3,6 +3,7 @@ package appointmentqueries
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
 )
@@ -22,14 +23,15 @@ func (h *checkNursesAvailabilityHandler) Handle(ctx context.Context, dto *CheckN
 	for i, obj := range dto.NursesDates {
 		respObj := NurseDateMappingResult{
 			NurseId:        obj.NurseId,
-			Date:           obj.Date,
-			IsAvailability: true,
+			EstStartDate:   obj.EstStartDate,
+			EstDuration:    obj.EstDuration,
+			IsAvailability: false,
 		}
-		fmt.Println("respObj: ", respObj)
 
-		if err := h.queryRepo.IsNurseAvailability(ctx, obj.NurseId, obj.Date); err != nil {
+		estEndDate := obj.EstStartDate.Add(time.Duration(obj.EstDuration+20) * time.Minute)
+		if err := h.queryRepo.IsNurseAvailability(ctx, obj.NurseId, obj.EstStartDate, estEndDate); err != nil {
 			if err == common.ErrNurseNotAvailable {
-				respObj.IsAvailability = false
+				respObj.IsAvailability = true
 			} else {
 				return nil, common.NewInternalServerError().
 					WithReason(fmt.Sprintf("cannot check availability for nurse with id: %v", obj.NurseId.String())).
@@ -38,8 +40,6 @@ func (h *checkNursesAvailabilityHandler) Handle(ctx context.Context, dto *CheckN
 		}
 		response[i] = respObj
 	}
-
-	fmt.Println("resp: ", response)
 
 	return response, nil
 }
