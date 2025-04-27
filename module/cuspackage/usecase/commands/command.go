@@ -2,6 +2,7 @@ package cuspackagecommands
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 
@@ -53,7 +54,7 @@ type SvcPackageFetcher interface {
 
 type AppointmentFetcher interface {
 	CreateAppointments(ctx context.Context, entities []appointmentdomain.Appointment) error
-	// CheckNursingReadyForNewAppointment(ctx context.Context, nursingId uuid.UUID)
+	AreNursesAvailable(ctx context.Context, nursingIds []uuid.UUID, dates []time.Time) error
 }
 
 type InvoiceFetcher interface {

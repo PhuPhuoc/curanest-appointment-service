@@ -1,4 +1,18 @@
 definitions:
+  appointmentqueries.CheckNursesAvailabilityRequestDTO:
+    properties:
+      nurses-dates:
+        items:
+          $ref: '#/definitions/appointmentqueries.NurseDateMapping'
+        type: array
+    type: object
+  appointmentqueries.NurseDateMapping:
+    properties:
+      date:
+        type: string
+      nurse-id:
+        type: string
+    type: object
   categorycommands.CreateCategoryDTO:
     properties:
       description:
@@ -340,6 +354,34 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: get timesheet of nursing
+      tags:
+      - appointments
+  /api/v1/appointments/verify-nurses-dates:
+    post:
+      consumes:
+      - application/json
+      description: verify nurses and dates are ready for new appointment
+      parameters:
+      - description: nurses and dates mapping
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/appointmentqueries.CheckNursesAvailabilityRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: verify nurses and dates
       tags:
       - appointments
   /api/v1/categories:

@@ -44,5 +44,9 @@ func (s *appointmentHttpService) Routes(g *gin.RouterGroup) {
 			// middleware.RequireAuth(s.auth),
 			s.handleChangeAppointmentStatus(),
 		)
+		appointment_route.POST(
+			"/verify-nurses-dates",
+			s.handleVerifyNurseWithDate(),
+		)
 	}
 }

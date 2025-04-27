@@ -169,6 +169,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/appointments/verify-nurses-dates": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "verify nurses and dates are ready for new appointment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "verify nurses and dates",
+                "parameters": [
+                    {
+                        "description": "nurses and dates mapping",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/appointmentqueries.CheckNursesAvailabilityRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/appointments/{appointment-id}/status": {
             "patch": {
                 "security": [
@@ -1061,6 +1105,28 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "appointmentqueries.CheckNursesAvailabilityRequestDTO": {
+            "type": "object",
+            "properties": {
+                "nurses-dates": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/appointmentqueries.NurseDateMapping"
+                    }
+                }
+            }
+        },
+        "appointmentqueries.NurseDateMapping": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "nurse-id": {
+                    "type": "string"
+                }
+            }
+        },
         "categorycommands.CreateCategoryDTO": {
             "type": "object",
             "properties": {

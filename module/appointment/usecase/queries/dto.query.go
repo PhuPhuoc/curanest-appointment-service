@@ -102,3 +102,18 @@ func (dto AppointmentDTO) ToAppointmentDomain() (*appointmentdomain.Appointment,
 		dto.CreatedAt,
 	)
 }
+
+type NurseDateMapping struct {
+	NurseId uuid.UUID `json:"nurse-id"`
+	Date    time.Time `json:"date"`
+}
+
+type CheckNursesAvailabilityRequestDTO struct {
+	NursesDates []NurseDateMapping `json:"nurses-dates"`
+}
+
+type NurseDateMappingResult struct {
+	NurseId        uuid.UUID `json:"nurse-id"`
+	Date           time.Time `json:"date"`
+	IsAvailability bool      `json:"is-availability"`
+}
