@@ -10,6 +10,7 @@ import (
 
 type Commands struct {
 	UpdateApointmentStatus *updateAppointmentHandler
+	AssigneNursing         *assignNursingHandler
 }
 
 type Builder interface {
@@ -24,6 +25,9 @@ func NewAppointmentCmdWithBuilder(b Builder) Commands {
 			b.BuildAppointmentCmdRepo(),
 			b.BuildCusTaskFetcher(),
 			b.BuildMedicalRecord(),
+		),
+		AssigneNursing: NewAssignNursingHandler(
+			b.BuildAppointmentCmdRepo(),
 		),
 	}
 }

@@ -53,5 +53,10 @@ func (s *appointmentHttpService) Routes(g *gin.RouterGroup) {
 			"/verify-nurses-dates",
 			s.handleVerifyNurseWithDate(),
 		)
+		appointment_route.PATCH(
+			":appointment-id/assign-nursing/:nursing-id",
+			// middleware.RequireAuth(s.auth),
+			s.handleAssignNurseToAppointment(),
+		)
 	}
 }
