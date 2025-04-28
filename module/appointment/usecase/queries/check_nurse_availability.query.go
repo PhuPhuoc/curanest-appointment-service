@@ -2,7 +2,6 @@ package appointmentqueries
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
@@ -28,18 +27,41 @@ func (h *checkNursesAvailabilityHandler) Handle(ctx context.Context, dto *CheckN
 			IsAvailability: true,
 		}
 
-		estEndDate := obj.EstStartDate.Add(time.Duration(obj.EstDuration+20) * time.Minute)
-		if err := h.queryRepo.IsNurseAvailability(ctx, obj.NurseId, obj.EstStartDate, estEndDate); err != nil {
-			if err == common.ErrNurseNotAvailable {
+		beginDate := time.Date(obj.EstStartDate.Year(), obj.EstStartDate.Month(), obj.EstStartDate.Day(), 0, 0, 0, 0, obj.EstStartDate.Location())
+		endDate := time.Date(beginDate.Year(), beginDate.Month(), beginDate.Day(), 23, 59, 0, 0, obj.EstStartDate.Location())
+		endDate = endDate.Add(time.Duration(obj.EstDuration+20) * time.Minute)
+
+		entities, err := h.queryRepo.GetAppointmentInADayOfNursing(ctx, obj.NurseId, beginDate, endDate)
+		if err != nil {
+			return []NurseDateMappingResult{}, common.NewInternalServerError().
+				WithReason("cannot get appointment in a day of this nursing").
+				WithInner(err.Error())
+		}
+		if len(entities) == 0 {
+			continue
+		}
+
+		estTravelTime := 20
+		currentStartDate := obj.EstStartDate
+		currentEndDate := currentStartDate.Add(time.Duration(obj.EstDuration+estTravelTime) * time.Minute)
+
+		for _, app := range entities {
+			appStartDate := app.GetEstDate()
+			appEndDate := appStartDate.Add(time.Duration(app.GetTotalEstDuration()+estTravelTime) * time.Minute)
+
+			if isOverlapping(appStartDate, appEndDate, currentStartDate, currentEndDate) {
 				respObj.IsAvailability = false
-			} else {
-				return nil, common.NewInternalServerError().
-					WithReason(fmt.Sprintf("cannot check availability for nurse with id: %v", obj.NurseId.String())).
-					WithInner(err.Error())
 			}
 		}
+
 		response[i] = respObj
 	}
 
 	return response, nil
+}
+
+// isOverlapping kiểm tra xem hai khoảng thời gian có trùng nhau hay không
+func isOverlapping(start1, end1, start2, end2 time.Time) bool {
+	// Hai khoảng thời gian trùng nhau nếu không thỏa mãn điều kiện không giao nhau
+	return !(end1.Before(start2) || end2.Before(start1))
 }
