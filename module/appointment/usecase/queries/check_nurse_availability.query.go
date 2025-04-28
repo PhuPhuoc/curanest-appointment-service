@@ -37,31 +37,27 @@ func (h *checkNursesAvailabilityHandler) Handle(ctx context.Context, dto *CheckN
 				WithReason("cannot get appointment in a day of this nursing").
 				WithInner(err.Error())
 		}
-		if len(entities) == 0 {
-			continue
-		}
 
-		estTravelTime := 20
-		currentStartDate := obj.EstStartDate
-		currentEndDate := currentStartDate.Add(time.Duration(obj.EstDuration+estTravelTime) * time.Minute)
+		if len(entities) != 0 {
+			estTravelTime := 20
+			currentStartDate := obj.EstStartDate
+			currentEndDate := currentStartDate.Add(time.Duration(obj.EstDuration+estTravelTime) * time.Minute)
 
-		for _, app := range entities {
-			appStartDate := app.GetEstDate()
-			appEndDate := appStartDate.Add(time.Duration(app.GetTotalEstDuration()+estTravelTime) * time.Minute)
+			for _, app := range entities {
+				appStartDate := app.GetEstDate()
+				appEndDate := appStartDate.Add(time.Duration(app.GetTotalEstDuration()+estTravelTime) * time.Minute)
 
-			if isOverlapping(appStartDate, appEndDate, currentStartDate, currentEndDate) {
-				respObj.IsAvailability = false
+				if isOverlapping(appStartDate, appEndDate, currentStartDate, currentEndDate) {
+					respObj.IsAvailability = false
+				}
 			}
 		}
-
 		response[i] = respObj
 	}
 
 	return response, nil
 }
 
-// isOverlapping kiểm tra xem hai khoảng thời gian có trùng nhau hay không
 func isOverlapping(start1, end1, start2, end2 time.Time) bool {
-	// Hai khoảng thời gian trùng nhau nếu không thỏa mãn điều kiện không giao nhau
 	return !(end1.Before(start2) || end2.Before(start1))
 }
