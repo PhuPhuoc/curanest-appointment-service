@@ -85,9 +85,9 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		return nil, err
 	}
 
-	if err := h.verifyNurseAvailabilityWithDate(ctx, req.DateNurseMappings); err != nil {
-		return nil, err
-	}
+	// if err := h.verifyNurseAvailabilityWithDate(ctx, req.DateNurseMappings); err != nil {
+	// 	return nil, err
+	// }
 
 	// get list service task of service package above -> to verify customized task before create them
 	serviceTasks, err := h.fetchServiceTasks(ctx, servicePackage.GetID())
