@@ -359,6 +359,55 @@
                 }
             }
         },
+        "/api/v1/appointments/{appointment-id}/update-status-upcoming": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "update status of appointment to upcoming",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "update status of appointment to upcoming",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "appointment ID (UUID)",
+                        "name": "appointment-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "origin code (current location of nursing - lat/lng",
+                        "name": "origin-code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/categories": {
             "get": {
                 "security": [

@@ -133,7 +133,7 @@ func (sv *server) RunApp() error {
 	)
 
 	appointment_cmd_builder := apppointmentcommands.NewAppointmentCmdWithBuilder(
-		builder.NewAppointmentBuilder(sv.db),
+		builder.NewAppointmentBuilder(sv.db).AddGoongConfig(goongApiUrl, goongApiKey),
 	)
 	appointment_query_builder := appointmentqueries.NewAppointmentQueryWithBuilder(
 

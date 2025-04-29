@@ -13,10 +13,19 @@ import (
 type builderOfAppointment struct {
 	db              *sqlx.DB
 	urlNurseService string
+
+	goongApiUrl string
+	goongApiKey string
 }
 
 func (s builderOfAppointment) AddPathUrlNursingService(url string) builderOfAppointment {
 	s.urlNurseService = url
+	return s
+}
+
+func (s builderOfAppointment) AddGoongConfig(apiurl, apikey string) builderOfAppointment {
+	s.goongApiUrl = apiurl
+	s.goongApiKey = apikey
 	return s
 }
 
@@ -42,4 +51,8 @@ func (s builderOfAppointment) BuildMedicalRecord() apppointmentcommands.MedicalR
 
 func (s builderOfAppointment) BuildNurseServiceExternalApi() appointmentqueries.NursingServiceExternalAPI {
 	return externalapi.NewNursingRPC(s.urlNurseService)
+}
+
+func (s builderOfAppointment) BuildExternalGoongAPI() apppointmentcommands.ExternalGoongAPI {
+	return externalapi.NewExternalGoongAPI(s.goongApiUrl, s.goongApiKey)
 }

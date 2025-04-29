@@ -10,6 +10,7 @@ import (
 
 type Commands struct {
 	UpdateApointmentStatus *updateAppointmentHandler
+	UpdateStatusUpcoming   *updateStatusUpcomingHandler
 	AssigneNursing         *assignNursingHandler
 }
 
@@ -17,6 +18,7 @@ type Builder interface {
 	BuildAppointmentCmdRepo() AppointmentCommandRepo
 	BuildCusTaskFetcher() CusTaskFetcher
 	BuildMedicalRecord() MedicalRecordFetcher
+	BuildExternalGoongAPI() ExternalGoongAPI
 }
 
 func NewAppointmentCmdWithBuilder(b Builder) Commands {
@@ -25,6 +27,10 @@ func NewAppointmentCmdWithBuilder(b Builder) Commands {
 			b.BuildAppointmentCmdRepo(),
 			b.BuildCusTaskFetcher(),
 			b.BuildMedicalRecord(),
+		),
+		UpdateStatusUpcoming: NewUpdateStatusUpcomingHandler(
+			b.BuildAppointmentCmdRepo(),
+			b.BuildExternalGoongAPI(),
 		),
 		AssigneNursing: NewAssignNursingHandler(
 			b.BuildAppointmentCmdRepo(),
@@ -42,4 +48,8 @@ type CusTaskFetcher interface {
 
 type MedicalRecordFetcher interface {
 	CheckMedicalRecordDone(ctx context.Context, cusPackageId uuid.UUID) error
+}
+
+type ExternalGoongAPI interface {
+	GetDistanceFromGoong(ctx context.Context, originCode, destinationCode string) (*DistanceMatrixResponse, error)
 }

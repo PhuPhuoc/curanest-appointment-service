@@ -356,6 +356,38 @@ paths:
       summary: get appointment by filter option
       tags:
       - appointments
+  /api/v1/appointments/{appointment-id}/update-status-upcoming:
+    patch:
+      consumes:
+      - application/json
+      description: update status of appointment to upcoming
+      parameters:
+      - description: appointment ID (UUID)
+        in: path
+        name: appointment-id
+        required: true
+        type: string
+      - description: origin code (current location of nursing - lat/lng
+        in: query
+        name: origin-code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: update status of appointment to upcoming
+      tags:
+      - appointments
   /api/v1/appointments/nursing-available:
     get:
       consumes:
