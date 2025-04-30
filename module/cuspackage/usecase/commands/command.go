@@ -15,6 +15,8 @@ import (
 
 type Commands struct {
 	CreateCusPackageAndCusTask *createCusPackageAndTaskHandler
+
+	UpdateCustaskStatusDone *updateCustaskStatusDoneHanlder
 }
 
 type Builder interface {
@@ -38,6 +40,10 @@ func NewCusPackageCmdWithBuilder(b Builder) Commands {
 			b.BuilderPayosConfig(),
 			b.BuildExternalGoongAPI(),
 		),
+		UpdateCustaskStatusDone: NewUpdateCustaskStatusDoneHandler(
+			b.BuildCusPackageCmdRepo(),
+			b.BuildAppointmentFetcher(),
+		),
 	}
 }
 
@@ -45,6 +51,8 @@ type CusPackageCommandRepo interface {
 	CreateCustomizedPackage(ctx context.Context, entity *cuspackagedomain.CustomizedPackage) error
 	CreateCustomizedTasks(ctx context.Context, entities []cuspackagedomain.CustomizedTask) error
 	CreateMedicalRecords(ctx context.Context, entities []cuspackagedomain.MedicalRecord) error
+
+	UpdateCustomizedTask(ctx context.Context, entity *cuspackagedomain.CustomizedTask) error
 }
 
 type SvcPackageFetcher interface {
@@ -55,6 +63,8 @@ type SvcPackageFetcher interface {
 type AppointmentFetcher interface {
 	CreateAppointments(ctx context.Context, entities []appointmentdomain.Appointment) error
 	AreNursesAvailable(ctx context.Context, nursingIds []uuid.UUID, dates []time.Time) error
+
+	CheckAppointmentStatusUpcoming(ctx context.Context, cuspackageId uuid.UUID, date time.Time) error
 }
 
 type InvoiceFetcher interface {

@@ -41,5 +41,11 @@ func (s *cusPackageHttpService) Routes(g *gin.RouterGroup) {
 			// middleware.RequireRole("relatives"),
 			s.handleFindCusPackageTask(),
 		)
+		cuspackage_route.PATCH(
+			"custask/:custask-id/update-status-done",
+			// middleware.RequireAuth(s.auth),
+			// middleware.RequireRole("relatives"),
+			s.handleUpdateCustaskStatusDone(),
+		)
 	}
 }

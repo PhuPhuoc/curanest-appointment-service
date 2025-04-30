@@ -748,6 +748,33 @@ paths:
       summary: find invoices with cus-package-id
       tags:
       - invoices
+  /api/v1/cuspackage/custask/{custask-id}/update-status-done:
+    patch:
+      consumes:
+      - application/json
+      description: change custask status to done
+      parameters:
+      - description: custask ID (UUID)
+        in: path
+        name: custask-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: change custask status to done
+      tags:
+      - customized packages
   /api/v1/services/{service-id}/svcpackage:
     get:
       consumes:

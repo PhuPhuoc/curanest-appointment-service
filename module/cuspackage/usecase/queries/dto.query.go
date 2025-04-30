@@ -44,30 +44,54 @@ func toCusPackageDTO(data *cuspackagedomain.CustomizedPackage) *CusPackageDTO {
 }
 
 type CusTaskDTO struct {
-	Id          uuid.UUID `json:"id"`
-	TaskOrder   int       `json:"task-order"`
-	Name        string    `json:"name"`
-	ClientNote  string    `json:"client-note"`
-	StaffAdvice string    `json:"staff-advice"`
-	EstDuration int       `json:"est-duration"`
-	Unit        string    `json:"unit"`
-	TotalUnit   int       `json:"total-unit"`
-	Status      string    `json:"status"`
-	EstDate     time.Time `json:"est-date"`
+	Id           uuid.UUID `json:"id"`
+	SvcTaskId    uuid.UUID `json:"-"`
+	CusPackageId uuid.UUID `json:"-"`
+	TaskOrder    int       `json:"task-order"`
+	Name         string    `json:"name"`
+	ClientNote   string    `json:"client-note"`
+	StaffAdvice  string    `json:"staff-advice"`
+	EstDuration  int       `json:"est-duration"`
+	Unit         string    `json:"unit"`
+	TotalUnit    int       `json:"total-unit"`
+	TotalCost    float64   `json:"total-cost"`
+	Status       string    `json:"status"`
+	EstDate      time.Time `json:"est-date"`
+}
+
+func (ct *CusTaskDTO) ToCusTaskEntity() (*cuspackagedomain.CustomizedTask, error) {
+	return cuspackagedomain.NewCustomizedTask(
+		ct.Id,
+		ct.SvcTaskId,
+		ct.CusPackageId,
+		ct.TaskOrder,
+		ct.Name,
+		ct.ClientNote,
+		ct.StaffAdvice,
+		ct.EstDuration,
+		ct.TotalCost,
+		cuspackagedomain.EnumCusTaskUnit(ct.Unit),
+		ct.TotalUnit,
+		ct.EstDate,
+		nil,
+		cuspackagedomain.EnumCusTaskStatus(ct.Status),
+	)
 }
 
 func toCusTaskDTO(data *cuspackagedomain.CustomizedTask) *CusTaskDTO {
 	dto := &CusTaskDTO{
-		Id:          data.GetID(),
-		TaskOrder:   data.GetTaskOrder(),
-		Name:        data.GetName(),
-		ClientNote:  data.GetClientNote(),
-		StaffAdvice: data.GetStaffAdvice(),
-		EstDuration: data.GetEstDuration(),
-		Unit:        data.GetUnit().String(),
-		TotalUnit:   data.GetTotalUnit(),
-		Status:      data.GetStatus().String(),
-		EstDate:     data.GetEstDate(),
+		Id:           data.GetID(),
+		SvcTaskId:    data.GetSvcTaskID(),
+		CusPackageId: data.GetCusPackageID(),
+		TaskOrder:    data.GetTaskOrder(),
+		Name:         data.GetName(),
+		ClientNote:   data.GetClientNote(),
+		StaffAdvice:  data.GetStaffAdvice(),
+		EstDuration:  data.GetEstDuration(),
+		Unit:         data.GetUnit().String(),
+		TotalUnit:    data.GetTotalUnit(),
+		Status:       data.GetStatus().String(),
+		EstDate:      data.GetEstDate(),
 	}
 	return dto
 }
