@@ -21,23 +21,24 @@ func NewWebhoobGoongHandler(cmdRepo InvoiceCommandRepo) *webhookGoongHandler {
 }
 
 func (h *webhookGoongHandler) Handle(ctx context.Context, checkSumKey string, dto *PayosWebhookData) error {
-	// Verify signature
-	// if !h.verifySignature(checkSumKey, dto) {
-	// 	return fmt.Errorf("invalid signature")
-	// }
 	log.Printf("GOONG dto: %v \n", dto)
 
-	// Check if transaction is successful
-	if !dto.Success || dto.Data.Status != "PAID" {
-		return nil // Not a paid transaction, no error but no update
+	if !dto.Success {
+		log.Printf("Webhook not successful: Success=%v", dto.Success)
+		return nil
+	}
+	if dto.Data.Status != "PAID" {
+		log.Printf("Transaction not paid: Status=%v, AmountPaid=%d", dto.Data.Status, dto.Data.AmountPaid)
+		return nil
 	}
 
-	// Call repository to update invoice
 	orderCode := fmt.Sprintf("%d", dto.Data.OrderCode)
+	log.Printf("Updating invoice with orderCode: %s", orderCode)
 	if err := h.cmdRepo.UpdateInvoiceFromGoong(ctx, orderCode); err != nil {
 		return fmt.Errorf("failed to update invoice: %w", err)
 	}
 
+	log.Printf("Invoice updated successfully for orderCode: %s", orderCode)
 	return nil
 }
 
