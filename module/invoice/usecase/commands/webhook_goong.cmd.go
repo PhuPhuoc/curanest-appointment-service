@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"log"
 	"sort"
 )
 
@@ -20,6 +21,7 @@ func NewWebhoobGoongHandler(cmdRepo InvoiceCommandRepo) *webhookGoongHandler {
 }
 
 func (h *webhookGoongHandler) Handle(ctx context.Context, checkSumKey string, dto *PayosWebhookData) error {
+	log.Println("da  webhook handle")
 	// Verify signature
 	// if !h.verifySignature(checkSumKey, dto) {
 	// 	return fmt.Errorf("invalid signature")

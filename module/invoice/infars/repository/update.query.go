@@ -3,9 +3,11 @@ package invoicerepository
 import (
 	"context"
 	"fmt"
+	"log"
 )
 
 func (repo *invoiceRepo) UpdateInvoiceFromGoong(ctx context.Context, orderCode string) error {
+	log.Println("da webhook handle -> repo")
 	query := `
         UPDATE invoices 
         SET payment_status = 'paid', note = 'da thanh toan xong' 

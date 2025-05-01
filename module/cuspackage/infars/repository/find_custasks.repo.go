@@ -2,7 +2,6 @@ package cuspackagerepository
 
 import (
 	"context"
-	"fmt"
 	"strings"
 	"time"
 
@@ -22,13 +21,11 @@ func (repo *cusPackageRepo) FindCusTasks(ctx context.Context, packageId uuid.UUI
 	where := strings.Join(whereConditions, " AND ")
 
 	query := common.GenerateSQLQueries(common.SELECT_WITHOUT_COUNT, TABLE_CUSTASK, GET_CUSTASK, &where)
-	fmt.Println("query: ", query)
 	var dtos []CusTaskDTO
 	if err := repo.db.SelectContext(ctx, &dtos, query, args...); err != nil {
 		return nil, err
 	}
 
-	fmt.Println("dtos: ", dtos)
 	entities := make([]cuspackagedomain.CustomizedTask, len(dtos))
 	for i := range dtos {
 		entity, _ := dtos[i].ToCusTaskEntity()
