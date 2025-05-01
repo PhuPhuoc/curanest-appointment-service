@@ -1,7 +1,6 @@
 package invoicehttpservice
 
 import (
-	"log"
 	"net/http"
 
 	invoicecommands "github.com/PhuPhuoc/curanest-appointment-service/module/invoice/usecase/commands"
@@ -19,7 +18,6 @@ import (
 // @Router			/api/v1/invoices/webhooks [post]
 func (s *invoiceHttpService) handlePayosWebhook() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		log.Println("da goi vao webhook")
 		var dto invoicecommands.PayosWebhookData
 
 		// Bind JSON body

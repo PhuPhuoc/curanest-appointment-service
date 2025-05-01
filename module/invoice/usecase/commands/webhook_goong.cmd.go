@@ -21,11 +21,11 @@ func NewWebhoobGoongHandler(cmdRepo InvoiceCommandRepo) *webhookGoongHandler {
 }
 
 func (h *webhookGoongHandler) Handle(ctx context.Context, checkSumKey string, dto *PayosWebhookData) error {
-	log.Println("da  webhook handle")
 	// Verify signature
 	// if !h.verifySignature(checkSumKey, dto) {
 	// 	return fmt.Errorf("invalid signature")
 	// }
+	log.Printf("GOONG dto: %v \n", dto)
 
 	// Check if transaction is successful
 	if !dto.Success || dto.Data.Status != "PAID" {
