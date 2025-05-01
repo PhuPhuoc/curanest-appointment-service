@@ -29,12 +29,14 @@ func (h *webhookGoongHandler) Handle(ctx context.Context, checkSumKey string, dt
 		return nil
 	}
 
-	if dto.Data.Code != "00" || dto.Data.Desc != "Thành công" || dto.Data.AccountNumber == "" || dto.Data.TransactionDateTime == "" {
+	// Check if the transaction is successful based on data fields
+	if dto.Data.Code != "00" || dto.Data.Desc != "success" || dto.Data.AccountNumber == "" || dto.Data.TransactionDateTime == "" {
 		log.Printf("Transaction not paid: Code=%v, Desc=%v, AccountNumber=%v, TransactionDateTime=%v",
 			dto.Data.Code, dto.Data.Desc, dto.Data.AccountNumber, dto.Data.TransactionDateTime)
 		return nil
 	}
 
+	// Call repository to update invoice
 	orderCode := fmt.Sprintf("%d", dto.Data.OrderCode)
 	log.Printf("Updating invoice with orderCode: %s", orderCode)
 	if err := h.cmdRepo.UpdateInvoiceFromGoong(ctx, orderCode); err != nil {
