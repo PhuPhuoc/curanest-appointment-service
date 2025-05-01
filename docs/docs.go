@@ -1558,22 +1558,34 @@ const docTemplate = `{
                 "data": {
                     "type": "object",
                     "properties": {
+                        "accountNumber": {
+                            "type": "string"
+                        },
                         "amount": {
                             "type": "integer"
                         },
-                        "amountPaid": {
-                            "type": "integer"
-                        },
-                        "amountRemaining": {
-                            "type": "integer"
-                        },
-                        "canceledAt": {
+                        "code": {
                             "type": "string"
                         },
-                        "completionAt": {
+                        "counterAccountBankId": {
                             "type": "string"
                         },
-                        "createdAt": {
+                        "counterAccountBankName": {
+                            "type": "string"
+                        },
+                        "counterAccountName": {
+                            "type": "string"
+                        },
+                        "counterAccountNumber": {
+                            "type": "string"
+                        },
+                        "currency": {
+                            "type": "string"
+                        },
+                        "desc": {
+                            "type": "string"
+                        },
+                        "description": {
                             "type": "string"
                         },
                         "orderCode": {
@@ -1582,43 +1594,17 @@ const docTemplate = `{
                         "paymentLinkId": {
                             "type": "string"
                         },
-                        "status": {
+                        "reference": {
                             "type": "string"
                         },
-                        "transactions": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "accountNumber": {
-                                        "type": "string"
-                                    },
-                                    "amount": {
-                                        "type": "integer"
-                                    },
-                                    "counterAccountBankId": {
-                                        "type": "string"
-                                    },
-                                    "counterAccountBankName": {
-                                        "type": "string"
-                                    },
-                                    "counterAccountName": {
-                                        "type": "string"
-                                    },
-                                    "counterAccountNumber": {
-                                        "type": "string"
-                                    },
-                                    "description": {
-                                        "type": "string"
-                                    },
-                                    "reference": {
-                                        "type": "string"
-                                    },
-                                    "transactionDate": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
+                        "transactionDateTime": {
+                            "type": "string"
+                        },
+                        "virtualAccountName": {
+                            "type": "string"
+                        },
+                        "virtualAccountNumber": {
+                            "type": "string"
                         }
                     }
                 },

@@ -23,12 +23,15 @@ func NewWebhoobGoongHandler(cmdRepo InvoiceCommandRepo) *webhookGoongHandler {
 func (h *webhookGoongHandler) Handle(ctx context.Context, checkSumKey string, dto *PayosWebhookData) error {
 	log.Printf("GOONG dto: %v \n", dto)
 
+	// Check if transaction is successful
 	if !dto.Success {
 		log.Printf("Webhook not successful: Success=%v", dto.Success)
 		return nil
 	}
-	if dto.Data.Status != "PAID" {
-		log.Printf("Transaction not paid: Status=%v, AmountPaid=%d", dto.Data.Status, dto.Data.AmountPaid)
+
+	if dto.Data.Code != "00" || dto.Data.Desc != "Thành công" || dto.Data.AccountNumber == "" || dto.Data.TransactionDateTime == "" {
+		log.Printf("Transaction not paid: Code=%v, Desc=%v, AccountNumber=%v, TransactionDateTime=%v",
+			dto.Data.Code, dto.Data.Desc, dto.Data.AccountNumber, dto.Data.TransactionDateTime)
 		return nil
 	}
 
