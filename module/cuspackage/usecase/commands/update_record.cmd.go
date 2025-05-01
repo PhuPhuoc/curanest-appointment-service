@@ -35,6 +35,7 @@ func (h *updateMedicalRecordHanlder) Handle(ctx context.Context, dto UpdateMedic
 		return common.NewUnauthorizedError()
 	}
 	role := requester.Role()
+	sub := requester.UserId()
 
 	curNursingReport := entity.GetNursingReport()
 	curStaffConfirm := entity.GetStaffConfirm()
@@ -44,7 +45,7 @@ func (h *updateMedicalRecordHanlder) Handle(ctx context.Context, dto UpdateMedic
 	updateStatus := entity.GetStatus()
 
 	if dto.NursingReport != nil && *dto.NursingReport != "" {
-		if role != "nurse" {
+		if *entity.GetNursingId() != sub {
 			return common.NewBadRequestError().WithReason("only the nurse who performed this service is allowed to submit a nursing's report")
 		}
 		updateNursingReport = *dto.NursingReport
