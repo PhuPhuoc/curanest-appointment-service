@@ -72,6 +72,61 @@ definitions:
       staff-confirmation:
         type: string
     type: object
+  invoicecommands.PayosWebhookData:
+    properties:
+      code:
+        type: string
+      data:
+        properties:
+          amount:
+            type: integer
+          amountPaid:
+            type: integer
+          amountRemaining:
+            type: integer
+          canceledAt:
+            type: string
+          completionAt:
+            type: string
+          createdAt:
+            type: string
+          orderCode:
+            type: integer
+          paymentLinkId:
+            type: string
+          status:
+            type: string
+          transactions:
+            items:
+              properties:
+                accountNumber:
+                  type: string
+                amount:
+                  type: integer
+                counterAccountBankId:
+                  type: string
+                counterAccountBankName:
+                  type: string
+                counterAccountName:
+                  type: string
+                counterAccountNumber:
+                  type: string
+                description:
+                  type: string
+                reference:
+                  type: string
+                transactionDate:
+                  type: string
+              type: object
+            type: array
+        type: object
+      desc:
+        type: string
+      signature:
+        type: string
+      success:
+        type: boolean
+    type: object
   servicecommands.CreateServiceDTO:
     properties:
       description:
@@ -782,6 +837,35 @@ paths:
       summary: change custask status to done
       tags:
       - customized packages
+  /api/v1/invoices/webhooks:
+    post:
+      consumes:
+      - application/json
+      description: Process webhook notifications from PayOS to update invoice payment
+        status
+      parameters:
+      - description: PayOS webhook data
+        in: body
+        name: webhook_data
+        required: true
+        schema:
+          $ref: '#/definitions/invoicecommands.PayosWebhookData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Handle PayOS webhook
+      tags:
+      - invoices
   /api/v1/medical-record/{appointment-id}:
     get:
       consumes:

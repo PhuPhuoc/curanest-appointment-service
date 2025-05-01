@@ -11,6 +11,8 @@ type invoiceHttpService struct {
 	cmd   invoicecommands.Commands
 	query invoicequeries.Queries
 	auth  middleware.AuthClient
+
+	checksumKey string
 }
 
 func NewInvoiceHTTPService(cmd invoicecommands.Commands, query invoicequeries.Queries) *invoiceHttpService {
@@ -25,6 +27,11 @@ func (s *invoiceHttpService) AddAuth(auth middleware.AuthClient) *invoiceHttpSer
 	return s
 }
 
+func (s *invoiceHttpService) AddChecksumKey(checksumKey string) *invoiceHttpService {
+	s.checksumKey = checksumKey
+	return s
+}
+
 func (s *invoiceHttpService) Routes(g *gin.RouterGroup) {
 	cuspackage_invoice_route := g.Group("/cuspackage/:cus-package-id/invoices")
 	{
@@ -35,13 +42,11 @@ func (s *invoiceHttpService) Routes(g *gin.RouterGroup) {
 			s.handleFindInvoice(),
 		)
 	}
-	// invoice_route := g.Group("/invoices")
-	// {
-	// 	invoice_route.GET(
-	// 		"/:invoice-id/url-payment",
-	// 		// middleware.RequireAuth(s.auth),
-	// 		// middleware.RequireRole("relatives"),
-	// 		s.handleGetUrlPaymentForInvoice(),
-	// 	)
-	// }
+	invoice_route := g.Group("/invoices")
+	{
+		invoice_route.POST(
+			"/webhooks",
+			s.handlePayosWebhook(),
+		)
+	}
 }

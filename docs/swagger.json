@@ -854,6 +854,48 @@
                 }
             }
         },
+        "/api/v1/invoices/webhooks": {
+            "post": {
+                "description": "Process webhook notifications from PayOS to update invoice payment status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "invoices"
+                ],
+                "summary": "Handle PayOS webhook",
+                "parameters": [
+                    {
+                        "description": "PayOS webhook data",
+                        "name": "webhook_data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/invoicecommands.PayosWebhookData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/medical-record/{appointment-id}": {
             "get": {
                 "security": [
@@ -1496,6 +1538,90 @@
                 },
                 "staff-confirmation": {
                     "type": "string"
+                }
+            }
+        },
+        "invoicecommands.PayosWebhookData": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "amount": {
+                            "type": "integer"
+                        },
+                        "amountPaid": {
+                            "type": "integer"
+                        },
+                        "amountRemaining": {
+                            "type": "integer"
+                        },
+                        "canceledAt": {
+                            "type": "string"
+                        },
+                        "completionAt": {
+                            "type": "string"
+                        },
+                        "createdAt": {
+                            "type": "string"
+                        },
+                        "orderCode": {
+                            "type": "integer"
+                        },
+                        "paymentLinkId": {
+                            "type": "string"
+                        },
+                        "status": {
+                            "type": "string"
+                        },
+                        "transactions": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "accountNumber": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "integer"
+                                    },
+                                    "counterAccountBankId": {
+                                        "type": "string"
+                                    },
+                                    "counterAccountBankName": {
+                                        "type": "string"
+                                    },
+                                    "counterAccountName": {
+                                        "type": "string"
+                                    },
+                                    "counterAccountNumber": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "reference": {
+                                        "type": "string"
+                                    },
+                                    "transactionDate": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "signature": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
                 }
             }
         },
