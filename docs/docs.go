@@ -863,6 +863,46 @@ const docTemplate = `{
             }
         },
         "/api/v1/medical-record/{medical-record-id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get medical record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medical reports"
+                ],
+                "summary": "get medical record",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "custask ID (UUID)",
+                        "name": "medical-record-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            },
             "patch": {
                 "security": [
                     {

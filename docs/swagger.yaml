@@ -783,6 +783,32 @@ paths:
       tags:
       - customized packages
   /api/v1/medical-record/{medical-record-id}:
+    get:
+      consumes:
+      - application/json
+      description: get medical record
+      parameters:
+      - description: custask ID (UUID)
+        in: path
+        name: medical-record-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: get medical record
+      tags:
+      - medical reports
     patch:
       consumes:
       - application/json
