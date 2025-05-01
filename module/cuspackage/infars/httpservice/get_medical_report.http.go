@@ -6,29 +6,29 @@ import (
 	"github.com/google/uuid"
 )
 
-//	@Summary		get medical record
-//	@Description	get medical record
-//	@Tags			medical reports
-//	@Accept			json
-//	@Produce		json
-//	@Param			medical-record-id	path		string					true	"custask ID (UUID)"
-//	@Success		200					{object}	map[string]interface{}	"data"
-//	@Failure		400					{object}	error					"Bad request error"
-//	@Router			/api/v1/medical-record/{medical-record-id} [get]
-//	@Security		ApiKeyAuth
+// @Summary		get medical record
+// @Description	get medical record
+// @Tags			medical reports
+// @Accept			json
+// @Produce		json
+// @Param			appointment-id	path		string					true	"custask ID (UUID)"
+// @Success		200				{object}	map[string]interface{}	"data"
+// @Failure		400				{object}	error					"Bad request error"
+// @Router			/api/v1/medical-record/{appointment-id} [get]
+// @Security		ApiKeyAuth
 func (s *cusPackageHttpService) handleGetMedicalRecord() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var medicalRecordUUID uuid.UUID
+		var appointmentUUID uuid.UUID
 		var err error
-		if medicalRecordId := ctx.Param("medical-record-id"); medicalRecordId != "" {
-			medicalRecordUUID, err = uuid.Parse(medicalRecordId)
+		if appointmentId := ctx.Param("appointment-id"); appointmentId != "" {
+			appointmentUUID, err = uuid.Parse(appointmentId)
 			if err != nil {
-				common.ResponseError(ctx, common.NewBadRequestError().WithReason("medical-record-id invalid (not a UUID)"))
+				common.ResponseError(ctx, common.NewBadRequestError().WithReason("appointment-id invalid (not a UUID)"))
 				return
 			}
 		}
 
-		medicalRecordDTO, err := s.query.FindMedicalRecordById.Handle(ctx.Request.Context(), medicalRecordUUID)
+		medicalRecordDTO, err := s.query.FindMedicalRecordByAppsId.Handle(ctx.Request.Context(), appointmentUUID)
 		if err != nil {
 			common.ResponseError(ctx, err)
 			return

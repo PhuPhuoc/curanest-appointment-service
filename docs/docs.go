@@ -862,7 +862,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/medical-record/{medical-record-id}": {
+        "/api/v1/medical-record/{appointment-id}": {
             "get": {
                 "security": [
                     {
@@ -884,7 +884,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "custask ID (UUID)",
-                        "name": "medical-record-id",
+                        "name": "appointment-id",
                         "in": "path",
                         "required": true
                     }
@@ -902,7 +902,9 @@ const docTemplate = `{
                         "schema": {}
                     }
                 }
-            },
+            }
+        },
+        "/api/v1/medical-record/{medical-record-id}": {
             "patch": {
                 "security": [
                     {

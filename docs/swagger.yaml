@@ -782,7 +782,7 @@ paths:
       summary: change custask status to done
       tags:
       - customized packages
-  /api/v1/medical-record/{medical-record-id}:
+  /api/v1/medical-record/{appointment-id}:
     get:
       consumes:
       - application/json
@@ -790,7 +790,7 @@ paths:
       parameters:
       - description: custask ID (UUID)
         in: path
-        name: medical-record-id
+        name: appointment-id
         required: true
         type: string
       produces:
@@ -809,6 +809,7 @@ paths:
       summary: get medical record
       tags:
       - medical reports
+  /api/v1/medical-record/{medical-record-id}:
     patch:
       consumes:
       - application/json

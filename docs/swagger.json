@@ -854,7 +854,7 @@
                 }
             }
         },
-        "/api/v1/medical-record/{medical-record-id}": {
+        "/api/v1/medical-record/{appointment-id}": {
             "get": {
                 "security": [
                     {
@@ -876,7 +876,7 @@
                     {
                         "type": "string",
                         "description": "custask ID (UUID)",
-                        "name": "medical-record-id",
+                        "name": "appointment-id",
                         "in": "path",
                         "required": true
                     }
@@ -894,7 +894,9 @@
                         "schema": {}
                     }
                 }
-            },
+            }
+        },
+        "/api/v1/medical-record/{medical-record-id}": {
             "patch": {
                 "security": [
                     {

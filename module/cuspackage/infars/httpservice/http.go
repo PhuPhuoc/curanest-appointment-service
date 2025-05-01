@@ -58,7 +58,7 @@ func (s *cusPackageHttpService) Routes(g *gin.RouterGroup) {
 			s.handleUpdateMedicalRecord(),
 		)
 		medical_report_route.GET(
-			"/:medical-record-id",
+			"/:appointment-id",
 			// middleware.RequireAuth(s.auth),
 			// middleware.RequireRole("relatives"),
 			s.handleGetMedicalRecord(),

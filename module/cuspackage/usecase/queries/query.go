@@ -10,9 +10,10 @@ import (
 )
 
 type Queries struct {
-	FindCusPackageTask    *findCusPackageTaskHandler
-	FindCustaskById       *findCustaskByIdHandler
-	FindMedicalRecordById *findMedicalRecordByIdHandler
+	FindCusPackageTask        *findCusPackageTaskHandler
+	FindCustaskById           *findCustaskByIdHandler
+	FindMedicalRecordById     *findMedicalRecordByIdHandler
+	FindMedicalRecordByAppsId *findMedicalRecordByAppsIdHandler
 }
 
 type Builder interface {
@@ -30,6 +31,9 @@ func NewCusPackageQueryWithBuilder(b Builder) Queries {
 		FindMedicalRecordById: NewFindMedicalRecordByIdHandler(
 			b.BuildCusPackageQueryRepo(),
 		),
+		FindMedicalRecordByAppsId: NewFindMedicalRecordByAppsIdHandler(
+			b.BuildCusPackageQueryRepo(),
+		),
 	}
 }
 
@@ -38,4 +42,5 @@ type CusPackageQueryRepo interface {
 	FindCusTasks(ctx context.Context, packageId uuid.UUID, estDate time.Time) ([]cuspackagedomain.CustomizedTask, error)
 	FindCusTaskById(ctx context.Context, custaskId uuid.UUID) (*cuspackagedomain.CustomizedTask, error)
 	FindMedicalRecordById(ctx context.Context, mecicalRecordId uuid.UUID) (*cuspackagedomain.MedicalRecord, error)
+	FindMedicalRecordByAppsId(ctx context.Context, appsId uuid.UUID) (*cuspackagedomain.MedicalRecord, error)
 }
