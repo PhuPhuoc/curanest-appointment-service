@@ -883,7 +883,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "custask ID (UUID)",
+                        "description": "appointment ID (UUID)",
                         "name": "appointment-id",
                         "in": "path",
                         "required": true
@@ -925,7 +925,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "custask ID (UUID)",
+                        "description": "medical-record ID (UUID)",
                         "name": "medical-record-id",
                         "in": "path",
                         "required": true

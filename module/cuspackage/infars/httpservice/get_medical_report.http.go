@@ -11,7 +11,7 @@ import (
 // @Tags			medical reports
 // @Accept			json
 // @Produce		json
-// @Param			appointment-id	path		string					true	"custask ID (UUID)"
+// @Param			appointment-id	path		string					true	"appointment ID (UUID)"
 // @Success		200				{object}	map[string]interface{}	"data"
 // @Failure		400				{object}	error					"Bad request error"
 // @Router			/api/v1/medical-record/{appointment-id} [get]

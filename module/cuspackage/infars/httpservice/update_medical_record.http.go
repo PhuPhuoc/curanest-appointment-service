@@ -12,7 +12,7 @@ import (
 // @Tags			medical reports
 // @Accept			json
 // @Produce		json
-// @Param			medical-record-id	path		string					true										"custask ID (UUID)"
+// @Param			medical-record-id	path		string					true										"medical-record ID (UUID)"
 // @Param			update				form		body					cuspackagecommands.UpdateMedicalRecordDTO	true	"customized package and task creation data"
 // @Success		200					{object}	map[string]interface{}	"data"
 // @Failure		400					{object}	error					"Bad request error"
