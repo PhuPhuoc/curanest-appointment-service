@@ -12,4 +12,5 @@ var (
 	ErrNurseNotAvailable              = errors.New("this nurse are not available")
 	ErrNursesNotAvailable             = errors.New("this nurses are not available")
 	ErrAppointmentStatusIsNotUpcoming = errors.New("appointment status is not upcoming")
+	ErrCustaskNotDoneAll              = errors.New("there are still pending custasks that haven't been completed")
 )

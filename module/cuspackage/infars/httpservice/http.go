@@ -48,4 +48,14 @@ func (s *cusPackageHttpService) Routes(g *gin.RouterGroup) {
 			s.handleUpdateCustaskStatusDone(),
 		)
 	}
+
+	medical_report_route := g.Group("/medical-record")
+	{
+		medical_report_route.PATCH(
+			"/:medical-record-id",
+			middleware.RequireAuth(s.auth),
+			// middleware.RequireRole("relatives"),
+			s.handleUpdateMedicalRecord(),
+		)
+	}
 }

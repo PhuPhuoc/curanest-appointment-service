@@ -65,6 +65,13 @@ definitions:
     required:
     - svcpackage-id
     type: object
+  cuspackagecommands.UpdateMedicalRecordDTO:
+    properties:
+      nursing-report:
+        type: string
+      staff-confirmation:
+        type: string
+    type: object
   servicecommands.CreateServiceDTO:
     properties:
       description:
@@ -775,6 +782,39 @@ paths:
       summary: change custask status to done
       tags:
       - customized packages
+  /api/v1/medical-record/{medical-record-id}:
+    patch:
+      consumes:
+      - application/json
+      description: update medical record
+      parameters:
+      - description: custask ID (UUID)
+        in: path
+        name: medical-record-id
+        required: true
+        type: string
+      - description: customized package and task creation data
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/cuspackagecommands.UpdateMedicalRecordDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: update medical record
+      tags:
+      - medical reports
   /api/v1/services/{service-id}/svcpackage:
     get:
       consumes:

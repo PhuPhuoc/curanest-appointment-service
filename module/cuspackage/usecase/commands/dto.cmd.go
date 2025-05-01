@@ -45,3 +45,8 @@ type GoongAPIResponse struct {
 	Results []GoongResult `json:"results"`
 	Status  string        `json:"status"`
 }
+
+type UpdateMedicalRecordDTO struct {
+	NursingReport     *string `json:"nursing-report"`
+	StaffConfirmation *string `json:"staff-confirmation"`
+}

@@ -17,6 +17,7 @@ type Commands struct {
 	CreateCusPackageAndCusTask *createCusPackageAndTaskHandler
 
 	UpdateCustaskStatusDone *updateCustaskStatusDoneHanlder
+	UpdateMedicalRecord     *updateMedicalRecordHanlder
 }
 
 type Builder interface {
@@ -44,6 +45,10 @@ func NewCusPackageCmdWithBuilder(b Builder) Commands {
 			b.BuildCusPackageCmdRepo(),
 			b.BuildAppointmentFetcher(),
 		),
+		UpdateMedicalRecord: NewUpdateMedicalRecordHandler(
+			b.BuildCusPackageCmdRepo(),
+			b.BuildAppointmentFetcher(),
+		),
 	}
 }
 
@@ -53,6 +58,9 @@ type CusPackageCommandRepo interface {
 	CreateMedicalRecords(ctx context.Context, entities []cuspackagedomain.MedicalRecord) error
 
 	UpdateCustomizedTask(ctx context.Context, entity *cuspackagedomain.CustomizedTask) error
+	UpdateMedicalRecord(ctx context.Context, entity *cuspackagedomain.MedicalRecord) error
+
+	VerifyAllCusTasksHaveDone(ctx context.Context, cusPackageId uuid.UUID, date time.Time) error
 }
 
 type SvcPackageFetcher interface {
@@ -65,6 +73,7 @@ type AppointmentFetcher interface {
 	AreNursesAvailable(ctx context.Context, nursingIds []uuid.UUID, dates []time.Time) error
 
 	CheckAppointmentStatusUpcoming(ctx context.Context, cuspackageId uuid.UUID, date time.Time) error
+	FindById(ctx context.Context, appointmentId uuid.UUID) (*appointmentdomain.Appointment, error)
 }
 
 type InvoiceFetcher interface {

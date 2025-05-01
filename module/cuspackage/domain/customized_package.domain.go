@@ -51,8 +51,8 @@ func (a *CustomizedPackage) GetPaymentStatus() PaymentStatus {
 	return a.paymentStatus
 }
 
-func (a *CustomizedPackage) GetCreatedAt() time.Time {
-	return *a.createdAt
+func (a *CustomizedPackage) GetCreatedAt() *time.Time {
+	return a.createdAt
 }
 
 func NewCustomizedPackage(

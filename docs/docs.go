@@ -862,6 +862,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/medical-record/{medical-record-id}": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "update medical record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medical reports"
+                ],
+                "summary": "update medical record",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "custask ID (UUID)",
+                        "name": "medical-record-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "customized package and task creation data",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/cuspackagecommands.UpdateMedicalRecordDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/services/group-by-category": {
             "get": {
                 "description": "get list service with category (guest)",
@@ -1400,6 +1451,17 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/cuspackagecommands.CreateCustomizedTaskDTO"
                     }
+                }
+            }
+        },
+        "cuspackagecommands.UpdateMedicalRecordDTO": {
+            "type": "object",
+            "properties": {
+                "nursing-report": {
+                    "type": "string"
+                },
+                "staff-confirmation": {
+                    "type": "string"
                 }
             }
         },

@@ -22,12 +22,12 @@ type CusPackageDTO struct {
 	Id uuid.UUID `json:"id"`
 	// SvcPackageId uuid.UUID `json:"svc-package-id"`
 	// PatientId    uuid.UUID `json:"patient-id"`
-	Name          string    `json:"name"`
-	TotalFee      float64   `json:"total-fee"`
-	PaidAmount    float64   `json:"paid-amount"`
-	UnpaidAmount  float64   `json:"unpaid-amount"`
-	PaymentStatus string    `json:"payment-status"`
-	CreatedAt     time.Time `json:"created-at"`
+	Name          string     `json:"name"`
+	TotalFee      float64    `json:"total-fee"`
+	PaidAmount    float64    `json:"paid-amount"`
+	UnpaidAmount  float64    `json:"unpaid-amount"`
+	PaymentStatus string     `json:"payment-status"`
+	CreatedAt     *time.Time `json:"created-at"`
 }
 
 func toCusPackageDTO(data *cuspackagedomain.CustomizedPackage) *CusPackageDTO {
@@ -92,6 +92,41 @@ func toCusTaskDTO(data *cuspackagedomain.CustomizedTask) *CusTaskDTO {
 		TotalUnit:    data.GetTotalUnit(),
 		Status:       data.GetStatus().String(),
 		EstDate:      data.GetEstDate(),
+	}
+	return dto
+}
+
+type MedicalRecordDTO struct {
+	Id                uuid.UUID  `json:"id"`
+	NursingId         *uuid.UUID `json:"svc-package-id"`
+	AppointmentId     uuid.UUID  `json:"patient-id"`
+	NursingReport     string     `json:"nursing-report"`
+	StaffConfirmation string     `json:"staff-confirmation"`
+	Status            string     `json:"status"`
+	CreatedAt         *time.Time `json:"created-at"`
+}
+
+func (m *MedicalRecordDTO) ToMedicalRecordEntity() (*cuspackagedomain.MedicalRecord, error) {
+	return cuspackagedomain.NewMedicalRecord(
+		m.Id,
+		m.AppointmentId,
+		m.NursingId,
+		m.NursingReport,
+		m.StaffConfirmation,
+		cuspackagedomain.EnumRecordStatus(m.Status),
+		m.CreatedAt,
+	)
+}
+
+func toMedicalRecordDTO(data *cuspackagedomain.MedicalRecord) *MedicalRecordDTO {
+	dto := &MedicalRecordDTO{
+		Id:                data.GetID(),
+		NursingId:         data.GetNursingId(),
+		AppointmentId:     data.GetAppointmentId(),
+		NursingReport:     data.GetNursingReport(),
+		StaffConfirmation: data.GetStaffConfirm(),
+		Status:            data.GetStatus().String(),
+		CreatedAt:         data.GetCreatedAt(),
 	}
 	return dto
 }
