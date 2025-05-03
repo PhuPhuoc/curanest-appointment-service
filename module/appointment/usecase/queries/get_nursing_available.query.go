@@ -41,7 +41,7 @@ func (h *getNursingAvailableHandler) Handle(ctx context.Context, serviceId uuid.
 	for _, nurse := range nurses {
 		flagAvailable := true
 		for _, app := range apps {
-			if nurse.NurseId == *app.GetNursingID() {
+			if app.GetNursingID() != nil && nurse.NurseId == *app.GetNursingID() {
 				flagAvailable = false
 				continue
 			}
