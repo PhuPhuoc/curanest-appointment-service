@@ -56,6 +56,7 @@ type FilterGetAppointmentDTO struct {
 type AppointmentDTO struct {
 	Id               uuid.UUID  `json:"id"`
 	ServiceId        uuid.UUID  `json:"service-id"`
+	SvcpackageId     uuid.UUID  `json:"svcpackage-id"`
 	CusPackageId     uuid.UUID  `json:"cuspackage-id"`
 	NursingId        *uuid.UUID `json:"nursing-id"`
 	PatientId        uuid.UUID  `json:"patient-id"`
@@ -90,6 +91,7 @@ func (dto AppointmentDTO) ToAppointmentDomain() (*appointmentdomain.Appointment,
 	return appointmentdomain.NewAppointment(
 		dto.Id,
 		dto.ServiceId,
+		dto.SvcpackageId,
 		dto.CusPackageId,
 		dto.PatientId,
 		dto.NursingId,

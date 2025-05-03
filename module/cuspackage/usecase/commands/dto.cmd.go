@@ -6,6 +6,11 @@ import (
 	"github.com/google/uuid"
 )
 
+type AddMoreCustaskRequestDTO struct {
+	AppointmentId uuid.UUID                 `json:"svctask-id" binding:"required"`
+	TaskInfos     []CreateCustomizedTaskDTO `json:"task-infos"`
+}
+
 type DateNursingMapping struct {
 	Date      time.Time  `json:"date"`
 	NursingId *uuid.UUID `json:"nursing-id"`

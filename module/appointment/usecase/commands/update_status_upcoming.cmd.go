@@ -67,6 +67,7 @@ func (h *updateStatusUpcomingHandler) Handle(ctx context.Context, originCode str
 	updateEntity, _ := appointmentdomain.NewAppointment(
 		entity.GetID(),
 		entity.GetServiceID(),
+		entity.GetSvcpackageID(),
 		entity.GetCusPackageID(),
 		entity.GetPatientID(),
 		entity.GetNursingID(),

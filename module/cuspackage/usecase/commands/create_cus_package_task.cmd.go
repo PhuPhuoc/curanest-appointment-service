@@ -126,7 +126,7 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 	}
 
 	// create appointment
-	if err = h.saveAppointment(ctx, dateNurseMappings, totalEstDuration, servicePackage.GetServiceID(), req.PatientId, req.PatientAddress, cusPackageEntity); err != nil {
+	if err = h.saveAppointment(ctx, servicePackage.GetID(), dateNurseMappings, totalEstDuration, servicePackage.GetServiceID(), req.PatientId, req.PatientAddress, cusPackageEntity); err != nil {
 		return nil, err
 	}
 
@@ -187,7 +187,7 @@ func (h *createCusPackageAndTaskHandler) getGeocodeFromGoong(ctx context.Context
 	return geocode, nil
 }
 
-func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, mappings []DateNursingMapping, totalEstDuration int, serviceId uuid.UUID, patientId uuid.UUID, patientAddress string, cusPackageEntity *cuspackagedomain.CustomizedPackage) error {
+func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, svcpackageId uuid.UUID, mappings []DateNursingMapping, totalEstDuration int, serviceId uuid.UUID, patientId uuid.UUID, patientAddress string, cusPackageEntity *cuspackagedomain.CustomizedPackage) error {
 	patientLatLng, err := h.getGeocodeFromGoong(ctx, patientAddress)
 	if err != nil {
 		log.Println("cannot get geocode with address (" + patientAddress + ") error: " + err.Error())
@@ -206,6 +206,7 @@ func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, ma
 		appointmentEntity, _ := appointmentdomain.NewAppointment(
 			appointmentId,
 			serviceId,
+			svcpackageId,
 			cusPackageEntity.GetID(),
 			patientId,
 			obj.NursingId,

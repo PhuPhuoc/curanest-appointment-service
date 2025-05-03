@@ -24,6 +24,7 @@ func (h *assignNursingHandler) Handle(ctx context.Context, nursingId uuid.UUID, 
 	updateEntity, _ := appointmentdomain.NewAppointment(
 		entity.GetID(),
 		entity.GetServiceID(),
+		entity.GetSvcpackageID(),
 		entity.GetCusPackageID(),
 		entity.GetPatientID(),
 		&nursingId,

@@ -14,6 +14,7 @@ var (
 	CREATE_APPOINTMENT = []string{
 		"id",
 		"service_id",
+		"svcpackage_id",
 		"customized_package_id",
 		"nursing_id",
 		"patient_id",
@@ -28,6 +29,7 @@ var (
 	GET_APPOINTMENT = []string{
 		"id",
 		"service_id",
+		"svcpackage_id",
 		"customized_package_id",
 		"nursing_id",
 		"patient_id",
@@ -53,6 +55,7 @@ var (
 type AppointmentDTO struct {
 	Id                  uuid.UUID  `db:"id"`
 	ServiceId           uuid.UUID  `db:"service_id"`
+	SvcpackageId        uuid.UUID  `db:"svcpackage_id"`
 	CustomizedPackageId uuid.UUID  `db:"customized_package_id"`
 	NursingId           *uuid.UUID `db:"nursing_id"`
 	PatientId           uuid.UUID  `db:"patient_id"`
@@ -69,6 +72,7 @@ func (dto *AppointmentDTO) ToAppointmentEntity() (*appointmentdomain.Appointment
 	return appointmentdomain.NewAppointment(
 		dto.Id,
 		dto.ServiceId,
+		dto.SvcpackageId,
 		dto.CustomizedPackageId,
 		dto.PatientId,
 		dto.NursingId,
@@ -86,6 +90,7 @@ func ToAppointmentDTO(data *appointmentdomain.Appointment) *AppointmentDTO {
 	return &AppointmentDTO{
 		Id:                  data.GetID(),
 		ServiceId:           data.GetServiceID(),
+		SvcpackageId:        data.GetCusPackageID(),
 		CustomizedPackageId: data.GetCusPackageID(),
 		PatientId:           data.GetPatientID(),
 		NursingId:           data.GetNursingID(),

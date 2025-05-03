@@ -54,6 +54,7 @@ func (h *updateAppointmentHandler) Handle(ctx context.Context, newStatus appoint
 	updateEntity, _ := appointmentdomain.NewAppointment(
 		entity.GetID(),
 		entity.GetServiceID(),
+		entity.GetSvcpackageID(),
 		entity.GetCusPackageID(),
 		entity.GetPatientID(),
 		entity.GetNursingID(),
