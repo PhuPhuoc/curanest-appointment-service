@@ -118,6 +118,13 @@ definitions:
       success:
         type: boolean
     type: object
+  invoicequeries.RequestGetInvoicesByPatientIds:
+    properties:
+      patient-ids:
+        items:
+          type: string
+        type: array
+    type: object
   servicecommands.CreateServiceDTO:
     properties:
       description:
@@ -828,6 +835,34 @@ paths:
       summary: change custask status to done
       tags:
       - customized packages
+  /api/v1/invoices/patient:
+    post:
+      consumes:
+      - application/json
+      description: get invoices with patient-ids
+      parameters:
+      - description: List of patient IDs (UUID)
+        in: body
+        name: patientIds
+        required: true
+        schema:
+          $ref: '#/definitions/invoicequeries.RequestGetInvoicesByPatientIds'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: get invoices with patient-ids
+      tags:
+      - invoices
   /api/v1/invoices/webhooks:
     post:
       consumes:

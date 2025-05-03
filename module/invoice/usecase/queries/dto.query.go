@@ -8,14 +8,18 @@ import (
 	invoicedomain "github.com/PhuPhuoc/curanest-appointment-service/module/invoice/domain"
 )
 
+type RequestGetInvoicesByPatientIds struct {
+	PatientIds []uuid.UUID `json:"patient-ids"`
+}
+
 type InvoiceDTO struct {
 	Id            uuid.UUID  `json:"id"`
 	CusPackageId  uuid.UUID  `json:"cuspackage-id"`
-	OrderCode     int64      `json:"order-code"`
+	OrderCode     int64      `json:"order-code,omitempty"`
 	TotalFee      float64    `json:"total-fee"`
 	PaymentStatus string     `json:"status"`
-	Note          string     `json:"note"`
-	PayosUrl      string     `json:"payos-url"`
+	Note          string     `json:"note,omitempty"`
+	PayosUrl      string     `json:"payos-url,omitempty"`
 	CreatedAt     *time.Time `json:"created-at"`
 }
 

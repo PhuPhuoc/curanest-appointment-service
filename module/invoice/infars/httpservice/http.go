@@ -48,5 +48,8 @@ func (s *invoiceHttpService) Routes(g *gin.RouterGroup) {
 			"/webhooks",
 			s.handlePayosWebhook(),
 		)
+		invoice_route.POST("/patient",
+			s.handleInvoicesByPatientIds(),
+		)
 	}
 }

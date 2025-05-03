@@ -37,7 +37,8 @@ func (h *updateStatusUpcomingHandler) Handle(ctx context.Context, originCode str
 		duraVal = goongApiResp.Rows[0].Elements[0].Duration.Value
 	}
 
-	actDate := entity.GetEstDate().Add(time.Duration(duraVal) * time.Second)
+	now := time.Now()
+	actDate := now.Add(time.Duration(duraVal) * time.Second)
 
 	hours := duraVal / 3600
 	minutes := (duraVal % 3600) / 60
