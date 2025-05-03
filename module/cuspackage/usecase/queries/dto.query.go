@@ -19,9 +19,9 @@ type PackageTaskResponse struct {
 }
 
 type CusPackageDTO struct {
-	Id uuid.UUID `json:"id"`
-	// SvcPackageId uuid.UUID `json:"svc-package-id"`
-	// PatientId    uuid.UUID `json:"patient-id"`
+	Id            uuid.UUID  `json:"id"`
+	SvcPackageId  uuid.UUID  `json:"svc-package-id"`
+	PatientId     uuid.UUID  `json:"patient-id"`
 	Name          string     `json:"name"`
 	TotalFee      float64    `json:"total-fee"`
 	PaidAmount    float64    `json:"paid-amount"`
@@ -34,6 +34,8 @@ func toCusPackageDTO(data *cuspackagedomain.CustomizedPackage) *CusPackageDTO {
 	dto := &CusPackageDTO{
 		Id:            data.GetID(),
 		Name:          data.GetName(),
+		SvcPackageId:  data.GetServicePackageID(),
+		PatientId:     data.GetPatientID(),
 		TotalFee:      data.GetTotalFee(),
 		PaidAmount:    data.GetPaidAmount(),
 		UnpaidAmount:  data.GetUnpaidAmount(),
