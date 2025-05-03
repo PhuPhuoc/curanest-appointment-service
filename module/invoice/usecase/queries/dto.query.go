@@ -10,6 +10,7 @@ import (
 
 type RequestGetInvoicesByPatientIds struct {
 	PatientIds []uuid.UUID `json:"patient-ids"`
+	IsAdmin    bool        `json:"is-admin"`
 }
 
 type InvoiceDTO struct {

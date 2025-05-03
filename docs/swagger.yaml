@@ -120,6 +120,8 @@ definitions:
     type: object
   invoicequeries.RequestGetInvoicesByPatientIds:
     properties:
+      is-admin:
+        type: boolean
       patient-ids:
         items:
           type: string

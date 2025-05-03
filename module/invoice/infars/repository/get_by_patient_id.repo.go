@@ -9,8 +9,8 @@ import (
 	"github.com/google/uuid"
 )
 
-func (repo *invoiceRepo) GetInvoicesByPatientId(ctx context.Context, patientIds []uuid.UUID) ([]invoicedomain.Invoice, error) {
-	if len(patientIds) == 0 {
+func (repo *invoiceRepo) GetInvoicesByPatientId(ctx context.Context, isAdmin bool, patientIds []uuid.UUID) ([]invoicedomain.Invoice, error) {
+	if !isAdmin && len(patientIds) == 0 {
 		return []invoicedomain.Invoice{}, fmt.Errorf("patientIds cannot be empty")
 	}
 
@@ -20,12 +20,22 @@ func (repo *invoiceRepo) GetInvoicesByPatientId(ctx context.Context, patientIds 
 	}
 	patientIdsParam := "'" + strings.Join(patientIdStrs, "','") + "'"
 
-	query := `
+	query := ""
+	if isAdmin {
+		query = `
+		select i.id, i.customized_package_id, i.total_fee, i.payment_status, i.created_at from invoices i
+		join customized_packages cp on i.customized_package_id = cp.id
+		order by i.created_at desc
+	`
+	} else {
+		query = `
 		select i.id, i.customized_package_id, i.total_fee, i.payment_status, i.created_at from invoices i
 		join customized_packages cp on i.customized_package_id = cp.id
 		where cp.patient_id in (%s)
+		order by i.created_at desc
 	`
-	query = fmt.Sprintf(query, patientIdsParam)
+		query = fmt.Sprintf(query, patientIdsParam)
+	}
 
 	dtos := []InvoiceDTO{}
 	if err := repo.db.SelectContext(ctx, &dtos, query); err != nil {

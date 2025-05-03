@@ -1666,6 +1666,9 @@ const docTemplate = `{
         "invoicequeries.RequestGetInvoicesByPatientIds": {
             "type": "object",
             "properties": {
+                "is-admin": {
+                    "type": "boolean"
+                },
                 "patient-ids": {
                     "type": "array",
                     "items": {

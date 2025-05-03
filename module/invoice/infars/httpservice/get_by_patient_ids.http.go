@@ -24,12 +24,12 @@ func (s *invoiceHttpService) handleInvoicesByPatientIds() gin.HandlerFunc {
 			return
 		}
 
-		if len(req.PatientIds) == 0 {
+		if !req.IsAdmin && len(req.PatientIds) == 0 {
 			common.ResponseError(ctx, common.NewBadRequestError().WithReason("patientIds is empty"))
 			return
 		}
 
-		invoices, err := s.query.GetInvoiceByPatientIds.Handle(ctx.Request.Context(), req.PatientIds)
+		invoices, err := s.query.GetInvoiceByPatientIds.Handle(ctx.Request.Context(), req)
 		if err != nil {
 			common.ResponseError(ctx, err)
 			return

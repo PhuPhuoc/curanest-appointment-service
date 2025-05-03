@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
-	"github.com/google/uuid"
 )
 
 type getInvoicesByPatientIdHandler struct {
@@ -17,8 +16,8 @@ func NewGetInvoicesByPatientIdHandler(queryRepo InvoiceQueryRepo) *getInvoicesBy
 	}
 }
 
-func (h *getInvoicesByPatientIdHandler) Handle(ctx context.Context, patientIds []uuid.UUID) ([]InvoiceDTO, error) {
-	entities, err := h.queryRepo.GetInvoicesByPatientId(ctx, patientIds)
+func (h *getInvoicesByPatientIdHandler) Handle(ctx context.Context, req RequestGetInvoicesByPatientIds) ([]InvoiceDTO, error) {
+	entities, err := h.queryRepo.GetInvoicesByPatientId(ctx, req.IsAdmin, req.PatientIds)
 	if err != nil {
 		return []InvoiceDTO{}, common.NewInternalServerError().
 			WithReason("cannot get invoices with patientids").

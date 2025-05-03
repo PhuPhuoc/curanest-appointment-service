@@ -35,5 +35,5 @@ func NewInvoiceQueryWithBuilder(b Builder) Queries {
 type InvoiceQueryRepo interface {
 	FindById(ctx context.Context, Id uuid.UUID) (*invoicedomain.Invoice, error)
 	FindByCusPackageId(ctx context.Context, cusPackageId uuid.UUID) ([]invoicedomain.Invoice, error)
-	GetInvoicesByPatientId(ctx context.Context, patientIds []uuid.UUID) ([]invoicedomain.Invoice, error)
+	GetInvoicesByPatientId(ctx context.Context, isAdmin bool, patientIds []uuid.UUID) ([]invoicedomain.Invoice, error)
 }
