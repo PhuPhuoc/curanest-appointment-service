@@ -14,7 +14,8 @@ import (
 )
 
 type Commands struct {
-	CreateCusPackageAndCusTask *createCusPackageAndTaskHandler
+	CreateCusPackageAndCusTask   *createCusPackageAndTaskHandler
+	AddNewCustaskIntoAppointment *addMoreTaskToAppointmentHandler
 
 	UpdateCustaskStatusDone *updateCustaskStatusDoneHanlder
 	UpdateMedicalRecord     *updateMedicalRecordHanlder
@@ -40,6 +41,14 @@ func NewCusPackageCmdWithBuilder(b Builder) Commands {
 			b.BuildTransactionManager(),
 			b.BuilderPayosConfig(),
 			b.BuildExternalGoongAPI(),
+		),
+		AddNewCustaskIntoAppointment: NewAddMoreCusTaskToAppointmentHandler(
+			b.BuildTransactionManager(),
+			b.BuildCusPackageCmdRepo(),
+			b.BuildSvcPackageFetcher(),
+			b.BuildAppointmentFetcher(),
+			b.BuildInvoiceFetcher(),
+			b.BuilderPayosConfig(),
 		),
 		UpdateCustaskStatusDone: NewUpdateCustaskStatusDoneHandler(
 			b.BuildCusPackageCmdRepo(),

@@ -88,6 +88,7 @@ func NewAppointment(
 	return &Appointment{
 		id:               id,
 		serviceId:        serviceId,
+		svcpackageId:     svcpackageId,
 		cusPackageId:     cusPackageId,
 		nursingId:        nursingId,
 		patientId:        patientId,

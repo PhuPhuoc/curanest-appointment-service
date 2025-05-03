@@ -35,6 +35,12 @@ func (s *cusPackageHttpService) Routes(g *gin.RouterGroup) {
 			// middleware.RequireRole("relatives"),
 			s.handleCreateCustomizedPackageAndTask(),
 		)
+		cuspackage_route.POST(
+			"/add-more-custask",
+			// middleware.RequireAuth(s.auth),
+			// middleware.RequireRole("relatives"),
+			s.handleAddNewCustaskIntoApointment(),
+		)
 		cuspackage_route.GET(
 			"",
 			// middleware.RequireAuth(s.auth),

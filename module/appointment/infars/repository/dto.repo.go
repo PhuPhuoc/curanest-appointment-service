@@ -90,7 +90,7 @@ func ToAppointmentDTO(data *appointmentdomain.Appointment) *AppointmentDTO {
 	return &AppointmentDTO{
 		Id:                  data.GetID(),
 		ServiceId:           data.GetServiceID(),
-		SvcpackageId:        data.GetCusPackageID(),
+		SvcpackageId:        data.GetSvcpackageID(),
 		CustomizedPackageId: data.GetCusPackageID(),
 		PatientId:           data.GetPatientID(),
 		NursingId:           data.GetNursingID(),

@@ -21,6 +21,7 @@ func (repo *cusPackageRepo) FindCusTasks(ctx context.Context, packageId uuid.UUI
 	where := strings.Join(whereConditions, " AND ")
 
 	query := common.GenerateSQLQueries(common.SELECT_WITHOUT_COUNT, TABLE_CUSTASK, GET_CUSTASK, &where)
+	query = query + " order by task_order"
 	var dtos []CusTaskDTO
 	if err := repo.db.SelectContext(ctx, &dtos, query, args...); err != nil {
 		return nil, err

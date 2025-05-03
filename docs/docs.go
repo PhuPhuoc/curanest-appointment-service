@@ -778,6 +778,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/cuspackage/add-more-custask": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "add new customized service into a appointment (client)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customized packages"
+                ],
+                "summary": "add new customized service into a appointment (client)",
+                "parameters": [
+                    {
+                        "description": "customized task creation data",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/cuspackagecommands.AddMoreCustaskRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/cuspackage/custask/{custask-id}/update-status-done": {
             "patch": {
                 "security": [
@@ -1516,6 +1560,23 @@ const docTemplate = `{
                 },
                 "thumbnail": {
                     "type": "string"
+                }
+            }
+        },
+        "cuspackagecommands.AddMoreCustaskRequestDTO": {
+            "type": "object",
+            "required": [
+                "appointment-id"
+            ],
+            "properties": {
+                "appointment-id": {
+                    "type": "string"
+                },
+                "task-infos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/cuspackagecommands.CreateCustomizedTaskDTO"
+                    }
                 }
             }
         },

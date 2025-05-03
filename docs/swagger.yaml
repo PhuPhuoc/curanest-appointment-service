@@ -24,6 +24,17 @@ definitions:
       thumbnail:
         type: string
     type: object
+  cuspackagecommands.AddMoreCustaskRequestDTO:
+    properties:
+      appointment-id:
+        type: string
+      task-infos:
+        items:
+          $ref: '#/definitions/cuspackagecommands.CreateCustomizedTaskDTO'
+        type: array
+    required:
+    - appointment-id
+    type: object
   cuspackagecommands.CreateCustomizedTaskDTO:
     properties:
       client-note:
@@ -810,6 +821,34 @@ paths:
       summary: find invoices with cus-package-id
       tags:
       - invoices
+  /api/v1/cuspackage/add-more-custask:
+    post:
+      consumes:
+      - application/json
+      description: add new customized service into a appointment (client)
+      parameters:
+      - description: customized task creation data
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/cuspackagecommands.AddMoreCustaskRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: add new customized service into a appointment (client)
+      tags:
+      - customized packages
   /api/v1/cuspackage/custask/{custask-id}/update-status-done:
     patch:
       consumes:
