@@ -98,33 +98,35 @@ func (h *updateMedicalRecordHanlder) Handle(ctx context.Context, dto UpdateMedic
 			WithInner(err.Error())
 	}
 
-	curAppEntity, err := h.appsFetcher.FindById(ctx, entity.GetAppointmentId())
-	if err != nil {
-		return common.NewInternalServerError().
-			WithReason("cannot get appointment information to update status success").
-			WithInner(err.Error())
-	}
+	if dto.StaffConfirmation != nil && *dto.StaffConfirmation != "" {
+		curAppEntity, err := h.appsFetcher.FindById(ctx, entity.GetAppointmentId())
+		if err != nil {
+			return common.NewInternalServerError().
+				WithReason("cannot get appointment information to update status success").
+				WithInner(err.Error())
+		}
 
-	newAppEntity, _ := appointmentdomain.NewAppointment(
-		curAppEntity.GetID(),
-		curAppEntity.GetServiceID(),
-		curAppEntity.GetSvcpackageID(),
-		curAppEntity.GetCusPackageID(),
-		curAppEntity.GetPatientID(),
-		curAppEntity.GetNursingID(),
-		curAppEntity.GetPatientAddress(),
-		curAppEntity.GetPatientLatLng(),
-		appointmentdomain.AppStatusSuccess,
-		curAppEntity.GetTotalEstDuration(),
-		curAppEntity.GetEstDate(),
-		curAppEntity.GetActDate(),
-		curAppEntity.GetCreatedAt(),
-	)
+		newAppEntity, _ := appointmentdomain.NewAppointment(
+			curAppEntity.GetID(),
+			curAppEntity.GetServiceID(),
+			curAppEntity.GetSvcpackageID(),
+			curAppEntity.GetCusPackageID(),
+			curAppEntity.GetPatientID(),
+			curAppEntity.GetNursingID(),
+			curAppEntity.GetPatientAddress(),
+			curAppEntity.GetPatientLatLng(),
+			appointmentdomain.AppStatusSuccess,
+			curAppEntity.GetTotalEstDuration(),
+			curAppEntity.GetEstDate(),
+			curAppEntity.GetActDate(),
+			curAppEntity.GetCreatedAt(),
+		)
 
-	if err := h.appsFetcher.UpdateAppointment(ctx, newAppEntity); err != nil {
-		return common.NewInternalServerError().
-			WithReason("cannot update appointment status success").
-			WithInner(err.Error())
+		if err := h.appsFetcher.UpdateAppointment(ctx, newAppEntity); err != nil {
+			return common.NewInternalServerError().
+				WithReason("cannot update appointment status success").
+				WithInner(err.Error())
+		}
 	}
 
 	// Commit transaction if all services created successfully
