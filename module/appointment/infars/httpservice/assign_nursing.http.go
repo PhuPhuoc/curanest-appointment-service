@@ -6,17 +6,17 @@ import (
 	"github.com/google/uuid"
 )
 
-//	@Summary		assign nursing for appointment (staff)
-//	@Description	assign nursing for appointment (staff)
-//	@Tags			appointments
-//	@Accept			json
-//	@Produce		json
-//	@Param			appointment-id	path		string					true	"appointment ID (UUID)"
-//	@Param			nursing-id		path		string					true	"nursing ID (UUID)"
-//	@Success		200				{object}	map[string]interface{}	"data"
-//	@Failure		400				{object}	error					"Bad request error"
-//	@Router			/api/v1/appointments/{appointment-id}/assign-nursing/{nursing-id} [patch]
-//	@Security		ApiKeyAuth
+// @Summary		assign nursing for appointment (staff)
+// @Description	assign nursing for appointment (staff)
+// @Tags			appointments
+// @Accept			json
+// @Produce		json
+// @Param			appointment-id	path		string					true	"appointment ID (UUID)"
+// @Param			nursing-id		path		string					true	"nursing ID (UUID)"
+// @Success		200				{object}	map[string]interface{}	"data"
+// @Failure		400				{object}	error					"Bad request error"
+// @Router			/api/v1/appointments/{appointment-id}/assign-nursing/{nursing-id} [patch]
+// @Security		ApiKeyAuth
 func (s *appointmentHttpService) handleAssignNurseToAppointment() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var appointmentUUID uuid.UUID
@@ -45,7 +45,7 @@ func (s *appointmentHttpService) handleAssignNurseToAppointment() gin.HandlerFun
 		}
 		appointmentEntity, _ := appointmentDTO.ToAppointmentDomain()
 
-		if err := s.command.AssigneNursing.Handle(ctx, nursingUUID, appointmentEntity); err != nil {
+		if err := s.command.AssigneNursing.Handle(ctx, &nursingUUID, appointmentEntity); err != nil {
 			common.ResponseError(ctx, err)
 			return
 		}

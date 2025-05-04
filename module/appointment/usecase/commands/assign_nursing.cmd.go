@@ -19,11 +19,13 @@ type assignNursingHandler struct {
 
 func NewAssignNursingHandler(cmdRepo AppointmentCommandRepo, txManager common.TransactionManager, medicalRecordFetcher MedicalRecordFetcher) *assignNursingHandler {
 	return &assignNursingHandler{
-		cmdRepo: cmdRepo,
+		cmdRepo:              cmdRepo,
+		txManager:            txManager,
+		medicalRecordFetcher: medicalRecordFetcher,
 	}
 }
 
-func (h *assignNursingHandler) Handle(ctx context.Context, nursingId uuid.UUID, entity *appointmentdomain.Appointment) error {
+func (h *assignNursingHandler) Handle(ctx context.Context, nursingId *uuid.UUID, entity *appointmentdomain.Appointment) error {
 	ctx, err := h.txManager.Begin(ctx)
 	if err != nil {
 		return common.NewInternalServerError().
@@ -45,7 +47,7 @@ func (h *assignNursingHandler) Handle(ctx context.Context, nursingId uuid.UUID, 
 		entity.GetSvcpackageID(),
 		entity.GetCusPackageID(),
 		entity.GetPatientID(),
-		&nursingId,
+		nursingId,
 		entity.GetPatientAddress(),
 		entity.GetPatientLatLng(),
 		appointmentdomain.AppStatusConfirmed,
@@ -70,7 +72,7 @@ func (h *assignNursingHandler) Handle(ctx context.Context, nursingId uuid.UUID, 
 	updateMR, _ := cuspackagedomain.NewMedicalRecord(
 		medicalReEntity.GetID(),
 		medicalReEntity.GetAppointmentId(),
-		medicalReEntity.GetNursingId(),
+		(*uuid.UUID)(nursingId),
 		medicalReEntity.GetNursingReport(),
 		medicalReEntity.GetStaffConfirm(),
 		medicalReEntity.GetStatus(),
