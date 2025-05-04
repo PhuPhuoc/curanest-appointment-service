@@ -11,9 +11,13 @@ func (repo *cusPackageRepo) UpdateMedicalRecord(ctx context.Context, entity *cus
 	dto := ToMedicalRecordDTO(entity)
 	where := "id=:id"
 	query := common.GenerateSQLQueries(common.UPDATE, TABLE_MEDICALRECORD, UPDATE_MEDICALRECORD, &where)
-	if _, err := repo.db.NamedExec(query, dto); err != nil {
+	// Get transaction from context if exist
+	if tx := common.GetTxFromContext(ctx); tx != nil {
+		_, err := tx.NamedExec(query, dto)
 		return err
 	}
 
-	return nil
+	// If no transaction, use db directly
+	_, err := repo.db.NamedExec(query, dto)
+	return err
 }

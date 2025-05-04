@@ -57,6 +57,7 @@ func NewCusPackageCmdWithBuilder(b Builder) Commands {
 		UpdateMedicalRecord: NewUpdateMedicalRecordHandler(
 			b.BuildCusPackageCmdRepo(),
 			b.BuildAppointmentFetcher(),
+			b.BuildTransactionManager(),
 		),
 	}
 }
@@ -83,6 +84,8 @@ type AppointmentFetcher interface {
 
 	CheckAppointmentStatusUpcoming(ctx context.Context, cuspackageId uuid.UUID, date time.Time) error
 	FindById(ctx context.Context, appointmentId uuid.UUID) (*appointmentdomain.Appointment, error)
+
+	UpdateAppointment(ctx context.Context, entity *appointmentdomain.Appointment) error
 }
 
 type InvoiceFetcher interface {

@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
+	appointmentdomain "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/domain"
 	cuspackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/domain"
 	"github.com/google/uuid"
 )
@@ -12,16 +13,33 @@ import (
 type updateMedicalRecordHanlder struct {
 	cmdRepo     CusPackageCommandRepo
 	appsFetcher AppointmentFetcher
+	txManager   common.TransactionManager
 }
 
-func NewUpdateMedicalRecordHandler(cmdRepo CusPackageCommandRepo, appsFetcher AppointmentFetcher) *updateMedicalRecordHanlder {
+func NewUpdateMedicalRecordHandler(cmdRepo CusPackageCommandRepo, appsFetcher AppointmentFetcher, txManager common.TransactionManager) *updateMedicalRecordHanlder {
 	return &updateMedicalRecordHanlder{
 		cmdRepo:     cmdRepo,
 		appsFetcher: appsFetcher,
+		txManager:   txManager,
 	}
 }
 
 func (h *updateMedicalRecordHanlder) Handle(ctx context.Context, dto UpdateMedicalRecordDTO, entity *cuspackagedomain.MedicalRecord) error {
+	ctx, err := h.txManager.Begin(ctx)
+	if err != nil {
+		return common.NewInternalServerError().
+			WithReason("cannot start transaction").
+			WithInner(err.Error())
+	}
+	defer func() {
+		if p := recover(); p != nil {
+			h.txManager.Rollback(ctx)
+			panic(p)
+		} else if err != nil {
+			h.txManager.Rollback(ctx)
+		}
+	}()
+
 	if dto.NursingReport == nil && dto.StaffConfirmation == nil && *dto.NursingReport == "" && *dto.StaffConfirmation == "" {
 		return common.NewBadRequestError().WithReason("cannot update medical record when the required information is incomplete")
 	}
@@ -77,6 +95,42 @@ func (h *updateMedicalRecordHanlder) Handle(ctx context.Context, dto UpdateMedic
 	if err := h.cmdRepo.UpdateMedicalRecord(ctx, updateEntity); err != nil {
 		return common.NewInternalServerError().
 			WithReason("cannot update medical record").
+			WithInner(err.Error())
+	}
+
+	curAppEntity, err := h.appsFetcher.FindById(ctx, entity.GetAppointmentId())
+	if err != nil {
+		return common.NewInternalServerError().
+			WithReason("cannot get appointment information to update status success").
+			WithInner(err.Error())
+	}
+
+	newAppEntity, _ := appointmentdomain.NewAppointment(
+		curAppEntity.GetID(),
+		curAppEntity.GetServiceID(),
+		curAppEntity.GetSvcpackageID(),
+		curAppEntity.GetCusPackageID(),
+		curAppEntity.GetPatientID(),
+		curAppEntity.GetNursingID(),
+		curAppEntity.GetPatientAddress(),
+		curAppEntity.GetPatientLatLng(),
+		appointmentdomain.AppStatusSuccess,
+		curAppEntity.GetTotalEstDuration(),
+		curAppEntity.GetEstDate(),
+		curAppEntity.GetActDate(),
+		curAppEntity.GetCreatedAt(),
+	)
+
+	if err := h.appsFetcher.UpdateAppointment(ctx, newAppEntity); err != nil {
+		return common.NewInternalServerError().
+			WithReason("cannot update appointment status success").
+			WithInner(err.Error())
+	}
+
+	// Commit transaction if all services created successfully
+	if err = h.txManager.Commit(ctx); err != nil {
+		return common.NewInternalServerError().
+			WithReason("cannot commit transaction").
 			WithInner(err.Error())
 	}
 
