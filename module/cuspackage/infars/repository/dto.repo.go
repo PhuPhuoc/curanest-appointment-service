@@ -56,6 +56,7 @@ var (
 		"total_fee",
 		"paid_amount",
 		"unpaid_amount",
+		"payment_status",
 		"created_at",
 	}
 	GET_CUSTASK = []string{
