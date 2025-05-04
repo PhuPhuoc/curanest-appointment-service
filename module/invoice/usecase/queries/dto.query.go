@@ -24,6 +24,19 @@ type InvoiceDTO struct {
 	CreatedAt     *time.Time `json:"created-at"`
 }
 
+func (i *InvoiceDTO) ToInvoiceEntity() (*invoicedomain.Invoice, error) {
+	return invoicedomain.NewInvoice(
+		i.Id,
+		i.CusPackageId,
+		i.OrderCode,
+		i.TotalFee,
+		invoicedomain.EnumPaymentStatus(i.PaymentStatus),
+		i.Note,
+		i.PayosUrl,
+		i.CreatedAt,
+	)
+}
+
 func toInvoiceDTO(data *invoicedomain.Invoice) *InvoiceDTO {
 	dto := &InvoiceDTO{
 		Id:            data.GetID(),

@@ -4,6 +4,7 @@ import (
 	"github.com/jmoiron/sqlx"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
+	cuspackagerepository "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/infars/repository"
 	invoicerepository "github.com/PhuPhuoc/curanest-appointment-service/module/invoice/infars/repository"
 	invoicecommands "github.com/PhuPhuoc/curanest-appointment-service/module/invoice/usecase/commands"
 	invoicequeries "github.com/PhuPhuoc/curanest-appointment-service/module/invoice/usecase/queries"
@@ -33,4 +34,8 @@ func (s builderOfInvoice) BuilderPayosConfig() common.PayOSConfig {
 
 func (s builderOfInvoice) BuildInvoiceQueryRepo() invoicequeries.InvoiceQueryRepo {
 	return invoicerepository.NewInvoiceRepo(s.db)
+}
+
+func (s builderOfInvoice) BuildCusPackageFetcher() invoicecommands.CusPackageFetcher {
+	return cuspackagerepository.NewCusPackageRepo(s.db)
 }

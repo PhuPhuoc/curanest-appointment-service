@@ -1,8 +1,7 @@
 package invoicehttpservice
 
 import (
-	"net/http"
-
+	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	invoicecommands "github.com/PhuPhuoc/curanest-appointment-service/module/invoice/usecase/commands"
 	"github.com/gin-gonic/gin"
 )
@@ -17,23 +16,26 @@ import (
 // @Failure		400				{object}	map[string]interface{}				"Bad request error"
 // @Router			/api/v1/invoices/webhooks [post]
 func (s *invoiceHttpService) handlePayosWebhook() gin.HandlerFunc {
-	return func(c *gin.Context) {
+	return func(ctx *gin.Context) {
 		var dto invoicecommands.PayosWebhookData
 
 		// Bind JSON body
-		if err := c.ShouldBindJSON(&dto); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		if err := ctx.ShouldBindJSON(&dto); err != nil {
+			common.ResponseError(ctx, common.NewBadRequestError().WithReason("Invalid request payload"))
 			return
 		}
 
+		invoiceDTO, _ := s.query.GetInvoiceByOrderCode.Handle(ctx.Request.Context(), dto.Data.OrderCode)
+		invoiceEntity, _ := invoiceDTO.ToInvoiceEntity()
+
 		// Call webhook handler
-		err := s.cmd.WebHookGoong.Handle(c.Request.Context(), s.checksumKey, &dto)
+		err := s.cmd.WebHookGoong.Handle(ctx.Request.Context(), s.checksumKey, &dto, invoiceEntity)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			common.ResponseError(ctx, err)
 			return
 		}
 
 		// Respond to PayOS
-		c.JSON(http.StatusOK, gin.H{"success": true})
+		common.ResponseUpdated(ctx)
 	}
 }

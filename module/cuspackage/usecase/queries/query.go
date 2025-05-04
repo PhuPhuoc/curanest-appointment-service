@@ -11,6 +11,7 @@ import (
 
 type Queries struct {
 	FindCusPackageTask        *findCusPackageTaskHandler
+	FindCuspackageById        *findCusPackageByIdHandler
 	FindCustaskById           *findCustaskByIdHandler
 	FindMedicalRecordById     *findMedicalRecordByIdHandler
 	FindMedicalRecordByAppsId *findMedicalRecordByAppsIdHandler
@@ -23,6 +24,9 @@ type Builder interface {
 func NewCusPackageQueryWithBuilder(b Builder) Queries {
 	return Queries{
 		FindCusPackageTask: NewFindCusPackageTaskDetailHandler(
+			b.BuildCusPackageQueryRepo(),
+		),
+		FindCuspackageById: NewFindCusPackageByIdHandler(
 			b.BuildCusPackageQueryRepo(),
 		),
 		FindCustaskById: NewFindCustaskByIdHandler(

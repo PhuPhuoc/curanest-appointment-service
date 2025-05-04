@@ -11,6 +11,7 @@ import (
 type Queries struct {
 	FindInvoice            *findInvoiceHandler
 	GetInvoiceById         *getInvoiceHandler
+	GetInvoiceByOrderCode  *getInvoiceByOrderCodeHandler
 	GetInvoiceByPatientIds *getInvoicesByPatientIdHandler
 }
 
@@ -26,6 +27,9 @@ func NewInvoiceQueryWithBuilder(b Builder) Queries {
 		GetInvoiceById: NewGetInvoiceHandler(
 			b.BuildInvoiceQueryRepo(),
 		),
+		GetInvoiceByOrderCode: NewGetInvoiceByOrderCodeHandler(
+			b.BuildInvoiceQueryRepo(),
+		),
 		GetInvoiceByPatientIds: NewGetInvoicesByPatientIdHandler(
 			b.BuildInvoiceQueryRepo(),
 		),
@@ -34,6 +38,7 @@ func NewInvoiceQueryWithBuilder(b Builder) Queries {
 
 type InvoiceQueryRepo interface {
 	FindById(ctx context.Context, Id uuid.UUID) (*invoicedomain.Invoice, error)
+	FindByOrderCode(ctx context.Context, ordercode int64) (*invoicedomain.Invoice, error)
 	FindByCusPackageId(ctx context.Context, cusPackageId uuid.UUID) ([]invoicedomain.Invoice, error)
 	GetInvoicesByPatientId(ctx context.Context, isAdmin bool, patientIds []uuid.UUID) ([]invoicedomain.Invoice, error)
 }

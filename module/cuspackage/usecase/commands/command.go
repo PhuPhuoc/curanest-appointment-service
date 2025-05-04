@@ -14,8 +14,7 @@ import (
 )
 
 type Commands struct {
-	CreateCusPackageAndCusTask   *createCusPackageAndTaskHandler
-	AddNewCustaskIntoAppointment *addMoreTaskToAppointmentHandler
+	CreateCusPackageAndCusTask *createCusPackageAndTaskHandler
 
 	UpdateCustaskStatusDone *updateCustaskStatusDoneHanlder
 	UpdateMedicalRecord     *updateMedicalRecordHanlder
@@ -42,14 +41,6 @@ func NewCusPackageCmdWithBuilder(b Builder) Commands {
 			b.BuilderPayosConfig(),
 			b.BuildExternalGoongAPI(),
 		),
-		AddNewCustaskIntoAppointment: NewAddMoreCusTaskToAppointmentHandler(
-			b.BuildTransactionManager(),
-			b.BuildCusPackageCmdRepo(),
-			b.BuildSvcPackageFetcher(),
-			b.BuildAppointmentFetcher(),
-			b.BuildInvoiceFetcher(),
-			b.BuilderPayosConfig(),
-		),
 		UpdateCustaskStatusDone: NewUpdateCustaskStatusDoneHandler(
 			b.BuildCusPackageCmdRepo(),
 			b.BuildAppointmentFetcher(),
@@ -67,6 +58,7 @@ type CusPackageCommandRepo interface {
 	CreateCustomizedTasks(ctx context.Context, entities []cuspackagedomain.CustomizedTask) error
 	CreateMedicalRecords(ctx context.Context, entities []cuspackagedomain.MedicalRecord) error
 
+	UpdateCustomizedPackage(ctx context.Context, entity *cuspackagedomain.CustomizedPackage) error
 	UpdateCustomizedTask(ctx context.Context, entity *cuspackagedomain.CustomizedTask) error
 	UpdateMedicalRecord(ctx context.Context, entity *cuspackagedomain.MedicalRecord) error
 

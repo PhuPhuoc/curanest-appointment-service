@@ -8,21 +8,24 @@ import (
 	"fmt"
 	"log"
 	"sort"
+
+	cuspackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/domain"
+	invoicedomain "github.com/PhuPhuoc/curanest-appointment-service/module/invoice/domain"
 )
 
 type webhookGoongHandler struct {
-	cmdRepo InvoiceCommandRepo
+	cmdRepo           InvoiceCommandRepo
+	cuspackageFetcher CusPackageFetcher
 }
 
-func NewWebhoobGoongHandler(cmdRepo InvoiceCommandRepo) *webhookGoongHandler {
+func NewWebhoobGoongHandler(cmdRepo InvoiceCommandRepo, cuspackageFetcher CusPackageFetcher) *webhookGoongHandler {
 	return &webhookGoongHandler{
-		cmdRepo: cmdRepo,
+		cmdRepo:           cmdRepo,
+		cuspackageFetcher: cuspackageFetcher,
 	}
 }
 
-func (h *webhookGoongHandler) Handle(ctx context.Context, checkSumKey string, dto *PayosWebhookData) error {
-	log.Printf("GOONG dto: %v \n", dto)
-
+func (h *webhookGoongHandler) Handle(ctx context.Context, checkSumKey string, dto *PayosWebhookData, invoiceEntity *invoicedomain.Invoice) error {
 	// Check if transaction is successful
 	if !dto.Success {
 		log.Printf("Webhook not successful: Success=%v", dto.Success)
@@ -41,6 +44,30 @@ func (h *webhookGoongHandler) Handle(ctx context.Context, checkSumKey string, dt
 	log.Printf("Updating invoice with orderCode: %s", orderCode)
 	if err := h.cmdRepo.UpdateInvoiceFromGoong(ctx, orderCode); err != nil {
 		return fmt.Errorf("failed to update invoice: %w", err)
+	}
+
+	cusPackage, err := h.cuspackageFetcher.FindCusPackage(ctx, invoiceEntity.GetCusPackageID())
+	if err == nil {
+		cusPaymentStatus := cuspackagedomain.PaymentStatusUnpaid
+		totalUnpaidAmount := cusPackage.GetTotalFee() - invoiceEntity.GetTotalFee()
+		if totalUnpaidAmount <= 0 {
+			cusPaymentStatus = cuspackagedomain.PaymentStatusPaid
+		}
+
+		updateCusPackage, _ := cuspackagedomain.NewCustomizedPackage(
+			cusPackage.GetID(),
+			cusPackage.GetServicePackageID(),
+			cusPackage.GetPatientID(),
+			cusPackage.GetName(),
+			cusPackage.GetTotalFee(),
+			invoiceEntity.GetTotalFee(),
+			totalUnpaidAmount,
+			cusPaymentStatus,
+			cusPackage.GetCreatedAt(),
+		)
+
+		_ = h.cuspackageFetcher.UpdateCustomizedPackage(ctx, updateCusPackage)
+
 	}
 
 	log.Printf("Invoice updated successfully for orderCode: %s", orderCode)

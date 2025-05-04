@@ -30,6 +30,20 @@ type CusPackageDTO struct {
 	CreatedAt     *time.Time `json:"created-at"`
 }
 
+func (c *CusPackageDTO) ToCusPackageEntity() (*cuspackagedomain.CustomizedPackage, error) {
+	return cuspackagedomain.NewCustomizedPackage(
+		c.Id,
+		c.SvcPackageId,
+		c.PatientId,
+		c.Name,
+		c.TotalFee,
+		c.PaidAmount,
+		c.UnpaidAmount,
+		cuspackagedomain.EnumPaymentStatus(c.PaymentStatus),
+		c.CreatedAt,
+	)
+}
+
 func toCusPackageDTO(data *cuspackagedomain.CustomizedPackage) *CusPackageDTO {
 	dto := &CusPackageDTO{
 		Id:            data.GetID(),

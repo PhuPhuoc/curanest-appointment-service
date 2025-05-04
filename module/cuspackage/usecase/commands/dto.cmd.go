@@ -8,6 +8,7 @@ import (
 
 type AddMoreCustaskRequestDTO struct {
 	AppointmentId uuid.UUID                 `json:"appointment-id" binding:"required"`
+	CuspackageId  uuid.UUID                 `json:"cuspackage-id" binding:"required"`
 	TaskInfos     []CreateCustomizedTaskDTO `json:"task-infos"`
 }
 
