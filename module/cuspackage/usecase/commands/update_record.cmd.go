@@ -63,7 +63,7 @@ func (h *updateMedicalRecordHanlder) Handle(ctx context.Context, dto UpdateMedic
 	updateStatus := entity.GetStatus()
 
 	if dto.NursingReport != nil && *dto.NursingReport != "" {
-		if *entity.GetNursingId() != sub {
+		if entity.GetNursingId() != nil && *entity.GetNursingId() != sub {
 			return common.NewBadRequestError().WithReason("only the nurse who performed this service is allowed to submit a nursing's report")
 		}
 		updateNursingReport = *dto.NursingReport

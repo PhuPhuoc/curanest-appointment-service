@@ -5,7 +5,9 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	appointmentdomain "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/domain"
+	cuspackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/domain"
 )
 
 type Commands struct {
@@ -15,6 +17,7 @@ type Commands struct {
 }
 
 type Builder interface {
+	BuildTransactionManager() common.TransactionManager
 	BuildAppointmentCmdRepo() AppointmentCommandRepo
 	BuildCusTaskFetcher() CusTaskFetcher
 	BuildMedicalRecord() MedicalRecordFetcher
@@ -34,6 +37,8 @@ func NewAppointmentCmdWithBuilder(b Builder) Commands {
 		),
 		AssigneNursing: NewAssignNursingHandler(
 			b.BuildAppointmentCmdRepo(),
+			b.BuildTransactionManager(),
+			b.BuildMedicalRecord(),
 		),
 	}
 }
@@ -47,6 +52,9 @@ type CusTaskFetcher interface {
 }
 
 type MedicalRecordFetcher interface {
+	FindMedicalRecordByAppsId(ctx context.Context, appsId uuid.UUID) (*cuspackagedomain.MedicalRecord, error)
+	UpdateMedicalRecord(ctx context.Context, entity *cuspackagedomain.MedicalRecord) error
+
 	CheckMedicalRecordDone(ctx context.Context, cusPackageId uuid.UUID) error
 }
 
