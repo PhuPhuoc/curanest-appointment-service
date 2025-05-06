@@ -1,5 +1,7 @@
 package apppointmentcommands
 
+import "github.com/google/uuid"
+
 type DistanceMatrixResponse struct {
 	Rows []Row `json:"rows"`
 }
@@ -22,4 +24,13 @@ type Distance struct {
 type Duration struct {
 	Text  string `json:"text"`
 	Value int    `json:"value"`
+}
+
+type RelativesData struct {
+	RelativesID uuid.UUID `json:"relatives-id"`
+}
+
+type RelativesResponse struct {
+	Data    RelativesData `json:"data"`
+	Success bool          `json:"success"`
 }

@@ -12,12 +12,25 @@ import (
 )
 
 type builderOfAppointment struct {
-	db              *sqlx.DB
-	urlNurseService string
-	transactionMgr  common.TransactionManager
+	db                 *sqlx.DB
+	urlNurseService    string
+	urlPushNotiService string
+	urlPatientService  string
+
+	transactionMgr common.TransactionManager
 
 	goongApiUrl string
 	goongApiKey string
+}
+
+func (s builderOfAppointment) AddPathPushNotiService(url string) builderOfAppointment {
+	s.urlPushNotiService = url
+	return s
+}
+
+func (s builderOfAppointment) AddPathPatientService(url string) builderOfAppointment {
+	s.urlPatientService = url
+	return s
 }
 
 func (s builderOfAppointment) AddPathUrlNursingService(url string) builderOfAppointment {
@@ -64,4 +77,12 @@ func (s builderOfAppointment) BuildNurseServiceExternalApi() appointmentqueries.
 
 func (s builderOfAppointment) BuildExternalGoongAPI() apppointmentcommands.ExternalGoongAPI {
 	return externalapi.NewExternalGoongAPI(s.goongApiUrl, s.goongApiKey)
+}
+
+func (s builderOfAppointment) BuildExternalPushNotiService() apppointmentcommands.ExternalPushNotiService {
+	return externalapi.NewPushNotiServiceRPC(s.urlPushNotiService)
+}
+
+func (s builderOfAppointment) BuildExternalPatientService() apppointmentcommands.ExternalPatientService {
+	return externalapi.NewPatientServiceAPI(s.urlPatientService)
 }

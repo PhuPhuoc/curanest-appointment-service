@@ -22,6 +22,8 @@ type Builder interface {
 	BuildCusTaskFetcher() CusTaskFetcher
 	BuildMedicalRecord() MedicalRecordFetcher
 	BuildExternalGoongAPI() ExternalGoongAPI
+	BuildExternalPushNotiService() ExternalPushNotiService
+	BuildExternalPatientService() ExternalPatientService
 }
 
 func NewAppointmentCmdWithBuilder(b Builder) Commands {
@@ -39,6 +41,8 @@ func NewAppointmentCmdWithBuilder(b Builder) Commands {
 			b.BuildAppointmentCmdRepo(),
 			b.BuildTransactionManager(),
 			b.BuildMedicalRecord(),
+			b.BuildExternalPushNotiService(),
+			b.BuildExternalPatientService(),
 		),
 	}
 }
@@ -60,4 +64,12 @@ type MedicalRecordFetcher interface {
 
 type ExternalGoongAPI interface {
 	GetDistanceFromGoong(ctx context.Context, originCode, destinationCode string) (*DistanceMatrixResponse, error)
+}
+
+type ExternalPushNotiService interface {
+	PushNotification(ctx context.Context, req *common.PushNotiRequest) error
+}
+
+type ExternalPatientService interface {
+	GetRelativesId(ctx context.Context, patientId uuid.UUID) (*uuid.UUID, error)
 }

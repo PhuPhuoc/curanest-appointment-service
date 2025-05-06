@@ -56,6 +56,12 @@ const (
 
 	url_nursing_local = "http://localhost:8003"
 	url_nursing_prod  = "http://nurse_service:8080"
+
+	url_patient_local = "http://localhost:8002"
+	url_patient_prod  = "http://patient_service:8080"
+
+	url_noti_local = "http://localhost:8005"
+	url_noti_prod  = "http://notification_service:8080"
 )
 
 // @Summary		ping server
@@ -69,6 +75,8 @@ const (
 func (sv *server) RunApp() error {
 	var urlAccServices string
 	var urlNursingServices string
+	var urlPatientServices string
+	var urlPushNotiServices string
 	envDevlopment := config.AppConfig.EnvDev
 	goongApiUrl := config.AppConfig.GoongAPIURL
 	goongApiKey := config.AppConfig.GoongAPIKEY
@@ -77,6 +85,8 @@ func (sv *server) RunApp() error {
 		docs.SwaggerInfo.BasePath = "/"
 		urlAccServices = url_acc_local
 		urlNursingServices = url_nursing_local
+		urlPatientServices = url_patient_local
+		urlPushNotiServices = url_noti_local
 	}
 
 	if envDevlopment == env_vps {
@@ -84,6 +94,8 @@ func (sv *server) RunApp() error {
 		docs.SwaggerInfo.BasePath = "/appointment"
 		urlAccServices = url_acc_prod
 		urlNursingServices = url_nursing_prod
+		urlPatientServices = url_patient_prod
+		urlPushNotiServices = url_noti_prod
 	}
 
 	router := gin.New()
@@ -133,7 +145,10 @@ func (sv *server) RunApp() error {
 	)
 
 	appointment_cmd_builder := apppointmentcommands.NewAppointmentCmdWithBuilder(
-		builder.NewAppointmentBuilder(sv.db).AddGoongConfig(goongApiUrl, goongApiKey),
+		builder.NewAppointmentBuilder(sv.db).
+			AddGoongConfig(goongApiUrl, goongApiKey).
+			AddPathPushNotiService(urlPushNotiServices).
+			AddPathPatientService(urlPatientServices),
 	)
 	appointment_query_builder := appointmentqueries.NewAppointmentQueryWithBuilder(
 

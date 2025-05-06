@@ -3,6 +3,7 @@ package apppointmentcommands
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/google/uuid"
 
@@ -15,13 +16,17 @@ type assignNursingHandler struct {
 	cmdRepo              AppointmentCommandRepo
 	medicalRecordFetcher MedicalRecordFetcher
 	txManager            common.TransactionManager
+	pushNotiFetcher      ExternalPushNotiService
+	patientFeter         ExternalPatientService
 }
 
-func NewAssignNursingHandler(cmdRepo AppointmentCommandRepo, txManager common.TransactionManager, medicalRecordFetcher MedicalRecordFetcher) *assignNursingHandler {
+func NewAssignNursingHandler(cmdRepo AppointmentCommandRepo, txManager common.TransactionManager, medicalRecordFetcher MedicalRecordFetcher, pushNotiFetcher ExternalPushNotiService, patientFeter ExternalPatientService) *assignNursingHandler {
 	return &assignNursingHandler{
 		cmdRepo:              cmdRepo,
 		txManager:            txManager,
 		medicalRecordFetcher: medicalRecordFetcher,
+		pushNotiFetcher:      pushNotiFetcher,
+		patientFeter:         patientFeter,
 	}
 }
 
@@ -90,6 +95,29 @@ func (h *assignNursingHandler) Handle(ctx context.Context, nursingId *uuid.UUID,
 		return common.NewInternalServerError().
 			WithReason("cannot commit transaction").
 			WithInner(err.Error())
+	}
+
+	relativesId, err_get_relatives := h.patientFeter.GetRelativesId(ctx, entity.GetPatientID())
+	if err_get_relatives == nil {
+		reqPushNoti := common.PushNotiRequest{
+			AccountID: *relativesId,
+			Content:   "Điều dưỡng phụ trách lịch hẹn của tôi đã được điều phối! Kiểm tra ngay!",
+			Route:     "/(tabs)/schedule",
+		}
+		err_noti := h.pushNotiFetcher.PushNotification(ctx, &reqPushNoti)
+		log.Println("error push noti for relatives: ", err_noti)
+	} else {
+		log.Println("error when get relatviveId: ", err_get_relatives)
+	}
+
+	reqPushNoti := common.PushNotiRequest{
+		AccountID: *nursingId,
+		Content:   "Bạn đã được staff phân vào một lịch hẹn mới! Kiểm tra ngay!",
+		Route:     "/(tabs)/schedule",
+	}
+	err_noti := h.pushNotiFetcher.PushNotification(ctx, &reqPushNoti)
+	if err_noti != nil {
+		log.Println("error push noti for nursing: ", err_noti)
 	}
 	return nil
 }
