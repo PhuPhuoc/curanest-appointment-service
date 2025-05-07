@@ -91,12 +91,18 @@ func (h *updateStatusUpcomingHandler) Handle(ctx context.Context, originCode str
 		)
 	*/
 
+	actDateVN := actDate
+	loc, err := time.LoadLocation("Asia/Ho_Chi_Minh")
+	if err == nil {
+		actDateVN = actDate.In(loc)
+	}
+
 	contentVi := fmt.Sprintf(
 		"Y tá hiện đang cách bạn khoảng %v km và dự kiến sẽ đến trong khoảng %v.\n"+
 			"Cuộc hẹn dịch vụ được lên lịch vào lúc %s.\n",
 		distStr,
 		etaText,
-		actDate.Format("15:04 ngày 02 tháng 01 năm 2006"),
+		actDateVN.Format("15:04 ngày 02 tháng 01 năm 2006"),
 	)
 	reqPushNoti := common.PushNotiRequest{
 		AccountID: *entity.GetNursingID(),
