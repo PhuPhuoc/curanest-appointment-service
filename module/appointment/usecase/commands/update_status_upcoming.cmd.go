@@ -3,6 +3,7 @@ package apppointmentcommands
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
@@ -10,14 +11,16 @@ import (
 )
 
 type updateStatusUpcomingHandler struct {
-	cmdRepo  AppointmentCommandRepo
-	goongApi ExternalGoongAPI
+	cmdRepo         AppointmentCommandRepo
+	goongApi        ExternalGoongAPI
+	pushNotiFetcher ExternalPushNotiService
 }
 
-func NewUpdateStatusUpcomingHandler(cmdRepo AppointmentCommandRepo, goongApi ExternalGoongAPI) *updateStatusUpcomingHandler {
+func NewUpdateStatusUpcomingHandler(cmdRepo AppointmentCommandRepo, goongApi ExternalGoongAPI, pushNotiFetcher ExternalPushNotiService) *updateStatusUpcomingHandler {
 	return &updateStatusUpcomingHandler{
-		cmdRepo:  cmdRepo,
-		goongApi: goongApi,
+		cmdRepo:         cmdRepo,
+		goongApi:        goongApi,
+		pushNotiFetcher: pushNotiFetcher,
 	}
 }
 
@@ -52,18 +55,6 @@ func (h *updateStatusUpcomingHandler) Handle(ctx context.Context, originCode str
 		etaText = fmt.Sprintf("%d minutes", minutes)
 	}
 
-	fmt.Printf(
-		"The nurse is currently %v kilometers away from you and is expected to arrive in about %v.\n"+
-			"The service appointment is scheduled to take place at %02d:%02d on %s %d, %d.\n",
-		distStr,
-		etaText,
-		actDate.Hour(),
-		actDate.Minute(),
-		actDate.Month().String(),
-		actDate.Day(),
-		actDate.Year(),
-	)
-
 	updateEntity, _ := appointmentdomain.NewAppointment(
 		entity.GetID(),
 		entity.GetServiceID(),
@@ -79,10 +70,42 @@ func (h *updateStatusUpcomingHandler) Handle(ctx context.Context, originCode str
 		&actDate,
 		entity.GetCreatedAt(),
 	)
+
 	if err := h.cmdRepo.UpdateAppointment(ctx, updateEntity); err != nil {
 		return common.NewInternalServerError().
 			WithReason("cannot update appointment's status").
 			WithInner(err.Error())
+	}
+
+	/*
+		content := fmt.Sprintf(
+			"The nurse is currently %v kilometers away from you and is expected to arrive in about %v.\n"+
+				"The service appointment is scheduled to take place at %02d:%02d on %s %d, %d.\n",
+			distStr,
+			etaText,
+			actDate.Hour(),
+			actDate.Minute(),
+			actDate.Month().String(),
+			actDate.Day(),
+			actDate.Year(),
+		)
+	*/
+
+	contentVi := fmt.Sprintf(
+		"Y tá hiện đang cách bạn khoảng %v km và dự kiến sẽ đến trong khoảng %v.\n"+
+			"Cuộc hẹn dịch vụ được lên lịch vào lúc %s.\n",
+		distStr,
+		etaText,
+		actDate.Format("15:04 ngày 02 tháng 01 năm 2006"),
+	)
+	reqPushNoti := common.PushNotiRequest{
+		AccountID: *entity.GetNursingID(),
+		Content:   contentVi,
+		Route:     "/(tabs)/schedule",
+	}
+	err_noti := h.pushNotiFetcher.PushNotification(ctx, &reqPushNoti)
+	if err_noti != nil {
+		log.Println("error push noti for nursing: ", err_noti)
 	}
 	return nil
 }

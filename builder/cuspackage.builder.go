@@ -5,6 +5,7 @@ import (
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	appointmentrepository "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/infars/repository"
+	"github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/infars/externalapi"
 	externalapigoong "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/infars/externalapi"
 	cuspackagerepository "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/infars/repository"
 	cuspackagecommands "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/usecase/commands"
@@ -14,12 +15,18 @@ import (
 )
 
 type builderOfCusPackage struct {
-	db             *sqlx.DB
-	transactionMgr common.TransactionManager
-	payOS          common.PayOSConfig
+	db                 *sqlx.DB
+	transactionMgr     common.TransactionManager
+	payOS              common.PayOSConfig
+	urlPushNotiService string
 
 	goongApiUrl string
 	goongApiKey string
+}
+
+func (s builderOfCusPackage) AddPathPushNotiService(url string) builderOfCusPackage {
+	s.urlPushNotiService = url
+	return s
 }
 
 func NewCusPackageBuilder(db *sqlx.DB) builderOfCusPackage {
@@ -70,4 +77,8 @@ func (s builderOfCusPackage) BuilderPayosConfig() common.PayOSConfig {
 
 func (s builderOfCusPackage) BuildExternalGoongAPI() cuspackagecommands.ExternalGoongAPI {
 	return externalapigoong.NewExternalGoongAPI(s.goongApiUrl, s.goongApiKey)
+}
+
+func (s builderOfCusPackage) BuildExternalPushNotiService() cuspackagecommands.ExternalPushNotiService {
+	return externalapi.NewPushNotiServiceRPC(s.urlPushNotiService)
 }

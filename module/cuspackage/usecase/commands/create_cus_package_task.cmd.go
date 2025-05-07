@@ -26,6 +26,7 @@ type createCusPackageAndTaskHandler struct {
 	txManager          common.TransactionManager
 	payosConfig        common.PayOSConfig
 	goongapi           ExternalGoongAPI
+	pushNotiFetcher    ExternalPushNotiService
 }
 
 func NewCreateCusPackageAndTaskHandler(
@@ -36,6 +37,7 @@ func NewCreateCusPackageAndTaskHandler(
 	txManager common.TransactionManager,
 	payosConfig common.PayOSConfig,
 	goongAPI ExternalGoongAPI,
+	pushNotiFetcher ExternalPushNotiService,
 ) *createCusPackageAndTaskHandler {
 	return &createCusPackageAndTaskHandler{
 		cmdRepo:            cmdRepo,
@@ -45,6 +47,7 @@ func NewCreateCusPackageAndTaskHandler(
 		txManager:          txManager,
 		payosConfig:        payosConfig,
 		goongapi:           goongAPI,
+		pushNotiFetcher:    pushNotiFetcher,
 	}
 }
 
@@ -144,6 +147,26 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 
 	objId := cusPackageEntity.GetID()
 	return &objId, nil
+}
+
+func (h *createCusPackageAndTaskHandler) PushNotiToNursing(ctx context.Context, mappings []DateNursingMapping) {
+	for _, obj := range mappings {
+		if obj.NursingId != nil {
+			contentVi := fmt.Sprintf(
+				"Bạn có cuộc hẹn dịch vụ mới được lên lịch vào lúc %s.\n",
+				obj.Date.Format("15:04 ngày 02 tháng 01 năm 2006"),
+			)
+			reqPushNoti := common.PushNotiRequest{
+				AccountID: *obj.NursingId,
+				Content:   contentVi,
+				Route:     "/(tabs)/schedule",
+			}
+			err_noti := h.pushNotiFetcher.PushNotification(ctx, &reqPushNoti)
+			if err_noti != nil {
+				log.Println("error push noti for nursing: ", err_noti)
+			}
+		}
+	}
 }
 
 func (h *createCusPackageAndTaskHandler) savePackageAndTasks(

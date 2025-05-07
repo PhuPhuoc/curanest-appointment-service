@@ -28,6 +28,7 @@ type Builder interface {
 	BuildInvoiceFetcher() InvoiceFetcher
 	BuilderPayosConfig() common.PayOSConfig
 	BuildExternalGoongAPI() ExternalGoongAPI
+	BuildExternalPushNotiService() ExternalPushNotiService
 }
 
 func NewCusPackageCmdWithBuilder(b Builder) Commands {
@@ -40,6 +41,7 @@ func NewCusPackageCmdWithBuilder(b Builder) Commands {
 			b.BuildTransactionManager(),
 			b.BuilderPayosConfig(),
 			b.BuildExternalGoongAPI(),
+			b.BuildExternalPushNotiService(),
 		),
 		UpdateCustaskStatusDone: NewUpdateCustaskStatusDoneHandler(
 			b.BuildCusPackageCmdRepo(),
@@ -86,4 +88,8 @@ type InvoiceFetcher interface {
 
 type ExternalGoongAPI interface {
 	GetGeocodeFromGoong(ctx context.Context, address string) (*GoongAPIResponse, error)
+}
+
+type ExternalPushNotiService interface {
+	PushNotification(ctx context.Context, req *common.PushNotiRequest) error
 }

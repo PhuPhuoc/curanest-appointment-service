@@ -36,6 +36,7 @@ func NewAppointmentCmdWithBuilder(b Builder) Commands {
 		UpdateStatusUpcoming: NewUpdateStatusUpcomingHandler(
 			b.BuildAppointmentCmdRepo(),
 			b.BuildExternalGoongAPI(),
+			b.BuildExternalPushNotiService(),
 		),
 		AssigneNursing: NewAssignNursingHandler(
 			b.BuildAppointmentCmdRepo(),
