@@ -145,6 +145,8 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 			WithInner(err.Error())
 	}
 
+	h.PushNotiToNursing(ctx, dateNurseMappings)
+
 	objId := cusPackageEntity.GetID()
 	return &objId, nil
 }
