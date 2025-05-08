@@ -138,7 +138,10 @@ func (sv *server) RunApp() error {
 	)
 
 	cuspackage_cmd_builder := cuspackagecommands.NewCusPackageCmdWithBuilder(
-		builder.NewCusPackageBuilder(sv.db).AddPayOsConfig(*payosConfig).AddGoongConfig(goongApiUrl, goongApiKey),
+		builder.NewCusPackageBuilder(sv.db).
+			AddPayOsConfig(*payosConfig).
+			AddGoongConfig(goongApiUrl, goongApiKey).
+			AddPathPushNotiService(urlPushNotiServices),
 	)
 	cuspackage_query_builder := cuspackagequeries.NewCusPackageQueryWithBuilder(
 		builder.NewCusPackageBuilder(sv.db),

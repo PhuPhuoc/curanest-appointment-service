@@ -40,7 +40,7 @@ func CallExternalAPI(ctx context.Context, opts RequestOptions) (map[string]inter
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("req url: ", req.URL)
+	fmt.Println("req send to url: ", req.URL)
 
 	// add headers
 	req.Header.Set("Content-Type", "application/json")
