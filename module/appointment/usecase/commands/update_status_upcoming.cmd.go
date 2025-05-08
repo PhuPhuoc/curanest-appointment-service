@@ -24,20 +24,27 @@ func NewUpdateStatusUpcomingHandler(cmdRepo AppointmentCommandRepo, goongApi Ext
 	}
 }
 
-func (h *updateStatusUpcomingHandler) Handle(ctx context.Context, originCode string, entity *appointmentdomain.Appointment) error {
+func (h *updateStatusUpcomingHandler) Handle(ctx context.Context, originCode *string, entity *appointmentdomain.Appointment) error {
 	var distStr string
 	var duraVal int
+
 	if entity.GetNursingID() == nil {
 		return common.NewInternalServerError().
-			WithReason("cannot update appointment's status to upcoming. This appointment don't have nursing")
+			WithReason("cannot update appointment's status to upcoming. This appointment doesn't have nursing")
 	}
-	goongApiResp, err := h.goongApi.GetDistanceFromGoong(ctx, originCode, entity.GetPatientLatLng())
-	if err != nil {
-		distStr = "cannot find location"
-		duraVal = 1200
+
+	if originCode == nil {
+		distStr = "unknown"
+		duraVal = 1800 // 30 phút
 	} else {
-		distStr = goongApiResp.Rows[0].Elements[0].Distance.Text
-		duraVal = goongApiResp.Rows[0].Elements[0].Duration.Value
+		goongApiResp, err := h.goongApi.GetDistanceFromGoong(ctx, *originCode, entity.GetPatientLatLng())
+		if err != nil {
+			distStr = "cannot find location"
+			duraVal = 1200 // 20 phút mặc định
+		} else {
+			distStr = goongApiResp.Rows[0].Elements[0].Distance.Text
+			duraVal = goongApiResp.Rows[0].Elements[0].Duration.Value
+		}
 	}
 
 	now := time.Now()
@@ -45,14 +52,13 @@ func (h *updateStatusUpcomingHandler) Handle(ctx context.Context, originCode str
 
 	hours := duraVal / 3600
 	minutes := (duraVal % 3600) / 60
-
 	var etaText string
 	if hours > 0 && minutes > 0 {
-		etaText = fmt.Sprintf("%d hours %d minutes", hours, minutes)
+		etaText = fmt.Sprintf("%d giờ %d phút", hours, minutes)
 	} else if hours > 0 {
-		etaText = fmt.Sprintf("%d hours", hours)
+		etaText = fmt.Sprintf("%d giờ", hours)
 	} else {
-		etaText = fmt.Sprintf("%d minutes", minutes)
+		etaText = fmt.Sprintf("%d phút", minutes)
 	}
 
 	updateEntity, _ := appointmentdomain.NewAppointment(
@@ -77,41 +83,40 @@ func (h *updateStatusUpcomingHandler) Handle(ctx context.Context, originCode str
 			WithInner(err.Error())
 	}
 
-	/*
-		content := fmt.Sprintf(
-			"The nurse is currently %v kilometers away from you and is expected to arrive in about %v.\n"+
-				"The service appointment is scheduled to take place at %02d:%02d on %s %d, %d.\n",
-			distStr,
-			etaText,
-			actDate.Hour(),
-			actDate.Minute(),
-			actDate.Month().String(),
-			actDate.Day(),
-			actDate.Year(),
-		)
-	*/
-
+	// Format lại thời gian theo múi giờ Việt Nam
 	actDateVN := actDate
-	loc, err := time.LoadLocation("Asia/Ho_Chi_Minh")
-	if err == nil {
+	if loc, err := time.LoadLocation("Asia/Ho_Chi_Minh"); err == nil {
 		actDateVN = actDate.In(loc)
 	}
 
-	contentVi := fmt.Sprintf(
-		"Y tá hiện đang cách bạn khoảng %v km và dự kiến sẽ đến trong khoảng %v.\n"+
-			"Cuộc hẹn dịch vụ được lên lịch vào lúc %s.\n",
-		distStr,
-		etaText,
-		actDateVN.Format("15:04 ngày 02 tháng 01 năm 2006"),
-	)
+	// Tạo nội dung thông báo
+	var contentVi string
+	if distStr == "unknown" || distStr == "cannot find location" {
+		contentVi = fmt.Sprintf(
+			"Y tá dự kiến sẽ đến trong khoảng %v.\n"+
+				"Cuộc hẹn dịch vụ được lên lịch vào lúc %s.\n",
+			etaText,
+			actDateVN.Format("15:04 ngày 02 tháng 01 năm 2006"),
+		)
+	} else {
+		contentVi = fmt.Sprintf(
+			"Y tá hiện đang cách bạn khoảng %v và dự kiến sẽ đến trong khoảng %v.\n"+
+				"Cuộc hẹn dịch vụ được lên lịch vào lúc %s.\n",
+			distStr,
+			etaText,
+			actDateVN.Format("15:04 ngày 02 tháng 01 năm 2006"),
+		)
+	}
+
+	// Gửi thông báo
 	reqPushNoti := common.PushNotiRequest{
 		AccountID: *entity.GetNursingID(),
 		Content:   contentVi,
 		Route:     "/(tabs)/schedule",
 	}
-	err_noti := h.pushNotiFetcher.PushNotification(ctx, &reqPushNoti)
-	if err_noti != nil {
+	if err_noti := h.pushNotiFetcher.PushNotification(ctx, &reqPushNoti); err_noti != nil {
 		log.Println("error push noti for nursing: ", err_noti)
 	}
+
 	return nil
 }

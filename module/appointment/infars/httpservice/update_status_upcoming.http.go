@@ -17,7 +17,7 @@ import (
 // @Accept			json
 // @Produce		json
 // @Param			appointment-id	path		string					true	"appointment ID (UUID)"
-// @Param			origin-code		query		string					true	"origin code (current location of nursing - lat/lng"
+// @Param			origin-code		query		string					false	"origin code (current location of nursing - lat/lng"
 // @Success		200				{object}	map[string]interface{}	"data"
 // @Failure		400				{object}	error					"Bad request error"
 // @Router			/api/v1/appointments/{appointment-id}/update-status-upcoming [patch]
@@ -34,13 +34,12 @@ func (s *appointmentHttpService) handleUpdateStatusUpcoming() gin.HandlerFunc {
 			}
 		}
 
-		originCode := ctx.Query("origin-code")
-		if originCode == "" {
-			common.ResponseError(ctx, common.NewBadRequestError().WithReason("origin-code is required"))
-			return
+		var originCode *string
+		if origin := ctx.Query("origin-code"); origin != "" {
+			originCode = &origin
 		}
 
-		if !isValidLatLng(originCode) {
+		if !isValidLatLng(*originCode) {
 			common.ResponseError(ctx, common.NewBadRequestError().WithReason(fmt.Sprintf("origin-code: %v invalid (must be lat,lng)", originCode)))
 			return
 		}
