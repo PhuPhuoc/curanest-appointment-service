@@ -26,6 +26,7 @@ func NewWebhoobGoongHandler(cmdRepo InvoiceCommandRepo, cuspackageFetcher CusPac
 }
 
 func (h *webhookGoongHandler) Handle(ctx context.Context, checkSumKey string, dto *PayosWebhookData, invoiceEntity *invoicedomain.Invoice) error {
+	log.Println("dto gooong: ", dto)
 	// Check if transaction is successful
 	if !dto.Success {
 		log.Printf("Webhook not successful: Success=%v", dto.Success)
