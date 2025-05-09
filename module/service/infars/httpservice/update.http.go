@@ -6,16 +6,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//	@Summary		create new service
-//	@Description	create new service
-//	@Tags			services
-//	@Accept			json
-//	@Produce		json
-//	@Param			update	form		body					servicecommands.UpdateServiceDTO	true	"service creation data"
-//	@Success		200		{object}	map[string]interface{}	"data"
-//	@Failure		400		{object}	error					"Bad request error"
-//	@Router			/api/v1/services [put]
-//	@Security		ApiKeyAuth
+// @Summary		create new service
+// @Description	create new service
+// @Tags			services
+// @Accept			json
+// @Produce		json
+// @Param			update	form		body					servicecommands.UpdateServiceDTO	true	"service creation data"
+// @Success		200		{object}	map[string]interface{}	"data"
+// @Failure		400		{object}	error					"Bad request error"
+// @Router			/api/v1/services [put]
+// @Security		ApiKeyAuth
 func (s *serviceHttpService) handleUpdateService() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var dto servicecommands.UpdateServiceDTO
@@ -29,6 +29,6 @@ func (s *serviceHttpService) handleUpdateService() gin.HandlerFunc {
 			return
 		}
 
-		common.ResponseCreated(ctx)
+		common.ResponseUpdated(ctx)
 	}
 }

@@ -29,6 +29,6 @@ func (s *categoryHttpService) handleUpdateCategory() gin.HandlerFunc {
 			return
 		}
 
-		common.ResponseCreated(ctx)
+		common.ResponseUpdated(ctx)
 	}
 }
