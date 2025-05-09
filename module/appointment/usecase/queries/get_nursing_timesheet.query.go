@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
+	appointmentdomain "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/domain"
 )
 
 type getNursingTimeSheetHandler struct {
@@ -37,7 +38,9 @@ func (h *getNursingTimeSheetHandler) Handle(ctx context.Context, filter *FilterG
 	estTravelTime := 20 // default 20 min - change later
 	dtos := make([]TimesheetDTO, len(entities))
 	for i, entity := range entities {
-		dtos[i] = *toTimesheetDTO(&entity, estTravelTime)
+		if entity.GetStatus() != appointmentdomain.AppStatusCancel {
+			dtos[i] = *toTimesheetDTO(&entity, estTravelTime)
+		}
 	}
 
 	return dtos, nil
