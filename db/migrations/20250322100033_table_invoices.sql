@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE `invoices` (
     `id` varchar(36) NOT NULL,
-    `order_code` bigint NOT NULL,
+    `order_code` bigint,
     `customized_package_id` varchar(36) NOT NULL,
     `total_fee` decimal(15,2) NOT NULL,
     `payment_status` enum('unpaid', 'paid') DEFAULT 'unpaid',

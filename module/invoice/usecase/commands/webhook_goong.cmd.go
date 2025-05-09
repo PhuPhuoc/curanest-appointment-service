@@ -43,7 +43,7 @@ func (h *webhookGoongHandler) Handle(ctx context.Context, checkSumKey string, dt
 	// Call repository to update invoice
 	orderCode := fmt.Sprintf("%d", dto.Data.OrderCode)
 	log.Printf("Updating invoice with orderCode: %s", orderCode)
-	if err := h.cmdRepo.UpdateInvoiceFromGoong(ctx, orderCode); err != nil {
+	if err := h.cmdRepo.UpdateInvoiceFromPayos(ctx, orderCode); err != nil {
 		return fmt.Errorf("failed to update invoice: %w", err)
 	}
 

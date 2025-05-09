@@ -295,11 +295,11 @@ func (h *createCusPackageAndTaskHandler) saveInvoice(ctx context.Context, cusPac
 	entity, _ := invoicedomain.NewInvoice(
 		invoiceId,
 		cusPackageId,
-		orderCode,
+		&orderCode,
 		totalFee,
 		invoicedomain.PaymentStatusUnpaid,
 		"",
-		response.CheckoutUrl,
+		&response.CheckoutUrl,
 		nil,
 	)
 	if err := h.invoiceFetcher.CreateInvoice(ctx, entity); err != nil {

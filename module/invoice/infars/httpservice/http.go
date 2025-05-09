@@ -51,5 +51,13 @@ func (s *invoiceHttpService) Routes(g *gin.RouterGroup) {
 		invoice_route.POST("/patient",
 			s.handleInvoicesByPatientIds(),
 		)
+		invoice_route.PATCH(
+			"/cancel-payment-url/:order-code",
+			s.handleCancelPaymentUrl(),
+		)
+		invoice_route.PATCH(
+			"/:invoice-id/create-payment-url",
+			s.handleCreateNewPaymentUrl(),
+		)
 	}
 }

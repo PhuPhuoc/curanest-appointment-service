@@ -397,8 +397,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "origin code (current location of nursing - lat/lng",
                         "name": "origin-code",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -862,6 +861,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/invoices/cancel-payment-url/{order-code}": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "cannel paytment url",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "invoices"
+                ],
+                "summary": "cannel paytment url",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order code (int)",
+                        "name": "order-code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/invoices/patient": {
             "post": {
                 "security": [
@@ -944,6 +985,48 @@ const docTemplate = `{
                             "type": "object",
                             "additionalProperties": true
                         }
+                    }
+                }
+            }
+        },
+        "/api/v1/invoices/{invoice-id}/create-payment-url": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "create new paytment url",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "invoices"
+                ],
+                "summary": "create new paytment url",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "invoice-id uuid",
+                        "name": "invoice-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
                     }
                 }
             }

@@ -26,7 +26,7 @@ func (s *invoiceHttpService) handleFindInvoice() gin.HandlerFunc {
 		}
 		cusPackageUUID, err := uuid.Parse(cusPackageId)
 		if err != nil {
-			common.ResponseError(ctx, common.NewBadRequestError().WithReason("nurse-id invalid (not a uuid)"))
+			common.ResponseError(ctx, common.NewBadRequestError().WithReason("cus-package-id invalid (not a uuid)"))
 			return
 		}
 		invoices, err := s.query.FindInvoice.Handle(ctx.Request.Context(), cusPackageUUID)

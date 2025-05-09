@@ -2,32 +2,17 @@ package invoicerepository
 
 import (
 	"context"
-	"fmt"
-	"log"
+
+	"github.com/PhuPhuoc/curanest-appointment-service/common"
+	invoicedomain "github.com/PhuPhuoc/curanest-appointment-service/module/invoice/domain"
 )
 
-func (repo *invoiceRepo) UpdateInvoiceFromGoong(ctx context.Context, orderCode string) error {
-	log.Println("da webhook handle -> repo")
-	query := `
-        UPDATE invoices 
-        SET payment_status = 'paid', note = 'da thanh toan xong' 
-        WHERE order_code = ? AND payment_status = 'unpaid'
-    `
+func (repo *invoiceRepo) UpdateInvoice(ctx context.Context, entity *invoicedomain.Invoice) error {
+	dto := ToInvoiceDTO(entity)
+	where := "id=:id"
+	query := common.GenerateSQLQueries(common.UPDATE, TABLE_INVOICE, UPDATE_INVOICE, &where)
 
-	// Execute query with context
-	result, err := repo.db.ExecContext(ctx, query, orderCode)
-	if err != nil {
-		return fmt.Errorf("failed to update invoice: %w", err)
-	}
-
-	// Check affected rows
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return fmt.Errorf("failed to check affected rows: %w", err)
-	}
-	if rowsAffected == 0 {
-		return fmt.Errorf("no invoice found with order_code %s or invoice already paid", orderCode)
-	}
-
-	return nil
+	// If no transaction, use db directly
+	_, err := repo.db.NamedExec(query, dto)
+	return err
 }

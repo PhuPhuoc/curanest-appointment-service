@@ -432,7 +432,6 @@ paths:
       - description: origin code (current location of nursing - lat/lng
         in: query
         name: origin-code
-        required: true
         type: string
       produces:
       - application/json
@@ -837,6 +836,60 @@ paths:
       summary: change custask status to done
       tags:
       - customized packages
+  /api/v1/invoices/{invoice-id}/create-payment-url:
+    patch:
+      consumes:
+      - application/json
+      description: create new paytment url
+      parameters:
+      - description: invoice-id uuid
+        in: path
+        name: invoice-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: create new paytment url
+      tags:
+      - invoices
+  /api/v1/invoices/cancel-payment-url/{order-code}:
+    patch:
+      consumes:
+      - application/json
+      description: cannel paytment url
+      parameters:
+      - description: order code (int)
+        in: path
+        name: order-code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: cannel paytment url
+      tags:
+      - invoices
   /api/v1/invoices/patient:
     post:
       consumes:

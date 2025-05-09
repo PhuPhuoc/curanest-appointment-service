@@ -16,11 +16,11 @@ type RequestGetInvoicesByPatientIds struct {
 type InvoiceDTO struct {
 	Id            uuid.UUID  `json:"id"`
 	CusPackageId  uuid.UUID  `json:"cuspackage-id"`
-	OrderCode     int64      `json:"order-code,omitempty"`
+	OrderCode     *int64     `json:"order-code,omitempty"`
 	TotalFee      float64    `json:"total-fee"`
 	PaymentStatus string     `json:"status"`
 	Note          string     `json:"note,omitempty"`
-	PayosUrl      string     `json:"payos-url,omitempty"`
+	PayosUrl      *string    `json:"payos-url,omitempty"`
 	CreatedAt     *time.Time `json:"created-at"`
 }
 

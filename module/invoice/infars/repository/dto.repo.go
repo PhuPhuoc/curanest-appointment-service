@@ -33,19 +33,22 @@ var (
 	}
 
 	UPDATE_INVOICE = []string{
+		"order_code",
+		"total_fee",
 		"payment_status",
 		"note",
+		"payos_url",
 	}
 )
 
 type InvoiceDTO struct {
 	Id            uuid.UUID  `db:"id"`
 	CusPackageId  uuid.UUID  `db:"customized_package_id"`
-	OrderCode     int64      `db:"order_code"`
+	OrderCode     *int64     `db:"order_code"`
 	TotalFee      float64    `db:"total_fee"`
 	PaymentStatus string     `db:"payment_status"`
 	Note          string     `db:"note"`
-	PayosUrl      string     `db:"payos_url"`
+	PayosUrl      *string    `db:"payos_url"`
 	CreatedAt     *time.Time `db:"created_at"`
 }
 
