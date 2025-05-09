@@ -809,6 +809,33 @@ paths:
       summary: find invoices with cus-package-id
       tags:
       - invoices
+  /api/v1/cuspackage/{cuspackage-id}/cancel:
+    patch:
+      consumes:
+      - application/json
+      description: create customized package (client)
+      parameters:
+      - description: custask ID (UUID)
+        in: path
+        name: cuspackage-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: cancel customized package (client)
+      tags:
+      - customized packages
   /api/v1/cuspackage/custask/{custask-id}/update-status-done:
     patch:
       consumes:

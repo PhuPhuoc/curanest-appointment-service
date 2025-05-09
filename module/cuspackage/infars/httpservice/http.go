@@ -42,6 +42,12 @@ func (s *cusPackageHttpService) Routes(g *gin.RouterGroup) {
 			s.handleFindCusPackageTask(),
 		)
 		cuspackage_route.PATCH(
+			"/:cuspackage-id/cancel",
+			// middleware.RequireAuth(s.auth),
+			// middleware.RequireRole("relatives"),
+			s.handleCancelCustomizedPackage(),
+		)
+		cuspackage_route.PATCH(
 			"custask/:custask-id/update-status-done",
 			// middleware.RequireAuth(s.auth),
 			// middleware.RequireRole("relatives"),

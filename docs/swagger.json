@@ -853,6 +853,48 @@
                 }
             }
         },
+        "/api/v1/cuspackage/{cuspackage-id}/cancel": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "create customized package (client)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customized packages"
+                ],
+                "summary": "cancel customized package (client)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "custask ID (UUID)",
+                        "name": "cuspackage-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/invoices/cancel-payment-url/{order-code}": {
             "patch": {
                 "security": [

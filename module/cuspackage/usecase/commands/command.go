@@ -18,6 +18,8 @@ type Commands struct {
 
 	UpdateCustaskStatusDone *updateCustaskStatusDoneHanlder
 	UpdateMedicalRecord     *updateMedicalRecordHanlder
+
+	CancelPackage *cancelPackageHanlder
 }
 
 type Builder interface {
@@ -52,6 +54,12 @@ func NewCusPackageCmdWithBuilder(b Builder) Commands {
 			b.BuildAppointmentFetcher(),
 			b.BuildTransactionManager(),
 		),
+		CancelPackage: NewCancelPackageHandler(
+			b.BuildCusPackageCmdRepo(),
+			b.BuildAppointmentFetcher(),
+			b.BuildTransactionManager(),
+			b.BuildExternalPushNotiService(),
+		),
 	}
 }
 
@@ -80,6 +88,7 @@ type AppointmentFetcher interface {
 	FindById(ctx context.Context, appointmentId uuid.UUID) (*appointmentdomain.Appointment, error)
 
 	UpdateAppointment(ctx context.Context, entity *appointmentdomain.Appointment) error
+	GetAppointmentByCuspackage(ctx context.Context, cuspackageId uuid.UUID) ([]appointmentdomain.Appointment, error)
 }
 
 type InvoiceFetcher interface {
