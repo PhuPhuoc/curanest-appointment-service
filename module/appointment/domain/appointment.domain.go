@@ -109,6 +109,7 @@ const (
 	AppStatusConfirmed
 	AppStatusUpcoming
 	AppStatusSuccess
+	AppStatusCancel
 	AppStatusUnknow
 )
 
@@ -122,6 +123,8 @@ func EnumAppointmentStatus(s string) AppointmentStatus {
 		return AppStatusUpcoming
 	case "waiting":
 		return AppStatusWaiting
+	case "cancel":
+		return AppStatusCancel
 	default:
 		return AppStatusUnknow
 	}
@@ -137,6 +140,8 @@ func (r AppointmentStatus) String() string {
 		return "upcoming"
 	case AppStatusSuccess:
 		return "success"
+	case AppStatusCancel:
+		return "cancel"
 	default:
 		return "unknown"
 	}

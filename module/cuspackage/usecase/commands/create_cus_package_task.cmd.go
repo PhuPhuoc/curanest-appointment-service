@@ -121,6 +121,7 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 		0,
 		totalAfterDiscount,
 		cuspackagedomain.PaymentStatusUnpaid,
+		false,
 		nil,
 	)
 

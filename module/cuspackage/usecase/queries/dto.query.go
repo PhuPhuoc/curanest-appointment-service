@@ -27,6 +27,7 @@ type CusPackageDTO struct {
 	PaidAmount    float64    `json:"paid-amount"`
 	UnpaidAmount  float64    `json:"unpaid-amount"`
 	PaymentStatus string     `json:"payment-status"`
+	IsCancel      bool       `json:"is-cancel"`
 	CreatedAt     *time.Time `json:"created-at"`
 }
 
@@ -40,6 +41,7 @@ func (c *CusPackageDTO) ToCusPackageEntity() (*cuspackagedomain.CustomizedPackag
 		c.PaidAmount,
 		c.UnpaidAmount,
 		cuspackagedomain.EnumPaymentStatus(c.PaymentStatus),
+		c.IsCancel,
 		c.CreatedAt,
 	)
 }
@@ -54,6 +56,7 @@ func toCusPackageDTO(data *cuspackagedomain.CustomizedPackage) *CusPackageDTO {
 		PaidAmount:    data.GetPaidAmount(),
 		UnpaidAmount:  data.GetUnpaidAmount(),
 		PaymentStatus: data.GetPaymentStatus().String(),
+		IsCancel:      data.GetIsCancel(),
 		CreatedAt:     data.GetCreatedAt(),
 	}
 	return dto

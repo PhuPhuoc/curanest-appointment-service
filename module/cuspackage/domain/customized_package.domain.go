@@ -16,6 +16,7 @@ type CustomizedPackage struct {
 	paidAmount    float64
 	uppaidAmount  float64
 	paymentStatus PaymentStatus
+	isCancel      bool
 	createdAt     *time.Time
 }
 
@@ -51,6 +52,10 @@ func (a *CustomizedPackage) GetPaymentStatus() PaymentStatus {
 	return a.paymentStatus
 }
 
+func (a *CustomizedPackage) GetIsCancel() bool {
+	return a.isCancel
+}
+
 func (a *CustomizedPackage) GetCreatedAt() *time.Time {
 	return a.createdAt
 }
@@ -60,6 +65,7 @@ func NewCustomizedPackage(
 	name string,
 	totalFee, paidAmount, unpaidAmount float64,
 	paymentStatus PaymentStatus,
+	isCancel bool,
 	createdAt *time.Time,
 ) (*CustomizedPackage, error) {
 	return &CustomizedPackage{
@@ -71,6 +77,7 @@ func NewCustomizedPackage(
 		paidAmount:    paidAmount,
 		uppaidAmount:  unpaidAmount,
 		paymentStatus: paymentStatus,
+		isCancel:      isCancel,
 		createdAt:     createdAt,
 	}, nil
 }
@@ -79,7 +86,6 @@ type PaymentStatus int
 
 const (
 	PaymentStatusUnpaid PaymentStatus = iota
-	PaymentStatusPartiallyPaid
 	PaymentStatusPaid
 )
 
@@ -87,8 +93,6 @@ func EnumPaymentStatus(s string) PaymentStatus {
 	switch strings.TrimSpace(strings.ToLower(s)) {
 	case "paid":
 		return PaymentStatusPaid
-	case "partially_paid":
-		return PaymentStatusPartiallyPaid
 	default:
 		return PaymentStatusUnpaid
 	}
@@ -98,8 +102,6 @@ func (r PaymentStatus) String() string {
 	switch r {
 	case PaymentStatusUnpaid:
 		return "unpaid"
-	case PaymentStatusPartiallyPaid:
-		return "partially_paid"
 	case PaymentStatusPaid:
 		return "paid"
 	default:

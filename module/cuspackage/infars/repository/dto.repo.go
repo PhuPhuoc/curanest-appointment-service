@@ -22,6 +22,7 @@ var (
 		"paid_amount",
 		"unpaid_amount",
 		"payment_status",
+		"is_cancel",
 	}
 	CREATE_CUSTASK = []string{
 		"id",
@@ -57,6 +58,7 @@ var (
 		"paid_amount",
 		"unpaid_amount",
 		"payment_status",
+		"is_cancel",
 		"created_at",
 	}
 	GET_CUSTASK = []string{
@@ -90,6 +92,7 @@ var (
 		"paid_amount",
 		"unpaid_amount",
 		"payment_status",
+		"is_cancel",
 	}
 	UPDATE_TASK = []string{
 		"client_note",
@@ -117,6 +120,7 @@ type CusPackageDTO struct {
 	PaidAmount       float64    `db:"paid_amount"`
 	UnpaidAmount     float64    `db:"unpaid_amount"`
 	PaymentStatus    string     `db:"payment_status"`
+	IsCancel         bool       `db:"is_cancel"`
 	CreatedAt        *time.Time `db:"created_at"`
 }
 
@@ -130,6 +134,7 @@ func (dto *CusPackageDTO) ToCusPackageEntity() (*cuspackagedomain.CustomizedPack
 		dto.PaidAmount,
 		dto.UnpaidAmount,
 		cuspackagedomain.EnumPaymentStatus(dto.PaymentStatus),
+		dto.IsCancel,
 		dto.CreatedAt,
 	)
 }
@@ -144,6 +149,7 @@ func ToCusPackageDTO(data *cuspackagedomain.CustomizedPackage) *CusPackageDTO {
 		PaidAmount:       data.GetPaidAmount(),
 		UnpaidAmount:     data.GetUnpaidAmount(),
 		PaymentStatus:    data.GetPaymentStatus().String(),
+		IsCancel:         data.GetIsCancel(),
 	}
 }
 

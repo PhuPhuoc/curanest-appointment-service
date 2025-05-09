@@ -64,6 +64,7 @@ func (h *webhookGoongHandler) Handle(ctx context.Context, checkSumKey string, dt
 			invoiceEntity.GetTotalFee(),
 			totalUnpaidAmount,
 			cusPaymentStatus,
+			cusPackage.GetIsCancel(),
 			cusPackage.GetCreatedAt(),
 		)
 
