@@ -41,11 +41,16 @@ func (a *Service) GetStatus() Status {
 	return a.status
 }
 
-func (a *Service) GetCreatedAt() time.Time {
-	return *a.createdAt
+func (a *Service) GetCreatedAt() *time.Time {
+	return a.createdAt
 }
 
-func NewService(id, categoryId uuid.UUID, name, description, est_duration string, status Status, createdAt *time.Time) (*Service, error) {
+func NewService(
+	id, categoryId uuid.UUID,
+	name, description, est_duration string,
+	status Status,
+	createdAt *time.Time,
+) (*Service, error) {
 	return &Service{
 		id:           id,
 		categoryId:   categoryId,

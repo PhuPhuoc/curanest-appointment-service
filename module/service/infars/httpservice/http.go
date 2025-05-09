@@ -62,5 +62,9 @@ func (s *serviceHttpService) Routes(g *gin.RouterGroup) {
 			"/staff",
 			s.handleGetServiceOfStaff(),
 		)
+		service_route.PUT(
+			"",
+			s.handleUpdateService(),
+		)
 	}
 }

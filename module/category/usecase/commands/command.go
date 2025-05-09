@@ -10,6 +10,7 @@ import (
 
 type Commands struct {
 	CreateCategory *createCategoryHandler
+	UpdateCategory *updateCategoryHandler
 
 	AddStaff    *addStaffToCategoryHandler
 	RemoveStaff *removeStaffToCategoryHandler
@@ -25,6 +26,9 @@ func NewCategoryCmdWithBuilder(b Builder) Commands {
 		CreateCategory: NewCreateCategoryHandler(
 			b.BuildCategoryCmdRepo(),
 		),
+		UpdateCategory: NewUpdateCategoryHandler(
+			b.BuildCategoryCmdRepo(),
+		),
 		AddStaff: NewAddStaffToCategoryHandler(
 			b.BuildCategoryCmdRepo(),
 			b.BuildExternalAccountServiceInCmd(),
@@ -38,7 +42,7 @@ func NewCategoryCmdWithBuilder(b Builder) Commands {
 
 type CategoryCommandRepo interface {
 	Create(ctx context.Context, entity *categorydomain.Category) error
-	// Update(ctx context.Context, entity *categorydomain.Category) error
+	Update(ctx context.Context, entity *categorydomain.Category) error
 
 	AddStaffToCategory(ctx context.Context, cateId, staffId uuid.UUID) error
 	RemoveStaffOfCategory(ctx context.Context, cateId uuid.UUID) error

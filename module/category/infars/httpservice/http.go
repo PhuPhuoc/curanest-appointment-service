@@ -35,6 +35,12 @@ func (s *categoryHttpService) Routes(g *gin.RouterGroup) {
 			middleware.RequireRole("admin"),
 			s.handleCreateCategory(),
 		)
+		cate_route.PUT(
+			"",
+			middleware.RequireAuth(s.auth),
+			middleware.RequireRole("admin"),
+			s.handleUpdateCategory(),
+		)
 		cate_route.GET(
 			"",
 			middleware.RequireAuth(s.auth),
