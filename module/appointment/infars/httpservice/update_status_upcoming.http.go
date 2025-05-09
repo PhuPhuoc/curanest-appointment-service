@@ -39,9 +39,11 @@ func (s *appointmentHttpService) handleUpdateStatusUpcoming() gin.HandlerFunc {
 			originCode = &origin
 		}
 
-		if !isValidLatLng(*originCode) {
-			common.ResponseError(ctx, common.NewBadRequestError().WithReason(fmt.Sprintf("origin-code: %v invalid (must be lat,lng)", originCode)))
-			return
+		if originCode != nil {
+			if !isValidLatLng(*originCode) {
+				common.ResponseError(ctx, common.NewBadRequestError().WithReason(fmt.Sprintf("origin-code: %v invalid (must be lat,lng)", originCode)))
+				return
+			}
 		}
 
 		appointmentDTO, err := s.query.FindAppointmentById.Handle(ctx.Request.Context(), appointmentUUID)
