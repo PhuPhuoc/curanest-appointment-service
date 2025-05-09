@@ -49,6 +49,7 @@ func (h *createNewPaymentUrlHandler) Handle(ctx context.Context, e *invoicedomai
 		e.GetPaymentStatus(),
 		e.GetNote(),
 		&response.CheckoutUrl,
+		&response.QRCode,
 		e.GetCreatedAt(),
 	)
 

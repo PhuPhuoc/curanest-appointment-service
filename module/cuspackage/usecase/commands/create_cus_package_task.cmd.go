@@ -301,6 +301,7 @@ func (h *createCusPackageAndTaskHandler) saveInvoice(ctx context.Context, cusPac
 		invoicedomain.PaymentStatusUnpaid,
 		"",
 		&response.CheckoutUrl,
+		&response.QRCode,
 		nil,
 	)
 	if err := h.invoiceFetcher.CreateInvoice(ctx, entity); err != nil {

@@ -8,6 +8,7 @@ CREATE TABLE `invoices` (
     `payment_status` enum('unpaid', 'paid') DEFAULT 'unpaid',
     `note` text,
     `payos_url` varchar(255),
+    `qr_code` varchar(255),
     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
     `deleted_at` datetime,
     PRIMARY KEY (`id`),

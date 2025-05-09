@@ -21,6 +21,7 @@ type InvoiceDTO struct {
 	PaymentStatus string     `json:"status"`
 	Note          string     `json:"note,omitempty"`
 	PayosUrl      *string    `json:"payos-url,omitempty"`
+	QrCode        *string    `json:"qr-code,omitempty"`
 	CreatedAt     *time.Time `json:"created-at"`
 }
 
@@ -33,6 +34,7 @@ func (i *InvoiceDTO) ToInvoiceEntity() (*invoicedomain.Invoice, error) {
 		invoicedomain.EnumPaymentStatus(i.PaymentStatus),
 		i.Note,
 		i.PayosUrl,
+		i.QrCode,
 		i.CreatedAt,
 	)
 }
@@ -46,6 +48,7 @@ func toInvoiceDTO(data *invoicedomain.Invoice) *InvoiceDTO {
 		PaymentStatus: data.GetPaymentStatus().String(),
 		Note:          data.GetNote(),
 		PayosUrl:      data.GetPayosUrl(),
+		QrCode:        data.GetQrCode(),
 		CreatedAt:     data.GetCreatedAt(),
 	}
 	return dto

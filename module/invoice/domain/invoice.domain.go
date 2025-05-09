@@ -15,6 +15,7 @@ type Invoice struct {
 	paymentStatus PaymentStatus
 	note          string
 	payosUrl      *string
+	qrCode        *string
 	createdAt     *time.Time
 }
 
@@ -46,6 +47,10 @@ func (a *Invoice) GetPayosUrl() *string {
 	return a.payosUrl
 }
 
+func (a *Invoice) GetQrCode() *string {
+	return a.qrCode
+}
+
 func (a *Invoice) GetCreatedAt() *time.Time {
 	return a.createdAt
 }
@@ -56,7 +61,7 @@ func NewInvoice(
 	totalFee float64,
 	paymentStatus PaymentStatus,
 	note string,
-	payosUrl *string,
+	payosUrl, qrCode *string,
 	createdAt *time.Time,
 ) (*Invoice, error) {
 	return &Invoice{
@@ -67,6 +72,7 @@ func NewInvoice(
 		paymentStatus: paymentStatus,
 		note:          note,
 		payosUrl:      payosUrl,
+		qrCode:        qrCode,
 		createdAt:     createdAt,
 	}, nil
 }

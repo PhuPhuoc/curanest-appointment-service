@@ -31,6 +31,7 @@ func (h *cancelPaymentUrlHandler) Handle(ctx context.Context, e *invoicedomain.I
 		e.GetPaymentStatus(),
 		e.GetNote(),
 		nil,
+		nil,
 		e.GetCreatedAt(),
 	)
 
