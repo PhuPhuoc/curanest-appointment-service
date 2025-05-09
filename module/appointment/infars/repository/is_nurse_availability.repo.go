@@ -15,7 +15,7 @@ func (repo *appointmentRepo) IsNurseAvailability(ctx context.Context, nursingId 
 		(
 			SELECT id 
 			FROM appointments 
-			WHERE nursing_id = ? and est_date >= ? and est_date <= ? 
+			WHERE nursing_id = ? and est_date >= ? and est_date <= ? and status != 'cancel'
 		)
 	`
 	var exists bool

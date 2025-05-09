@@ -11,7 +11,7 @@ import (
 func (repo *appointmentRepo) GetAppointmentInADayOfNursing(ctx context.Context, nursingId uuid.UUID, estStartDate, estEndDate time.Time) ([]appointmentdomain.Appointment, error) {
 	query := `
 		select id, nursing_id, est_date, total_est_duration from appointments where
-		nursing_id = ? and est_date >= ? and est_date <= ?
+		nursing_id = ? and est_date >= ? and est_date <= ? and status != 'cancel'
 		order by est_date desc
 	`
 	var dtos []AppointmentDTO
