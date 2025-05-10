@@ -14,7 +14,7 @@ type CreateServiceDTO struct {
 
 type UpdateServiceDTO struct {
 	Id          uuid.UUID  `json:"id"`
-	CategoryId  uuid.UUID  `json:"category=id"`
+	CategoryId  uuid.UUID  `json:"category-id"`
 	Name        string     `json:"name"`
 	Description string     `json:"description"`
 	EstDuration string     `json:"est-duration"`

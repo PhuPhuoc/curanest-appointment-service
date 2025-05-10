@@ -1928,7 +1928,7 @@ const docTemplate = `{
         "servicecommands.UpdateServiceDTO": {
             "type": "object",
             "properties": {
-                "category=id": {
+                "category-id": {
                     "type": "string"
                 },
                 "created_at": {
