@@ -23,6 +23,7 @@ type Builder interface {
 	BuildMedicalRecord() MedicalRecordFetcher
 	BuildExternalPushNotiService() ExternalPushNotiService
 	BuildExternalPatientService() ExternalPatientService
+	BuildExternalNurseServiceApiCmd() ExternalNursingService
 }
 
 func NewAppointmentCmdWithBuilder(b Builder) Commands {
@@ -35,6 +36,8 @@ func NewAppointmentCmdWithBuilder(b Builder) Commands {
 		UpdateStatusUpcoming: NewUpdateStatusUpcomingHandler(
 			b.BuildAppointmentCmdRepo(),
 			b.BuildExternalPushNotiService(),
+			b.BuildExternalPatientService(),
+			b.BuildExternalNurseServiceApiCmd(),
 		),
 		AssigneNursing: NewAssignNursingHandler(
 			b.BuildAppointmentCmdRepo(),
@@ -71,4 +74,9 @@ type ExternalPushNotiService interface {
 
 type ExternalPatientService interface {
 	GetRelativesId(ctx context.Context, patientId uuid.UUID) (*uuid.UUID, error)
+	GetPatientInfo(ctx context.Context, patientId uuid.UUID) (*PatientInfo, error)
+}
+
+type ExternalNursingService interface {
+	GetNursingInfo(ctx context.Context, nursingId uuid.UUID) (*NurseProfile, error)
 }

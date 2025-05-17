@@ -13,12 +13,16 @@ import (
 type updateStatusUpcomingHandler struct {
 	cmdRepo         AppointmentCommandRepo
 	pushNotiFetcher ExternalPushNotiService
+	patientFetcher  ExternalPatientService
+	nursingFetcher  ExternalNursingService
 }
 
-func NewUpdateStatusUpcomingHandler(cmdRepo AppointmentCommandRepo, pushNotiFetcher ExternalPushNotiService) *updateStatusUpcomingHandler {
+func NewUpdateStatusUpcomingHandler(cmdRepo AppointmentCommandRepo, pushNotiFetcher ExternalPushNotiService, patientFetcher ExternalPatientService, nursingFetcher ExternalNursingService) *updateStatusUpcomingHandler {
 	return &updateStatusUpcomingHandler{
 		cmdRepo:         cmdRepo,
 		pushNotiFetcher: pushNotiFetcher,
+		patientFetcher:  patientFetcher,
+		nursingFetcher:  nursingFetcher,
 	}
 }
 
@@ -51,28 +55,29 @@ func (h *updateStatusUpcomingHandler) Handle(ctx context.Context, entity *appoin
 			WithInner(err.Error())
 	}
 
-	nursingName := "A hihi"
-	patientame := "B huhu"
-
 	diff := entity.GetEstDate().Sub(now)
 	minutesUntil := int(diff.Minutes())
-	contentVi := fmt.Sprintf(
-		"Hệ thống thông báo: \n"+
-			"Điều dưỡng %v đang trên đường đến cuộc hẹn với bệnh nhân %s.\n"+
-			"Cuộc hẹn dự kiến bắt đầu sau %s phút nữa.\n",
-		nursingName,
-		patientame,
-		minutesUntil,
-	)
+	relativesId, _ := h.patientFetcher.GetRelativesId(ctx, entity.GetPatientID())
+	patienInfo, _ := h.patientFetcher.GetPatientInfo(ctx, entity.GetPatientID())
+	nursingInfo, _ := h.nursingFetcher.GetNursingInfo(ctx, *entity.GetNursingID())
 
-	// Gửi thông báo
-	reqPushNoti := common.PushNotiRequest{
-		AccountID: *entity.GetNursingID(),
-		Content:   contentVi,
-		Route:     "/(tabs)/schedule",
-	}
-	if err_noti := h.pushNotiFetcher.PushNotification(ctx, &reqPushNoti); err_noti != nil {
-		log.Println("error push noti for nursing: ", err_noti)
+	if relativesId != nil && patienInfo != nil && nursingInfo != nil {
+		contentVi := fmt.Sprintf(
+			"Hệ thống thông báo: \n"+
+				"Điều dưỡng %v đang trên đường đến cuộc hẹn với bệnh nhân %v.\n"+
+				"Cuộc hẹn dự kiến bắt đầu sau %v phút nữa.\n",
+			nursingInfo.NurseName,
+			patienInfo.FullName,
+			minutesUntil,
+		)
+		reqPushNoti := common.PushNotiRequest{
+			AccountID: *relativesId,
+			Content:   contentVi,
+			Route:     "/(tabs)/schedule",
+		}
+		if err_noti := h.pushNotiFetcher.PushNotification(ctx, &reqPushNoti); err_noti != nil {
+			log.Println("error push noti for nursing: ", err_noti)
+		}
 	}
 
 	return nil

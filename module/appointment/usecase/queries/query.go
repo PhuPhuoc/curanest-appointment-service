@@ -19,7 +19,7 @@ type Queries struct {
 
 type Builder interface {
 	BuildAppointmentQueryRepo() AppointmentQueryRepo
-	BuildNurseServiceExternalApi() NursingServiceExternalAPI
+	BuildExternalNurseServiceApiQuery() ExternalNursingService
 }
 
 func NewAppointmentQueryWithBuilder(b Builder) Queries {
@@ -38,7 +38,7 @@ func NewAppointmentQueryWithBuilder(b Builder) Queries {
 		),
 		GetNursingAvailable: NewGetNursingAvailableHandler(
 			b.BuildAppointmentQueryRepo(),
-			b.BuildNurseServiceExternalApi(),
+			b.BuildExternalNurseServiceApiQuery(),
 		),
 	}
 }
@@ -52,6 +52,6 @@ type AppointmentQueryRepo interface {
 	IsNurseAvailability(ctx context.Context, nursingIds uuid.UUID, startDate, endDate time.Time) error
 }
 
-type NursingServiceExternalAPI interface {
+type ExternalNursingService interface {
 	GetNursingByServiceIdRPC(ctx context.Context, serviceId uuid.UUID) ([]NurseDTO, error)
 }

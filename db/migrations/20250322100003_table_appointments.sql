@@ -3,7 +3,6 @@
 CREATE TABLE `appointments` (
     `id` varchar(36) NOT NULL,
     `service_id` varchar(36) NOT NULL,
-    `service_package_id` varchar(36) NOT NULL,
     `customized_package_id` varchar(36) NOT NULL,
     `nursing_id` varchar(36),
     `patient_id` varchar(36) NOT NULL,

@@ -2,7 +2,6 @@ package externalapi
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	"github.com/google/uuid"
@@ -18,7 +17,6 @@ func (ex *externalPatientService) GetRelativesId(ctx context.Context, patientId 
 		return nil, resp
 	}
 
-	fmt.Println("response: ", response)
 	success, ok := response["success"].(bool)
 	if !ok || !success {
 		return nil, common.ExtractErrorFromResponse(response)

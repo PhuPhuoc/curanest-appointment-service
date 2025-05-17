@@ -13,8 +13,8 @@ import (
 
 type builderOfAppointment struct {
 	db                 *sqlx.DB
-	urlNurseService    string
 	urlPushNotiService string
+	urlNurseService    string
 	urlPatientService  string
 
 	transactionMgr common.TransactionManager
@@ -71,7 +71,11 @@ func (s builderOfAppointment) BuildMedicalRecord() apppointmentcommands.MedicalR
 	return cuspackagerepository.NewCusPackageRepo(s.db)
 }
 
-func (s builderOfAppointment) BuildNurseServiceExternalApi() appointmentqueries.NursingServiceExternalAPI {
+func (s builderOfAppointment) BuildExternalNurseServiceApiCmd() apppointmentcommands.ExternalNursingService {
+	return externalapi.NewNursingRPC(s.urlNurseService)
+}
+
+func (s builderOfAppointment) BuildExternalNurseServiceApiQuery() appointmentqueries.ExternalNursingService {
 	return externalapi.NewNursingRPC(s.urlNurseService)
 }
 

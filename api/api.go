@@ -150,7 +150,8 @@ func (sv *server) RunApp() error {
 	appointment_cmd_builder := apppointmentcommands.NewAppointmentCmdWithBuilder(
 		builder.NewAppointmentBuilder(sv.db).
 			AddPathPushNotiService(urlPushNotiServices).
-			AddPathPatientService(urlPatientServices),
+			AddPathPatientService(urlPatientServices).
+			AddPathUrlNursingService(urlNursingServices),
 	)
 	appointment_query_builder := appointmentqueries.NewAppointmentQueryWithBuilder(
 

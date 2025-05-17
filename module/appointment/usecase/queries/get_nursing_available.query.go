@@ -10,10 +10,10 @@ import (
 
 type getNursingAvailableHandler struct {
 	queryRepo      AppointmentQueryRepo
-	nurseServceApi NursingServiceExternalAPI
+	nurseServceApi ExternalNursingService
 }
 
-func NewGetNursingAvailableHandler(queryRepo AppointmentQueryRepo, nurseServceApi NursingServiceExternalAPI) *getNursingAvailableHandler {
+func NewGetNursingAvailableHandler(queryRepo AppointmentQueryRepo, nurseServceApi ExternalNursingService) *getNursingAvailableHandler {
 	return &getNursingAvailableHandler{
 		queryRepo:      queryRepo,
 		nurseServceApi: nurseServceApi,
