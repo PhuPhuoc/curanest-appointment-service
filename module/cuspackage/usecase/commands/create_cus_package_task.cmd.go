@@ -232,7 +232,6 @@ func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, sv
 		appointmentEntity, _ := appointmentdomain.NewAppointment(
 			appointmentId,
 			serviceId,
-			svcpackageId,
 			cusPackageEntity.GetID(),
 			patientId,
 			obj.NursingId,

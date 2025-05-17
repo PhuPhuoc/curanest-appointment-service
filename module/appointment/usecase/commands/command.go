@@ -21,7 +21,6 @@ type Builder interface {
 	BuildAppointmentCmdRepo() AppointmentCommandRepo
 	BuildCusTaskFetcher() CusTaskFetcher
 	BuildMedicalRecord() MedicalRecordFetcher
-	BuildExternalGoongAPI() ExternalGoongAPI
 	BuildExternalPushNotiService() ExternalPushNotiService
 	BuildExternalPatientService() ExternalPatientService
 }
@@ -35,7 +34,6 @@ func NewAppointmentCmdWithBuilder(b Builder) Commands {
 		),
 		UpdateStatusUpcoming: NewUpdateStatusUpcomingHandler(
 			b.BuildAppointmentCmdRepo(),
-			b.BuildExternalGoongAPI(),
 			b.BuildExternalPushNotiService(),
 		),
 		AssigneNursing: NewAssignNursingHandler(

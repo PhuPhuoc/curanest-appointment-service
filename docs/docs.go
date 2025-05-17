@@ -392,12 +392,6 @@ const docTemplate = `{
                         "name": "appointment-id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "origin code (current location of nursing - lat/lng",
-                        "name": "origin-code",
-                        "in": "query"
                     }
                 ],
                 "responses": {

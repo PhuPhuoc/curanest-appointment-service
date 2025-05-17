@@ -461,10 +461,6 @@ paths:
         name: appointment-id
         required: true
         type: string
-      - description: origin code (current location of nursing - lat/lng
-        in: query
-        name: origin-code
-        type: string
       produces:
       - application/json
       responses:

@@ -83,7 +83,6 @@ func (h *cancelPackageHanlder) Handle(ctx context.Context, entity *cuspackagedom
 		newApp, _ := appointmentdomain.NewAppointment(
 			app.GetID(),
 			app.GetServiceID(),
-			app.GetSvcpackageID(),
 			app.GetCusPackageID(),
 			app.GetPatientID(),
 			app.GetNursingID(),

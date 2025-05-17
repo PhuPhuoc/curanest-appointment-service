@@ -149,7 +149,6 @@ func (sv *server) RunApp() error {
 
 	appointment_cmd_builder := apppointmentcommands.NewAppointmentCmdWithBuilder(
 		builder.NewAppointmentBuilder(sv.db).
-			AddGoongConfig(goongApiUrl, goongApiKey).
 			AddPathPushNotiService(urlPushNotiServices).
 			AddPathPatientService(urlPatientServices),
 	)

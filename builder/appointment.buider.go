@@ -19,8 +19,8 @@ type builderOfAppointment struct {
 
 	transactionMgr common.TransactionManager
 
-	goongApiUrl string
-	goongApiKey string
+	// goongApiUrl string
+	// goongApiKey string
 }
 
 func (s builderOfAppointment) AddPathPushNotiService(url string) builderOfAppointment {
@@ -38,11 +38,11 @@ func (s builderOfAppointment) AddPathUrlNursingService(url string) builderOfAppo
 	return s
 }
 
-func (s builderOfAppointment) AddGoongConfig(apiurl, apikey string) builderOfAppointment {
-	s.goongApiUrl = apiurl
-	s.goongApiKey = apikey
-	return s
-}
+// func (s builderOfAppointment) AddGoongConfig(apiurl, apikey string) builderOfAppointment {
+// 	s.goongApiUrl = apiurl
+// 	s.goongApiKey = apikey
+// 	return s
+// }
 
 func NewAppointmentBuilder(db *sqlx.DB) builderOfAppointment {
 	return builderOfAppointment{
@@ -75,9 +75,9 @@ func (s builderOfAppointment) BuildNurseServiceExternalApi() appointmentqueries.
 	return externalapi.NewNursingRPC(s.urlNurseService)
 }
 
-func (s builderOfAppointment) BuildExternalGoongAPI() apppointmentcommands.ExternalGoongAPI {
-	return externalapi.NewExternalGoongAPI(s.goongApiUrl, s.goongApiKey)
-}
+// func (s builderOfAppointment) BuildExternalGoongAPI() apppointmentcommands.ExternalGoongAPI {
+// 	return externalapi.NewExternalGoongAPI(s.goongApiUrl, s.goongApiKey)
+// }
 
 func (s builderOfAppointment) BuildExternalPushNotiService() apppointmentcommands.ExternalPushNotiService {
 	return externalapi.NewPushNotiServiceRPC(s.urlPushNotiService)

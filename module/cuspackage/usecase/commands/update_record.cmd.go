@@ -109,7 +109,6 @@ func (h *updateMedicalRecordHanlder) Handle(ctx context.Context, dto UpdateMedic
 		newAppEntity, _ := appointmentdomain.NewAppointment(
 			curAppEntity.GetID(),
 			curAppEntity.GetServiceID(),
-			curAppEntity.GetSvcpackageID(),
 			curAppEntity.GetCusPackageID(),
 			curAppEntity.GetPatientID(),
 			curAppEntity.GetNursingID(),

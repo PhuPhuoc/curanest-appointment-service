@@ -10,7 +10,6 @@ import (
 type Appointment struct {
 	id               uuid.UUID
 	serviceId        uuid.UUID
-	svcpackageId     uuid.UUID
 	cusPackageId     uuid.UUID
 	nursingId        *uuid.UUID
 	patientId        uuid.UUID
@@ -29,10 +28,6 @@ func (a *Appointment) GetID() uuid.UUID {
 
 func (a *Appointment) GetServiceID() uuid.UUID {
 	return a.serviceId
-}
-
-func (a *Appointment) GetSvcpackageID() uuid.UUID {
-	return a.svcpackageId
 }
 
 func (a *Appointment) GetCusPackageID() uuid.UUID {
@@ -76,7 +71,7 @@ func (a *Appointment) GetCreatedAt() *time.Time {
 }
 
 func NewAppointment(
-	id, serviceId, svcpackageId, cusPackageId, patientId uuid.UUID,
+	id, serviceId, cusPackageId, patientId uuid.UUID,
 	nursingId *uuid.UUID,
 	patientAddress, patientLatLng string,
 	status AppointmentStatus,
@@ -88,7 +83,6 @@ func NewAppointment(
 	return &Appointment{
 		id:               id,
 		serviceId:        serviceId,
-		svcpackageId:     svcpackageId,
 		cusPackageId:     cusPackageId,
 		nursingId:        nursingId,
 		patientId:        patientId,
