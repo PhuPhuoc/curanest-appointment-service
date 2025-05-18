@@ -64,6 +64,7 @@ type AppointmentDTO struct {
 	EstDate          time.Time  `json:"est-date"`
 	ActDate          *time.Time `json:"act-date"`
 	Status           string     `json:"status"`
+	IsPaid           bool       `json:"is-paid"`
 	TotalEstDuration int        `json:"total-est-duration"`
 	CreatedAt        *time.Time `json:"created-at"`
 }

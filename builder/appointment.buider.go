@@ -58,6 +58,10 @@ func (s builderOfAppointment) BuildAppointmentCmdRepo() apppointmentcommands.App
 	return appointmentrepository.NewAppointmentRepo(s.db)
 }
 
+func (s builderOfAppointment) BuilderCusPackageFetcher() appointmentqueries.CusPackageFetcher {
+	return cuspackagerepository.NewCusPackageRepo(s.db)
+}
+
 func (s builderOfAppointment) BuildAppointmentQueryRepo() appointmentqueries.AppointmentQueryRepo {
 	return appointmentrepository.NewAppointmentRepo(s.db)
 }

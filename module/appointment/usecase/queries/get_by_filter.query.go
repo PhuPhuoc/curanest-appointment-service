@@ -4,15 +4,19 @@ import (
 	"context"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
+	cuspackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/domain"
+	"github.com/google/uuid"
 )
 
 type getAppointmentsHandler struct {
-	queryRepo AppointmentQueryRepo
+	queryRepo         AppointmentQueryRepo
+	cusPackageFetcher CusPackageFetcher
 }
 
-func NewGetAppointmentsHandler(queryRepo AppointmentQueryRepo) *getAppointmentsHandler {
+func NewGetAppointmentsHandler(queryRepo AppointmentQueryRepo, cusPackageFetcher CusPackageFetcher) *getAppointmentsHandler {
 	return &getAppointmentsHandler{
-		queryRepo: queryRepo,
+		queryRepo:         queryRepo,
+		cusPackageFetcher: cusPackageFetcher,
 	}
 }
 
@@ -30,9 +34,32 @@ func (h *getAppointmentsHandler) Handle(ctx context.Context, filter *FilterGetAp
 		return []AppointmentDTO{}, nil
 	}
 
-	dtos := make([]AppointmentDTO, len(entities))
+	cusPkgIDSet := make(map[uuid.UUID]struct{})
+	dtos := make([]AppointmentDTO, len(entities)) // pre-allocate
+
 	for i, entity := range entities {
 		dtos[i] = *toAppointmentDTO(&entity)
+		if entity.GetCusPackageID() != uuid.Nil {
+			cusPkgIDSet[entity.GetCusPackageID()] = struct{}{}
+		}
+	}
+
+	cusPackIDs := make([]uuid.UUID, 0, len(cusPkgIDSet))
+	for id := range cusPkgIDSet {
+		cusPackIDs = append(cusPackIDs, id)
+	}
+
+	mapCusPackage, err := h.cusPackageFetcher.GetCusPackageByIds(ctx, cusPackIDs)
+	for i := range dtos {
+		cusPackEntity, ok := mapCusPackage[dtos[i].CusPackageId]
+		if ok {
+			if cusPackEntity.GetPaymentStatus() == cuspackagedomain.PaymentStatusPaid {
+				dtos[i].IsPaid = true
+			} else {
+				dtos[i].IsPaid = false
+			}
+		}
+
 	}
 
 	return dtos, nil
