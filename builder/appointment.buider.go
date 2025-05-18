@@ -18,7 +18,6 @@ type builderOfAppointment struct {
 	urlPatientService  string
 
 	transactionMgr common.TransactionManager
-
 	// goongApiUrl string
 	// goongApiKey string
 }

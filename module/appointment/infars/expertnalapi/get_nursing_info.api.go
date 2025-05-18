@@ -2,6 +2,7 @@ package externalapi
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	apppointmentcommands "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/usecase/commands"
@@ -11,8 +12,9 @@ import (
 func (ex *externalNursingService) GetNursingInfo(ctx context.Context, nursingId uuid.UUID) (*apppointmentcommands.NurseProfile, error) {
 	response, err := common.CallExternalAPI(ctx, common.RequestOptions{
 		Method: "GET",
-		URL:    ex.apiURL + "api/v1/nurses/" + nursingId.String(),
+		URL:    ex.apiURL + "/api/v1/nurses/" + nursingId.String(),
 	})
+	fmt.Println("resp of api get nursing info: ", response)
 	if err != nil {
 		resp := common.NewInternalServerError().WithReason("cannot call external api: " + err.Error())
 		return nil, resp
