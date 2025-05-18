@@ -155,9 +155,10 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 func (h *createCusPackageAndTaskHandler) PushNotiToNursing(ctx context.Context, mappings []DateNursingMapping) {
 	for _, obj := range mappings {
 		if obj.NursingId != nil {
+			vnTime := obj.Date.Add(7 * time.Hour)
 			contentVi := fmt.Sprintf(
 				"Bạn có cuộc hẹn dịch vụ mới được lên lịch vào lúc %s.\n",
-				obj.Date.Format("15:04 ngày 02 tháng 01 năm 2006"),
+				vnTime.Format("15:04 ngày 02 tháng 01 năm 2006"),
 			)
 			reqPushNoti := common.PushNotiRequest{
 				AccountID: *obj.NursingId,
