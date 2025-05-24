@@ -10,10 +10,11 @@ import (
 func (repo *appointmentRepo) GetAppointmentInDate(ctx context.Context, estStartDate, estEndDate time.Time) ([]appointmentdomain.Appointment, error) {
 	query := `
 		select id, nursing_id from appointments where
-		est_date >= ? and est_date <= ?
+		est_date < ? and date_add(est_date, interval total_est_duration minute) > ?
+		
 	`
 	var dtos []AppointmentDTO
-	if err := repo.db.SelectContext(ctx, &dtos, query, estStartDate, estEndDate); err != nil {
+	if err := repo.db.SelectContext(ctx, &dtos, query, estEndDate, estStartDate); err != nil {
 		return []appointmentdomain.Appointment{}, err
 	}
 
