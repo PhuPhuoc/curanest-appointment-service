@@ -9,6 +9,11 @@ import (
 	appointmentdomain "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/domain"
 )
 
+type ItemDashboardDTO struct {
+	CurApps           int `json:"cur-apps"`
+	AppsNeedToProcess int `json:"apps-need-to-process"`
+}
+
 type FilterGetNursingTimesheetDTO struct {
 	NursingId   uuid.UUID  `json:"nursing-id,omitempty"`
 	EstDateFrom *time.Time `json:"est-date-from,omitempty"`

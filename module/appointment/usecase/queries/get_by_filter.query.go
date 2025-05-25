@@ -3,9 +3,10 @@ package appointmentqueries
 import (
 	"context"
 
+	"github.com/google/uuid"
+
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	cuspackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/domain"
-	"github.com/google/uuid"
 )
 
 type getAppointmentsHandler struct {
@@ -50,6 +51,12 @@ func (h *getAppointmentsHandler) Handle(ctx context.Context, filter *FilterGetAp
 	}
 
 	mapCusPackage, err := h.cusPackageFetcher.GetCusPackageByIds(ctx, cusPackIDs)
+	if err != nil {
+		return []AppointmentDTO{}, common.NewInternalServerError().
+			WithReason("cannot get cus-package").
+			WithInner(err.Error())
+	}
+
 	for i := range dtos {
 		cusPackEntity, ok := mapCusPackage[dtos[i].CusPackageId]
 		if ok {
