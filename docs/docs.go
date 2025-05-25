@@ -36,6 +36,12 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "appointment ID (UUID)",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "service ID (UUID)",
                         "name": "service-id",
                         "in": "query"

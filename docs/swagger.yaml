@@ -326,6 +326,10 @@ paths:
       - application/json
       description: get appointment by filter option
       parameters:
+      - description: appointment ID (UUID)
+        in: query
+        name: id
+        type: string
       - description: service ID (UUID)
         in: query
         name: service-id

@@ -17,6 +17,10 @@ func (repo *appointmentRepo) GetAppointment(ctx context.Context, filter *appoint
 	var args []interface{}
 
 	if filter != nil {
+		if filter.Id != nil && filter.Id.String() != "" {
+			whereConditions = append(whereConditions, "id = ?")
+			args = append(args, filter.Id.String())
+		}
 		if filter.ServiceId != nil && filter.ServiceId.String() != "" {
 			whereConditions = append(whereConditions, "service_id = ?")
 			args = append(args, filter.ServiceId.String())

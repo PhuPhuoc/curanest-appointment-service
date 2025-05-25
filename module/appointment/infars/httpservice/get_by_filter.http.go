@@ -17,6 +17,7 @@ import (
 //	@Tags			appointments
 //	@Accept			json
 //	@Produce		json
+//	@Param			id					query		string					false	"appointment ID (UUID)"
 //	@Param			service-id			query		string					false	"service ID (UUID)"
 //	@Param			cuspackage-id		query		string					false	"customized package ID (UUID)"
 //	@Param			nursing-id			query		string					false	"nursing ID (UUID)"
@@ -35,6 +36,15 @@ import (
 func (s *appointmentHttpService) handleGetAppointmentByFilter() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		filter := &appointmentqueries.FilterGetAppointmentDTO{}
+
+		if appid := ctx.Query("id"); appid != "" {
+			appUUID, err := uuid.Parse(appid)
+			if err != nil {
+				common.ResponseError(ctx, common.NewBadRequestError().WithReason("appointment-id invalid (not a UUID)"))
+				return
+			}
+			filter.Id = &appUUID
+		}
 
 		if serviceId := ctx.Query("service-id"); serviceId != "" {
 			serviceUUID, err := uuid.Parse(serviceId)

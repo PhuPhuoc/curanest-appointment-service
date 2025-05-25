@@ -1,12 +1,5 @@
 .env
 
-docker-compose.yml
-
-*.exe
-
 appointment_service_migration_script.sql
-service_packages.sql
-service_tasks.sql
-services.sql
-categories.sql
-svcpackage_svctask_v2.sql
+
+makefile
