@@ -42,6 +42,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "category ID (UUID)",
+                        "name": "category-id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "service ID (UUID)",
                         "name": "service-id",
                         "in": "query"

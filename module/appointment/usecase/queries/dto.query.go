@@ -47,6 +47,7 @@ func toTimesheetDTO(data *appointmentdomain.Appointment, estTravelTime int) *Tim
 
 type FilterGetAppointmentDTO struct {
 	Id                *uuid.UUID                           `json:"id,omitempty"`
+	CategoryId        *uuid.UUID                           `json:"category-id,omitempty"`
 	ServiceId         *uuid.UUID                           `json:"service-id,omitempty"`
 	CusPackageId      *uuid.UUID                           `json:"cuspackage-id,omitempty"`
 	NursingId         *uuid.UUID                           `json:"nursing-id,omitempty"`

@@ -21,6 +21,17 @@ func (repo *appointmentRepo) GetAppointment(ctx context.Context, filter *appoint
 			whereConditions = append(whereConditions, "id = ?")
 			args = append(args, filter.Id.String())
 		}
+
+		whereCate := `
+		service_id in (
+			select id from services where category_id = ?
+		)
+		`
+		if filter.CategoryId != nil && filter.CategoryId.String() != "" {
+			whereConditions = append(whereConditions, whereCate)
+			args = append(args, filter.CategoryId.String())
+		}
+
 		if filter.ServiceId != nil && filter.ServiceId.String() != "" {
 			whereConditions = append(whereConditions, "service_id = ?")
 			args = append(args, filter.ServiceId.String())

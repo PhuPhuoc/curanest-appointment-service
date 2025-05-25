@@ -330,6 +330,10 @@ paths:
         in: query
         name: id
         type: string
+      - description: category ID (UUID)
+        in: query
+        name: category-id
+        type: string
       - description: service ID (UUID)
         in: query
         name: service-id
