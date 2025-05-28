@@ -4,9 +4,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/google/uuid"
+
 	appointmentdomain "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/domain"
 	cuspackagedomain "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/domain"
-	"github.com/google/uuid"
 )
 
 type Queries struct {
@@ -16,6 +17,7 @@ type Queries struct {
 	GetNursingAvailable *getNursingAvailableHandler
 
 	CheckNursesAvailability *checkNursesAvailabilityHandler
+	GetDashboardData        *getItemDashboardHandler
 }
 
 type Builder interface {
@@ -43,6 +45,9 @@ func NewAppointmentQueryWithBuilder(b Builder) Queries {
 			b.BuildAppointmentQueryRepo(),
 			b.BuildExternalNurseServiceApiQuery(),
 		),
+		GetDashboardData: NewGetItemDashboardHandler(
+			b.BuildAppointmentQueryRepo(),
+		),
 	}
 }
 
@@ -53,6 +58,8 @@ type AppointmentQueryRepo interface {
 	GetAppointmentInADayOfNursing(ctx context.Context, nursingId uuid.UUID, estStartDate, estEndDate time.Time) ([]appointmentdomain.Appointment, error)
 
 	IsNurseAvailability(ctx context.Context, nursingIds uuid.UUID, startDate, endDate time.Time) error
+
+	GetDashboardData(ctx context.Context, filter *FilterDashboardDTO) (int, int, int, error)
 }
 
 type CusPackageFetcher interface {

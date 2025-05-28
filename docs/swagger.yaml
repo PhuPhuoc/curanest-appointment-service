@@ -485,6 +485,44 @@ paths:
       summary: update status of appointment to upcoming
       tags:
       - appointments
+  /api/v1/appointments/dashboard:
+    get:
+      consumes:
+      - application/json
+      description: get appointment by filter option
+      parameters:
+      - description: is admin or staff
+        in: query
+        name: is-admin
+        type: string
+      - description: category ID (UUID)
+        in: query
+        name: category-id
+        type: string
+      - description: date from (YYYY-MM-DD)
+        in: query
+        name: date-from
+        type: string
+      - description: date to (YYYY-MM-DD)
+        in: query
+        name: date-to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: get appointment by filter option
+      tags:
+      - appointments
   /api/v1/appointments/nursing-available:
     get:
       consumes:

@@ -128,6 +128,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/appointments/dashboard": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get appointment by filter option",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "get appointment by filter option",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "is admin or staff",
+                        "name": "is-admin",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "category ID (UUID)",
+                        "name": "category-id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "date from (YYYY-MM-DD)",
+                        "name": "date-from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "date to (YYYY-MM-DD)",
+                        "name": "date-to",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/appointments/nursing-available": {
             "get": {
                 "security": [

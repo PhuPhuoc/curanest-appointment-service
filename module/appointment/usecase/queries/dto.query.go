@@ -9,9 +9,18 @@ import (
 	appointmentdomain "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/domain"
 )
 
+type FilterDashboardDTO struct {
+	IsAdmin    bool       `json:"is-admin"`
+	CategoryId *uuid.UUID `json:"category-id,omitempty"`
+	DateFrom   time.Time  `json:"date-from,omitempty"`
+	DateTo     time.Time  `json:"date-to,omitempty"`
+}
+
 type ItemDashboardDTO struct {
-	CurApps           int `json:"cur-apps"`
-	AppsNeedToProcess int `json:"apps-need-to-process"`
+	TotalService int `json:"total-service"`
+	UpcomingApps int `json:"upcoming-apps"`
+	WaitingApps  int `json:"waiting-apps"`
+	TotalApps    int `json:"total-apps"`
 }
 
 type FilterGetNursingTimesheetDTO struct {
