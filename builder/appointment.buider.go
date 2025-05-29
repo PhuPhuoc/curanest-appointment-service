@@ -9,6 +9,7 @@ import (
 	apppointmentcommands "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/usecase/commands"
 	appointmentqueries "github.com/PhuPhuoc/curanest-appointment-service/module/appointment/usecase/queries"
 	cuspackagerepository "github.com/PhuPhuoc/curanest-appointment-service/module/cuspackage/infars/repository"
+	servicerepository "github.com/PhuPhuoc/curanest-appointment-service/module/service/infars/repository"
 )
 
 type builderOfAppointment struct {
@@ -60,6 +61,10 @@ func (s builderOfAppointment) BuildAppointmentCmdRepo() apppointmentcommands.App
 
 func (s builderOfAppointment) BuilderCusPackageFetcher() appointmentqueries.CusPackageFetcher {
 	return cuspackagerepository.NewCusPackageRepo(s.db)
+}
+
+func (s builderOfAppointment) BuilderServiceFetcher() appointmentqueries.ServiceFetcher {
+	return servicerepository.NewServiceRepo(s.db)
 }
 
 func (s builderOfAppointment) BuildAppointmentQueryRepo() appointmentqueries.AppointmentQueryRepo {

@@ -24,6 +24,7 @@ type Builder interface {
 	BuildAppointmentQueryRepo() AppointmentQueryRepo
 	BuildExternalNurseServiceApiQuery() ExternalNursingService
 	BuilderCusPackageFetcher() CusPackageFetcher
+	BuilderServiceFetcher() ServiceFetcher
 }
 
 func NewAppointmentQueryWithBuilder(b Builder) Queries {
@@ -47,6 +48,7 @@ func NewAppointmentQueryWithBuilder(b Builder) Queries {
 		),
 		GetDashboardData: NewGetItemDashboardHandler(
 			b.BuildAppointmentQueryRepo(),
+			b.BuilderServiceFetcher(),
 		),
 	}
 }
@@ -68,4 +70,8 @@ type CusPackageFetcher interface {
 
 type ExternalNursingService interface {
 	GetNursingByServiceIdRPC(ctx context.Context, serviceId uuid.UUID) ([]NurseDTO, error)
+}
+
+type ServiceFetcher interface {
+	GetCountTotalService(ctx context.Context, cateoryId *uuid.UUID) (int, error)
 }

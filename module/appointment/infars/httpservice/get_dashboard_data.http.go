@@ -2,7 +2,6 @@ package appointmenthttpservice
 
 import (
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -47,21 +46,21 @@ func (s *appointmentHttpService) handleGetDashboardData() gin.HandlerFunc {
 		}
 
 		if dateFrom := ctx.Query("date-from"); dateFrom != "" {
-			parsedDate, err := time.Parse("2006-01-02", dateFrom)
-			if err != nil {
-				common.ResponseError(ctx, common.NewBadRequestError().WithReason("date-from invalid (use YYYY-MM-DD)"))
-				return
-			}
-			filter.DateFrom = parsedDate
+			// parsedDate, err := time.Parse("2006-01-02", dateFrom)
+			// if err != nil {
+			// 	common.ResponseError(ctx, common.NewBadRequestError().WithReason("date-from invalid (use YYYY-MM-DD)"))
+			// 	return
+			// }
+			filter.DateFrom = dateFrom
 		}
 
-		if dateTo := ctx.Query("est-date-to"); dateTo != "" {
-			parsedDate, err := time.Parse("2006-01-02", dateTo)
-			if err != nil {
-				common.ResponseError(ctx, common.NewBadRequestError().WithReason("est-date-to invalid (use YYYY-MM-DD)"))
-				return
-			}
-			filter.DateTo = parsedDate
+		if dateTo := ctx.Query("date-to"); dateTo != "" {
+			// parsedDate, err := time.Parse("2006-01-02", dateTo)
+			// if err != nil {
+			// 	common.ResponseError(ctx, common.NewBadRequestError().WithReason("est-date-to invalid (use YYYY-MM-DD)"))
+			// 	return
+			// }
+			filter.DateTo = dateTo
 		}
 
 		resp, err := s.query.GetDashboardData.Handle(ctx, filter)

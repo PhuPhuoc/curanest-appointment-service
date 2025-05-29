@@ -12,8 +12,8 @@ import (
 type FilterDashboardDTO struct {
 	IsAdmin    bool       `json:"is-admin"`
 	CategoryId *uuid.UUID `json:"category-id,omitempty"`
-	DateFrom   time.Time  `json:"date-from,omitempty"`
-	DateTo     time.Time  `json:"date-to,omitempty"`
+	DateFrom   string     `json:"date-from,omitempty"`
+	DateTo     string     `json:"date-to,omitempty"`
 }
 
 type ItemDashboardDTO struct {
