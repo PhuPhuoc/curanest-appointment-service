@@ -112,7 +112,7 @@ func (h *assignNursingHandler) Handle(ctx context.Context, nursingId *uuid.UUID,
 
 	reqPushNoti := common.PushNotiRequest{
 		AccountID: *nursingId,
-		Content:   "Bạn đã được staff phân vào một lịch hẹn mới! Kiểm tra ngay!",
+		Content:   "Bạn đã được người phụ trách phân vào một lịch hẹn mới! Kiểm tra ngay!",
 		SubID:     entity.GetID(),
 		Route:     "/detail-appointment/[id]",
 	}
