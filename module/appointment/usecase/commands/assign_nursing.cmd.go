@@ -113,7 +113,7 @@ func (h *assignNursingHandler) Handle(ctx context.Context, nursingId *uuid.UUID,
 	reqPushNoti := common.PushNotiRequest{
 		AccountID: *nursingId,
 		Content:   "Bạn đã được staff phân vào một lịch hẹn mới! Kiểm tra ngay!",
-		Route:     "/(tabs)/schedule",
+		Route:     "/detail-appointment/[id]",
 	}
 	err_noti := h.pushNotiFetcher.PushNotification(ctx, &reqPushNoti)
 	if err_noti != nil {
