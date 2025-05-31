@@ -13,6 +13,8 @@ type Queries struct {
 	GetInvoiceById         *getInvoiceHandler
 	GetInvoiceByOrderCode  *getInvoiceByOrderCodeHandler
 	GetInvoiceByPatientIds *getInvoicesByPatientIdHandler
+
+	GetRevenue *getRevenueHandler
 }
 
 type Builder interface {
@@ -33,6 +35,9 @@ func NewInvoiceQueryWithBuilder(b Builder) Queries {
 		GetInvoiceByPatientIds: NewGetInvoicesByPatientIdHandler(
 			b.BuildInvoiceQueryRepo(),
 		),
+		GetRevenue: NewGetRevenueHandler(
+			b.BuildInvoiceQueryRepo(),
+		),
 	}
 }
 
@@ -41,4 +46,6 @@ type InvoiceQueryRepo interface {
 	FindByOrderCode(ctx context.Context, ordercode int64) (*invoicedomain.Invoice, error)
 	FindByCusPackageId(ctx context.Context, cusPackageId uuid.UUID) ([]invoicedomain.Invoice, error)
 	GetInvoicesByPatientId(ctx context.Context, isAdmin bool, patientIds []uuid.UUID) ([]invoicedomain.Invoice, error)
+
+	GetTotalRevenueInDuration(ctx context.Context, dateFrom, dateTo string) (float64, error)
 }

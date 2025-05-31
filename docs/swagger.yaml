@@ -142,6 +142,13 @@ definitions:
           type: string
         type: array
     type: object
+  invoicequeries.RequestGetRevenurDTO:
+    properties:
+      dates:
+        items:
+          type: string
+        type: array
+    type: object
   servicecommands.CreateServiceDTO:
     properties:
       description:
@@ -1030,6 +1037,34 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/invoicequeries.RequestGetInvoicesByPatientIds'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: get invoices with patient-ids
+      tags:
+      - invoices
+  /api/v1/invoices/revenue:
+    post:
+      consumes:
+      - application/json
+      description: get invoices with patient-ids
+      parameters:
+      - description: List of patient IDs (UUID)
+        in: body
+        name: dates
+        required: true
+        schema:
+          $ref: '#/definitions/invoicequeries.RequestGetRevenurDTO'
       produces:
       - application/json
       responses:

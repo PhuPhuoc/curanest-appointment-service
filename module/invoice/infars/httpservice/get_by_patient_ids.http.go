@@ -1,9 +1,10 @@
 package invoicehttpservice
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	invoicequeries "github.com/PhuPhuoc/curanest-appointment-service/module/invoice/usecase/queries"
-	"github.com/gin-gonic/gin"
 )
 
 // @Summary		get invoices with patient-ids

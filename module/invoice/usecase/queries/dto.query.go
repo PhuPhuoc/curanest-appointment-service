@@ -13,6 +13,15 @@ type RequestGetInvoicesByPatientIds struct {
 	IsAdmin    bool        `json:"is-admin"`
 }
 
+type RequestGetRevenurDTO struct {
+	Dates []string `json:"dates"`
+}
+
+type RevenurDTO struct {
+	Date    string  `json:"date"`
+	Revenue float64 `json:"revenue"`
+}
+
 type InvoiceDTO struct {
 	Id            uuid.UUID  `json:"id"`
 	CusPackageId  uuid.UUID  `json:"cuspackage-id"`

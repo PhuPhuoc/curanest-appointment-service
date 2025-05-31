@@ -1,10 +1,11 @@
 package invoicehttpservice
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"github.com/PhuPhuoc/curanest-appointment-service/middleware"
 	invoicecommands "github.com/PhuPhuoc/curanest-appointment-service/module/invoice/usecase/commands"
 	invoicequeries "github.com/PhuPhuoc/curanest-appointment-service/module/invoice/usecase/queries"
-	"github.com/gin-gonic/gin"
 )
 
 type invoiceHttpService struct {
@@ -44,6 +45,11 @@ func (s *invoiceHttpService) Routes(g *gin.RouterGroup) {
 	}
 	invoice_route := g.Group("/invoices")
 	{
+
+		invoice_route.POST(
+			"/revenue",
+			s.handleGetRevenue(),
+		)
 		invoice_route.POST(
 			"/webhooks",
 			s.handlePayosWebhook(),

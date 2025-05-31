@@ -1096,6 +1096,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/invoices/revenue": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get invoices with patient-ids",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "invoices"
+                ],
+                "summary": "get invoices with patient-ids",
+                "parameters": [
+                    {
+                        "description": "List of patient IDs (UUID)",
+                        "name": "dates",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/invoicequeries.RequestGetRevenurDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/invoices/webhooks": {
             "post": {
                 "description": "Process webhook notifications from PayOS to update invoice payment status",
@@ -2006,6 +2050,17 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "patient-ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "invoicequeries.RequestGetRevenurDTO": {
+            "type": "object",
+            "properties": {
+                "dates": {
                     "type": "array",
                     "items": {
                         "type": "string"
