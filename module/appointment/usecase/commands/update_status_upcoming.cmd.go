@@ -73,7 +73,8 @@ func (h *updateStatusUpcomingHandler) Handle(ctx context.Context, entity *appoin
 		reqPushNoti := common.PushNotiRequest{
 			AccountID: *relativesId,
 			Content:   contentVi,
-			Route:     "/(tabs)/schedule",
+			SubID:     entity.GetID(),
+			Route:     "/detail-appointment",
 		}
 		if err_noti := h.pushNotiFetcher.PushNotification(ctx, &reqPushNoti); err_noti != nil {
 			log.Println("error push noti for nursing: ", err_noti)

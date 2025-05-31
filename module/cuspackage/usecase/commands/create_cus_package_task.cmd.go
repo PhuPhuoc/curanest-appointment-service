@@ -146,7 +146,7 @@ func (h *createCusPackageAndTaskHandler) Handle(ctx context.Context, req *ReqCre
 			WithInner(err.Error())
 	}
 
-	h.PushNotiToNursing(ctx, dateNurseMappings)
+	// h.PushNotiToNursing(ctx, dateNurseMappings)
 
 	objId := cusPackageEntity.GetID()
 	return &objId, nil
@@ -270,7 +270,31 @@ func (h *createCusPackageAndTaskHandler) saveAppointment(ctx context.Context, sv
 			WithInner(err.Error())
 	}
 
+	for _, dto := range appointmentEnties {
+		h.PushNotiToNurse(ctx, dto.GetID(), dto.GetNursingID(), dto.GetEstDate())
+	}
+
 	return nil
+}
+
+func (h *createCusPackageAndTaskHandler) PushNotiToNurse(ctx context.Context, appId uuid.UUID, nursingId *uuid.UUID, appDate time.Time) {
+	if nursingId != nil {
+		vnTime := appDate.Add(7 * time.Hour)
+		contentVi := fmt.Sprintf(
+			"Bạn có cuộc hẹn dịch vụ mới được lên lịch vào lúc %s.\n",
+			vnTime.Format("15:04 ngày 02 tháng 01 năm 2006"),
+		)
+		reqPushNoti := common.PushNotiRequest{
+			AccountID: *nursingId,
+			Content:   contentVi,
+			SubID:     appId,
+			Route:     "/detail-appointment/[id]",
+		}
+		err_noti := h.pushNotiFetcher.PushNotification(ctx, &reqPushNoti)
+		if err_noti != nil {
+			log.Println("error push noti for nursing: ", err_noti)
+		}
+	}
 }
 
 func (h *createCusPackageAndTaskHandler) saveInvoice(ctx context.Context, cusPackageId uuid.UUID, totalFee float64) error {

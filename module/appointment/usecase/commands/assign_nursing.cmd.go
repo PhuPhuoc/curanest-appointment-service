@@ -101,7 +101,8 @@ func (h *assignNursingHandler) Handle(ctx context.Context, nursingId *uuid.UUID,
 		reqPushNoti := common.PushNotiRequest{
 			AccountID: *relativesId,
 			Content:   "Điều dưỡng phụ trách lịch hẹn của tôi đã được điều phối! Kiểm tra ngay!",
-			Route:     "/(tabs)/schedule",
+			SubID:     entity.GetID(),
+			Route:     "/detail-appointment",
 		}
 		err_noti := h.pushNotiFetcher.PushNotification(ctx, &reqPushNoti)
 		log.Println("error push noti for relatives: ", err_noti)
