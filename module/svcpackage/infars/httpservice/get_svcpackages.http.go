@@ -1,9 +1,10 @@
 package svcpackagehttpservice
 
 import (
-	"github.com/PhuPhuoc/curanest-appointment-service/common"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+
+	"github.com/PhuPhuoc/curanest-appointment-service/common"
 )
 
 // @Summary		get list service-package by service-id

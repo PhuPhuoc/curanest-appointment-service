@@ -11,6 +11,8 @@ import (
 type Queries struct {
 	GetServicePackages *getSvcPackagesHandler
 	GetServiceTasks    *getSvcTasksHandler
+
+	GetSvcPackageUsageCount *getSvcPackagesUsageCountHandler
 }
 
 type Builder interface {
@@ -25,10 +27,15 @@ func NewSvcPackageQueryWithBuilder(b Builder) Queries {
 		GetServiceTasks: NewGetServiceTasksHandler(
 			b.BuildSvcPackageQueryRepo(),
 		),
+		GetSvcPackageUsageCount: NewGetServicePackagesUsageCountHandler(
+			b.BuildSvcPackageQueryRepo(),
+		),
 	}
 }
 
 type SvcPackageQueryRepo interface {
 	GetSvcPackges(ctx context.Context, serviceId uuid.UUID) ([]svcpackagedomain.ServicePackage, error)
 	GetSvcTasks(ctx context.Context, svcpackageId uuid.UUID) ([]svcpackagedomain.ServiceTask, error)
+
+	GetSvcPackageUsageCount(ctx context.Context, cateId uuid.UUID) ([]svcpackagedomain.ServicePackageUsage, error)
 }

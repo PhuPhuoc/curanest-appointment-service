@@ -1403,6 +1403,31 @@ paths:
       summary: update service task (staff)
       tags:
       - service packages
+  /api/v1/svcpackage/category/{category-id}/usage-count:
+    get:
+      consumes:
+      - application/json
+      description: get service-package usage count
+      parameters:
+      - description: service ID (UUID)
+        in: path
+        name: category-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request error
+          schema: {}
+      summary: get service-package usage count
+      tags:
+      - service packages
   /api/v1/svcpackage/svctask:
     patch:
       consumes:

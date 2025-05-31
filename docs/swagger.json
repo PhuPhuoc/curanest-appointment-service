@@ -1530,6 +1530,43 @@
                 }
             }
         },
+        "/api/v1/svcpackage/category/{category-id}/usage-count": {
+            "get": {
+                "description": "get service-package usage count",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "service packages"
+                ],
+                "summary": "get service-package usage count",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "service ID (UUID)",
+                        "name": "category-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/api/v1/svcpackage/svctask": {
             "patch": {
                 "security": [

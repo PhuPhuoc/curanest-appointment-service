@@ -183,3 +183,17 @@ func ToSvcTaskDTO(data *svcpackagedomain.ServiceTask) *SvcTaskDTO {
 		Status:             data.GetStatus().String(),
 	}
 }
+
+type SvcPackageUsageCountDTO struct {
+	Id         uuid.UUID `db:"id"`
+	Name       string    `db:"name"`
+	UsageCount int       `db:"usage_count"`
+}
+
+func (dto *SvcPackageUsageCountDTO) ToSvcPackageUsageCountEntity() (*svcpackagedomain.ServicePackageUsage, error) {
+	return svcpackagedomain.NewServicePackageUsage(
+		dto.Id,
+		dto.Name,
+		dto.UsageCount,
+	)
+}

@@ -69,3 +69,17 @@ func toServiceTaskDTO(entity *svcpackagedomain.ServiceTask) *ServiceTaskDTO {
 		Status:             entity.GetStatus().String(),
 	}
 }
+
+type SvcPackageUsageCountDTO struct {
+	Id         uuid.UUID `json:"id"`
+	Name       string    `json:"name"`
+	UsageCount int       `json:"usage-count"`
+}
+
+func toSvcPackageUsageCountDTO(entity *svcpackagedomain.ServicePackageUsage) *SvcPackageUsageCountDTO {
+	return &SvcPackageUsageCountDTO{
+		Id:         entity.GetID(),
+		Name:       entity.GetName(),
+		UsageCount: entity.GetUsageCount(),
+	}
+}

@@ -1,10 +1,11 @@
 package svcpackagehttpservice
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"github.com/PhuPhuoc/curanest-appointment-service/middleware"
 	svcpackagecommands "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/usecase/commands"
 	svcpackagequeries "github.com/PhuPhuoc/curanest-appointment-service/module/svcpackage/usecase/queries"
-	"github.com/gin-gonic/gin"
 )
 
 type svcPackageHttpService struct {
@@ -68,6 +69,11 @@ func (s *svcPackageHttpService) Routes(g *gin.RouterGroup) {
 		svcpackage_route.PATCH(
 			"/svctask",
 			s.handleUpdateTaskOrder(),
+		)
+
+		svcpackage_route.GET(
+			"category/:category-id/usage-count",
+			s.handleGetServicPackageUsageCount(),
 		)
 	}
 }
